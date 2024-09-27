@@ -5,6 +5,7 @@
 :root {
 	--primary: #111111;
 	--gray-100: #f1f5f9;
+	--gray-200: #e2e8f0;
 	--gray-400: #9da4ae;
 	--gray-500: #64748b;
 	--red-500: #ff6e66;
@@ -14,6 +15,24 @@
 	--success-300: #4ade80;
 	--blue-100: #ebf2ff;
 	--sec: #415be6;
+	--bg: #fcfcfc;
+}
+
+h3,
+label {
+	@apply text-primary  font-medium;
+}
+
+p,
+option {
+	@apply text-gray-500 font-light;
+}
+a {
+	@apply font-normal;
+}
+input,
+select {
+	@apply text-primary font-light focus:outline-none;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -32,13 +51,27 @@
 
 @font-face {
 	font-family: "Satoshi";
-	src: url("../assets/fonts//Satoshi-Medium.otf") format("opentype");
+	src: url("../assets/fonts/Satoshi-Medium.otf") format("opentype");
 	font-weight: medium;
-	font-style: normal;
+}
+@font-face {
+	font-family: "Satoshi";
+	src: url("../assets/fonts/Satoshi-Bold.otf") format("opentype");
+	font-weight: bold;
+}
+@font-face {
+	font-family: "Satoshi";
+	src: url("../assets/fonts/Satoshi-Light.otf") format("opentype");
+	font-weight: 300;
+}
+@font-face {
+	font-family: "Satoshi";
+	src: url("../assets/fonts/Satoshi-Black.otf") format("opentype");
+	font-weight: 900;
 }
 
 body {
-	@apply w-full h-screen bg-sec;
+	@apply w-full h-screen bg-bg;
 }
 
 body {

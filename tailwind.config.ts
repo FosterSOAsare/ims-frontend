@@ -13,6 +13,7 @@ const config: Config = {
         sec: "var(--sec)",
         gray: {
           100: "var(--gray-100)",
+          200: "var(--gray-200)",
           400: "var(--gray-400)",
           500: "var(--gray-500)",
         },
@@ -30,6 +31,7 @@ const config: Config = {
         blue: {
           100: "var(--blue-100)",
         },
+        bg: 'var(--bg)'
       },
       fontFamily: {
         satoshi: ["'Satoshi', sans-serif"]
