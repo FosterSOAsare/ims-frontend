@@ -9,9 +9,31 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: "var(--primary)",
+        sec: "var(--sec)",
+        gray: {
+          100: "var(--gray-100)",
+          400: "var(--gray-400)",
+          500: "var(--gray-500)",
+        },
+        warning: {
+          50: "var(--warning-50)",
+          100: "var(--warning-100)",
+          700: "var(--warning-700)",
+        },
+        red: {
+          500: "var(--red-500)",
+        },
+        success: {
+          300: "var(--success-300)",
+        },
+        blue: {
+          100: "var(--blue-100)",
+        },
       },
+      fontFamily: {
+        satoshi: ["'Satoshi', sans-serif"]
+      }
     },
   },
   plugins: [],
