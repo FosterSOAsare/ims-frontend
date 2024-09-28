@@ -148,7 +148,7 @@ const layout = ({ children }: { children: ReactNode }) => {
 						</div>
 					</div>
 				</div>
-				<div className="bg-gray-700 border-[1px] border-[#E2EBF3] p-4 mt-2 rounded-[10px] w-full min-h-[80vh]">{children}</div>
+				<div className="bg-gray-700 border-[1px] border-[#E2EBF3] p-6 mt-2 rounded-[10px] w-full min-h-[80vh]">{children}</div>
 			</div>
 		</div>
 	);

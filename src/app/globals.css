@@ -9,7 +9,8 @@
 	--gray-400: #9da4ae;
 	--gray-500: #64748b;
 	--gray-700: #fafafa;
-	--red-500: #ff6e66;
+	--error-500: #ff6e66;
+	--error-50: #fef2f2;
 	--warning-50: #fffbeb;
 	--warning-100: #fef3c7;
 	--warning-300: #fdf4e8;
@@ -87,8 +88,21 @@ body {
 	box-shadow: 0px 4px 4px 0px #0000000d inset;
 }
 
+.card {
+	box-shadow: 0px 25px 50px -12px #0f172a0d;
+	@apply border-[1px] border-gray-100;
+}
+.selectedStock {
+	box-shadow: 0px 2px 4px -2px #0f172a0d;
+	box-shadow: 0px 4px 6px -1px #0f172a1a;
+}
+
 ::-webkit-scrollbar-thumb {
 	@apply !bg-sec;
+}
+
+.days::-webkit-scrollbar-thumb {
+	@apply !bg-sec !hidden;
 }
 
 @media screen and (min-width: 768px) {

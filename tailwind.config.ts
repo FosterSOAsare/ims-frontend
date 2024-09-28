@@ -27,8 +27,9 @@ const config: Config = {
           600: "var(--warning-600)",
           700: "var(--warning-700)",
         },
-        red: {
-          500: "var(--red-500)",
+        error: {
+          50: "var(--error-50)",
+          500: "var(--error-500)",
         },
         success: {
           300: "var(--success-300)",
