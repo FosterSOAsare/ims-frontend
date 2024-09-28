@@ -15,12 +15,16 @@ const config: Config = {
           100: "var(--gray-100)",
           200: "var(--gray-200)",
           400: "var(--gray-400)",
+          300: 'var(--gray-300)',
           500: "var(--gray-500)",
+          700: "var(--gray-700)",
         },
         warning: {
           50: "var(--warning-50)",
           100: "var(--warning-100)",
+          300: "var(--warning-300)",
           500: "var(--warning-500)",
+          600: "var(--warning-600)",
           700: "var(--warning-700)",
         },
         red: {

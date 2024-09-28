@@ -8,15 +8,20 @@
 	--gray-200: #e2e8f0;
 	--gray-400: #9da4ae;
 	--gray-500: #64748b;
+	--gray-700: #fafafa;
 	--red-500: #ff6e66;
 	--warning-50: #fffbeb;
 	--warning-100: #fef3c7;
+	--warning-300: #fdf4e8;
 	--warning-500: #f59e0b;
+	--warning-600: #794716;
 	--warning-700: #b45309;
 	--success-300: #4ade80;
 	--blue-100: #ebf2ff;
 	--sec: #415be6;
+
 	--bg: #fcfcfc;
+	--gray-300: #f4f7fa;
 }
 
 h3,
@@ -78,8 +83,31 @@ body {
 body {
 	@apply font-satoshi;
 }
-@layer utilities {
-	.text-balance {
-		text-wrap: balance;
+.company {
+	box-shadow: 0px 4px 4px 0px #0000000d inset;
+}
+
+::-webkit-scrollbar-thumb {
+	@apply !bg-sec;
+}
+
+@media screen and (min-width: 768px) {
+	::selection {
+		@apply bg-sec !text-white opacity-100;
+	}
+	::-webkit-scrollbar {
+		@apply w-1 h-1;
+	}
+
+	::-webkit-scrollbar-track {
+		@apply bg-gray-100 !w-[1px] md:w-[10px];
+	}
+
+	::-webkit-scrollbar-thumb {
+		@apply bg-sec rounded-[20px];
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		@apply bg-[red];
 	}
 }
