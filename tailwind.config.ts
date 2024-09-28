@@ -20,6 +20,7 @@ const config: Config = {
         warning: {
           50: "var(--warning-50)",
           100: "var(--warning-100)",
+          500: "var(--warning-500)",
           700: "var(--warning-700)",
         },
         red: {

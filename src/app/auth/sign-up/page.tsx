@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 import Input from "@/components/Input";
 import Button from "@/components/Button";
@@ -9,9 +10,9 @@ const page = () => {
 		<div className="w-full h-screen flex items-center justify-between overflow-hidden">
 			<div className="w-2/5 p-4 overflow-y-auto h-full px-12">
 				<div className="w-full mb-6 flex items-center justify-between">
-					<h3 className="font-bold text-xl flex gap-2 items-center">
+					<Link href="/" className="font-bold text-xl flex gap-2 items-center">
 						Stealth <span className="uppercase text-xs font-normal bg-red-500 text-white py-[2px] px-2 rounded-full">Beta</span>
-					</h3>
+					</Link>
 					<Link href="/auth/login" className="text-black font-medium bg-gray-100 px-4 rounded-[5px] p-2 hover:bg-gray-400">
 						Login
 					</Link>
@@ -46,7 +47,9 @@ const page = () => {
 								</select>
 
 								<div className="bg-warning-50 mt-2 rounded-[5px] p-2 flex items-center justify-start gap-2">
-									<span className="w-8 h-8 bg-[red]"></span>
+									<span className="w-8 h-8 ">
+										<Icon icon="ph:warning-octagon-fill" className="text-warning-500 text-2xl" />
+									</span>
 									<p className="text-sm">Please ensure that your listed department is the correct one you are currently in</p>
 								</div>
 							</div>
