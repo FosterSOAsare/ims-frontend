@@ -10,7 +10,7 @@ const page = () => {
 			<div className="w-2/5 p-4 overflow-y-auto h-full px-12">
 				<div className="w-full mb-6 flex items-center justify-between">
 					<h3 className="font-bold text-xl flex gap-2 items-center">
-						IMS <span className="uppercase text-xs font-normal bg-red-500 text-white py-[2px] px-2 rounded-full">Beta</span>
+						Stealth <span className="uppercase text-xs font-normal bg-red-500 text-white py-[2px] px-2 rounded-full">Beta</span>
 					</h3>
 					<Link href="/auth/login" className="text-black font-medium bg-gray-100 px-4 rounded-[5px] p-2 hover:bg-gray-400">
 						Login
