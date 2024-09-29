@@ -40,6 +40,12 @@ const Filters = ({ setShowFilters }: { setShowFilters: React.Dispatch<React.SetS
 	const setValue = (name: string, value: string) => {
 		setFilters((prev) => ({ ...prev, [name]: value }));
 	};
+
+	const filterDrugs = () => {
+		const { categories, sort, dateAdded, supplier, alert } = filters;
+		const data = { categories, sort: sort.value, dateAdded: dateAdded.value, supplier: supplier.value, alert: alert.value };
+		console.log(data);
+	};
 	return (
 		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-end px-3 w-full fixed top-0 left-0 z-[5]">
 			<aside className="w-1/4 flex flex-col gap-4 h-[calc(100%-20px)] p-4 overflow-y-auto bg-white rounded-[5px]">
@@ -74,7 +80,9 @@ const Filters = ({ setShowFilters }: { setShowFilters: React.Dispatch<React.SetS
 					<button className="w-[30%] text-sm rounded-[10px]  py-2 bg-gray-100 hover:bg-gray-200" onClick={() => setFilters(initial)}>
 						Clear Filters
 					</button>
-					<button className="w-[65%] bg-sec py-2 rounded-[10px] text-white">Save</button>
+					<button className="w-[65%] bg-sec py-2 rounded-[10px] text-white" onClick={filterDrugs}>
+						Save
+					</button>
 				</div>
 			</aside>
 		</div>
