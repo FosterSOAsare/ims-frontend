@@ -25,6 +25,10 @@ const page = () => {
 		setShowDrugDetails(true);
 	};
 
+	const editDrug = () => {
+		setShowAddOrEditDrug(true);
+	};
+
 	const drugId = useMemo(() => (activeColumn !== null ? (drugs[activeColumn]?.id as string) : ""), [activeColumn]);
 	return (
 		<div className="relative">
@@ -106,7 +110,16 @@ const page = () => {
 				<div>
 					{/* Last two on the table will have isLast so the drop down shows at the top instead */}
 					{drugs.map((drug, index) => (
-						<TableColumn key={index} {...drug} viewDrug={viewDrug} isLast={index >= drugs.length - 2} index={index} activeColumn={activeColumn} setActiveColumn={setActiveColumn} />
+						<TableColumn
+							key={index}
+							{...drug}
+							editDrug={editDrug}
+							viewDrug={viewDrug}
+							isLast={index >= drugs.length - 2}
+							index={index}
+							activeColumn={activeColumn}
+							setActiveColumn={setActiveColumn}
+						/>
 					))}
 				</div>
 			</div>

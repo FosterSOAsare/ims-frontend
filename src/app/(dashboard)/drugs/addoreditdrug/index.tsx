@@ -47,7 +47,7 @@ const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId }: { setShowAddOrEditDrug:
 	const [drugDetails, setDrugDetails] = useState<IDrugDetails>(initial);
 	const [step, setStep] = useState<number>(0);
 
-	console.log(drugDetails);
+	// Fetch drug if it is an edit request
 
 	const setValue = (data: any) => {
 		setDrugDetails((prev) => ({ ...prev, ...data }));
