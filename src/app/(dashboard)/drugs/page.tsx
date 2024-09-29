@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import TableColumn from "./TableColumn";
+import Filters from "./Filters";
 
 const drugs = [
 	{ name: "Paracetamol", batch: "344533", category: "Laxatives", stock: "10,000bx", supplier: "Barone LLC.", status: "Low", reorderPoint: 20 },
@@ -14,8 +15,9 @@ const drugs = [
 
 const page = () => {
 	const [activeColumn, setActiveColumn] = useState<null | number>(null);
+	const [showFilters, setShowFilters] = useState<boolean>(true);
 	return (
-		<div>
+		<div className="relative">
 			<h3 className="text-2xl mb-3 font-bold">Drugs</h3>
 			<div className="bg-white gap-2 rounded-[10px] flex items-stretch p-4 card justify-start">
 				<div className="border-r-[1px] pr-12">
@@ -69,7 +71,7 @@ const page = () => {
 					</div>
 
 					<div className="flex gap-2 items-center justify-between">
-						<button className="px-3 flex items-center justify-center gap-2 py-3 hover:bg-gray-200 rounded-[12px] border-[1px]">
+						<button className="px-3 flex items-center justify-center gap-2 py-3 hover:bg-gray-200 rounded-[12px] border-[1px]" onClick={() => setShowFilters(true)}>
 							<Icon icon="lets-icons:filter" className="text-2xl" />
 							Filters
 						</button>
@@ -98,6 +100,8 @@ const page = () => {
 					))}
 				</div>
 			</div>
+
+			{showFilters && <Filters setShowFilters={setShowFilters} />}
 		</div>
 	);
 };
