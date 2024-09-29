@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import TableColumn from "./TableColumn";
@@ -12,6 +13,7 @@ const drugs = [
 ];
 
 const page = () => {
+	const [activeColumn, setActiveColumn] = useState<null | number>(1);
 	return (
 		<div>
 			<h3 className="text-2xl mb-3 font-bold">Drugs</h3>
@@ -91,7 +93,7 @@ const page = () => {
 
 				<div>
 					{drugs.map((drug, index) => (
-						<TableColumn key={index} {...drug} />
+						<TableColumn key={index} {...drug} isLast={index === drugs.length - 1} index={index} activeColumn={activeColumn} setActiveColumn={setActiveColumn} />
 					))}
 				</div>
 			</div>
