@@ -1,32 +1,37 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import { IDrugDetails } from ".";
 
 import CustomSelect from "@/components/Select";
+import { toast } from "react-toastify";
 
-const dosageFormOptions = [
-	{ label: "This week", value: "week" },
-	{ label: "This month", value: "month" },
-	{ label: "Past 3 months", value: "3_months" },
-	{ label: "This year", value: "year" },
-];
+const dosageFormOptions = ["This week", "This month", "Past 3 months", "This year"];
 
-const Step3 = ({ drugDetails, setValue, step, setStep }: { drugDetails: IDrugDetails; setValue: (name: string, value: string) => void; step: number; setStep: Dispatch<SetStateAction<number>> }) => {
+const Step3 = ({ drugDetails, setValues, step, setStep }: { drugDetails: IDrugDetails; setValues: (data: any) => void; step: number; setStep: Dispatch<SetStateAction<number>> }) => {
+	const [supplier, setStupplier] = useState(drugDetails.supplier);
+	const step3Data = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		if (!supplier) return toast.error("Please select a supplier", { autoClose: 1500 });
+		setValues({ supplier });
+
+		// Send request here
+	};
 	return (
-		<div className="flex items-start flex-col h-full gap-2">
+		<form className="flex items-start flex-col h-full gap-2" onSubmit={step3Data}>
 			<div className="px-4 h-[calc(100%-100px)] overflow-y-auto pb-12 w-full">
 				<h3 className="mb-3 text-lg font-bold">Supplier details</h3>
 
-				<CustomSelect options={dosageFormOptions} label="Supplier" placeholder="Select option" value={drugDetails.supplier} handleChange={(value) => setValue("supplier", value)} />
+				<CustomSelect options={dosageFormOptions} label="Supplier" placeholder="Select option" value={supplier} handleChange={(value) => setStupplier(value)} />
 
-				{!drugDetails.supplier.value && (
+				{!drugDetails.supplier && (
 					<div className="w-full bg-gray-100 h-[60vh] flex items-center flex-col justify-center mt-6 rounded-[10px]">
 						<p className="text-sm">Select supplier to see their informations</p>
 					</div>
 				)}
 
-				{drugDetails.supplier.value && (
+				{drugDetails.supplier && (
 					<div className="w-full bg-gray-100 h-auto p-4 mt-6 rounded-[10px]">
 						<h3 className="text-2xl font-bold flex items-center gap-2">
 							<Icon icon="solar:buildings-3-line-duotone" className="text-xl text-gray-400" />
@@ -82,10 +87,12 @@ const Step3 = ({ drugDetails, setValue, step, setStep }: { drugDetails: IDrugDet
 						Go back
 					</button>
 
-					<button className="w-full bg-sec py-2 border-[1px] hover:opacity-70 rounded-[10px] text-white">Add drug</button>
+					<button className="w-full bg-sec py-2 border-[1px] hover:opacity-70 rounded-[10px] text-white" type="submit">
+						Add drug
+					</button>
 				</div>
 			</div>
-		</div>
+		</form>
 	);
 };
 

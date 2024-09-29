@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import Image from "next/image";
 
 import { IDrugDetails } from ".";
@@ -7,22 +7,31 @@ import CustomSelect from "@/components/Select";
 import Input from "@/components/Input";
 
 import GhanaImage from "@/assets/images/ghana.svg";
+import useSelectedValuesFromHookForm from "@/hooks/useSelectedValuesFromHookForm";
+import { newDrugStep2Schema } from "@/libs/hookform";
+import { toast } from "react-toastify";
 
-const dosageFormOptions = [
-	{ label: "This week", value: "week" },
-	{ label: "This month", value: "month" },
-	{ label: "Past 3 months", value: "3_months" },
-	{ label: "This year", value: "year" },
-];
+const storageOptions = ["This week", "This month", "Past 3 months", "This year"];
 
-const Step2 = ({ drugDetails, setValue, step, setStep }: { drugDetails: IDrugDetails; setValue: (name: string, value: string) => void; step: number; setStep: Dispatch<SetStateAction<number>> }) => {
+const Step2 = ({ drugDetails, setValues, step, setStep }: { drugDetails: IDrugDetails; setValues: (data: any) => void; step: number; setStep: Dispatch<SetStateAction<number>> }) => {
+	const [storage, setStorage] = useState(drugDetails.storage);
+	const { register, handleSubmit } = useSelectedValuesFromHookForm(newDrugStep2Schema);
+
+	const step2Data = (data: any) => {
+		const { batchNo, reorderLevel, expDate, quantity, costPrice, sellingPrice } = data;
+		if (!storage) return toast.error("Please select a storage option", { autoClose: 1500 });
+
+		const allData = { batchNo, reorderLevel, expDate, quantity, costPrice, sellingPrice, storage };
+		setValues(allData);
+		setStep((prev) => ++prev);
+	};
 	return (
-		<div className="flex items-start flex-col h-full gap-2">
+		<form className="flex items-start flex-col h-full gap-2" onSubmit={handleSubmit(step2Data)}>
 			<div className="px-4 h-[calc(100%-100px)] space-y-2 overflow-y-auto pb-12 w-full">
 				<h3 className="mb-3 text-lg font-bold">Price and other details</h3>
-				<Input name="name" label="Batch Number" placeholder="eg: paracetamol" labelSx="text-sm" inputSx="text-sm" />
-				<Input name="name" type="date" label="Expiry Date" labelSx="text-sm" inputSx="text-sm" />
-				<Input name="name" label="Reorder Level" placeholder="20,000" labelSx="text-sm" inputSx="text-sm" />
+				<Input name="batchNo" register={register} label="Batch Number" placeholder="eg: paracetamol" labelSx="text-sm" inputSx="text-sm" />
+				<Input name="expDate" register={register} type="date" label="Expiry Date" labelSx="text-sm" inputSx="text-sm" />
+				<Input name="reorderLevel" register={register} label="Reorder Level" placeholder="20,000" labelSx="text-sm" inputSx="text-sm" />
 				<div>
 					<label htmlFor="costPrice" className="text-sm">
 						Cost Price
@@ -32,7 +41,7 @@ const Step2 = ({ drugDetails, setValue, step, setStep }: { drugDetails: IDrugDet
 							<Image src={GhanaImage} alt="Image" height={12} width={25} />
 							<p className="text-primary font-medium text-sm">GHS</p>
 						</div>
-						<input type="text" className="flex-1 focus:outline-0 p-2 text-sm" placeholder="Eg: 20,000" />
+						<input type="text" {...register("costPrice")} className="flex-1 focus:outline-0 p-2 text-sm" placeholder="Eg: 20,000" />
 					</div>
 				</div>
 				<div>
@@ -44,18 +53,12 @@ const Step2 = ({ drugDetails, setValue, step, setStep }: { drugDetails: IDrugDet
 							<Image src={GhanaImage} alt="Image" height={12} width={25} />
 							<p className="text-primary font-medium text-sm">GHS</p>
 						</div>
-						<input type="text" className="flex-1 focus:outline-0 p-2 text-sm" placeholder="Eg: 20,000" />
+						<input type="text" {...register("sellingPrice")} className="flex-1 focus:outline-0 p-2 text-sm" placeholder="Eg: 20,000" />
 					</div>
 				</div>
-				<Input name="name" label="Quantity On hand" placeholder="20,000" labelSx="text-sm" inputSx="text-sm" />
+				<Input name="quantity" register={register} label="Quantity On hand" placeholder="20,000" labelSx="text-sm" inputSx="text-sm" />
 
-				<CustomSelect
-					options={dosageFormOptions}
-					label="Storage Requirement"
-					placeholder="Select option"
-					value={drugDetails.dosageForm}
-					handleChange={(value) => setValue("dosageForm", value)}
-				/>
+				<CustomSelect options={storageOptions} label="Storage Requirement" placeholder="Select option" value={storage} handleChange={(value) => setStorage(value)} />
 			</div>
 
 			<div className="w-full h-[90px] bg-white px-4 py-4 mt-auto gap-3">
@@ -70,12 +73,12 @@ const Step2 = ({ drugDetails, setValue, step, setStep }: { drugDetails: IDrugDet
 						Go back
 					</button>
 
-					<button className="w-full bg-sec py-2 border-[1px] hover:opacity-70 rounded-[10px] text-white" onClick={() => setStep((prev) => ++prev)}>
+					<button className="w-full bg-sec py-2 border-[1px] hover:opacity-70 rounded-[10px] text-white" type="submit">
 						Next
 					</button>
 				</div>
 			</div>
-		</div>
+		</form>
 	);
 };
 

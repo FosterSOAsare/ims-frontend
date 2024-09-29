@@ -5,41 +5,58 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
+import { ToastContainer } from "react-toastify";
 
 export interface IDrugDetails {
-	dosageForm: { label: string; value: string };
-	strength: { label: string; value: string };
-	unitOfMeasurement: { label: string; value: string };
-	manufacturer: { label: string; value: string };
-	supplier: { label: string; value: string };
+	dosageForm: string;
+	strength: string;
+	unitOfMeasurement: string;
+	manufacturer: string;
+	supplier: string;
 	name: string;
 	brandName: string;
 	drugCode: string;
+	storage: string;
+	batchNo: string;
+	expDate: string;
+	reorderLevel: string;
+	costPrice: string;
+	sellingPrice: string;
+	quantity: string;
 }
 
 const initial: IDrugDetails = {
-	dosageForm: { label: "", value: "" },
-	strength: { label: "", value: "" },
-	unitOfMeasurement: { label: "", value: "" },
+	dosageForm: "",
+	strength: "",
+	unitOfMeasurement: "",
 	name: "",
-	manufacturer: { label: "", value: "" },
+	manufacturer: "",
 	brandName: "",
 	drugCode: "",
-	supplier: { label: "", value: "" },
+	supplier: "",
+	storage: "",
+	batchNo: "",
+	expDate: "",
+	reorderLevel: "",
+	costPrice: "",
+	sellingPrice: "",
+	quantity: "",
 };
 
 const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId }: { setShowAddOrEditDrug: React.Dispatch<React.SetStateAction<boolean>>; drugId: string }) => {
 	const [drugDetails, setDrugDetails] = useState<IDrugDetails>(initial);
 	const [step, setStep] = useState<number>(0);
 
-	const setValue = (name: string, value: string | { name: string; value: string }) => {
-		setDrugDetails((prev) => ({ ...prev, [name]: value }));
+	console.log(drugDetails);
+
+	const setValue = (data: any) => {
+		setDrugDetails((prev) => ({ ...prev, ...data }));
 	};
 
 	const steps = [
-		<Step1 key={0} setValue={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,
-		<Step2 key={0} setValue={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,
-		<Step3 key={0} setValue={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,
+		<Step1 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,
+		<Step2 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,
+		<Step3 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,
 	];
 	return (
 		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-end px-3 w-full fixed top-0 left-0 z-[5]">
@@ -54,6 +71,7 @@ const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId }: { setShowAddOrEditDrug:
 
 				<div className="h-[calc(100%-50px)]">{steps[step]}</div>
 			</aside>
+			<ToastContainer />
 		</div>
 	);
 };
