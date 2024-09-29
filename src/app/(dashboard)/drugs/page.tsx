@@ -1,21 +1,29 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import TableColumn from "./TableColumn";
 import Filters from "./Filters";
+import DrugDetails from "./DrugDetails";
 
 const drugs = [
-	{ name: "Paracetamol", batch: "344533", category: "Laxatives", stock: "10,000bx", supplier: "Barone LLC.", status: "Low", reorderPoint: 20 },
-	{ name: "Amoxicillin", batch: "2345677", category: "Corticosteroids", stock: "5,000pcs", supplier: "Barone LLC.", status: "Stocked", reorderPoint: 56 },
-	{ name: "Metformin", batch: "4455667", category: "Laxatives", stock: "0", supplier: "Earnest Chemist LTD", status: "Out of stock", reorderPoint: 2 },
-	{ name: "Loratadine", batch: "55555777", category: "Laxatives", stock: "0", supplier: "Barone LLC.", status: "Out of stock", reorderPoint: 45 },
-	{ name: "Aspirin", batch: "33344566", category: "Laxatives", stock: "30bx", supplier: "Barone LLC.", status: "Low", reorderPoint: 40 },
+	{ id: "1", name: "Paracetamol", batch: "344533", category: "Laxatives", stock: "10,000bx", supplier: "Barone LLC.", status: "Low", reorderPoint: 20 },
+	{ id: "2", name: "Amoxicillin", batch: "2345677", category: "Corticosteroids", stock: "5,000pcs", supplier: "Barone LLC.", status: "Stocked", reorderPoint: 56 },
+	{ id: "3", name: "Metformin", batch: "4455667", category: "Laxatives", stock: "0", supplier: "Earnest Chemist LTD", status: "Out of stock", reorderPoint: 2 },
+	{ id: "4", name: "Loratadine", batch: "55555777", category: "Laxatives", stock: "0", supplier: "Barone LLC.", status: "Out of stock", reorderPoint: 45 },
+	{ id: "5", name: "Aspirin", batch: "33344566", category: "Laxatives", stock: "30bx", supplier: "Barone LLC.", status: "Low", reorderPoint: 40 },
 ];
 
 const page = () => {
 	const [activeColumn, setActiveColumn] = useState<null | number>(null);
-	const [showFilters, setShowFilters] = useState<boolean>(true);
+	const [showFilters, setShowFilters] = useState<boolean>(false);
+	const [showDrugDetails, setShowDrugDetails] = useState<boolean>(false);
+
+	const viewDrug = () => {
+		setShowDrugDetails(true);
+	};
+
+	const drugId = useMemo(() => (activeColumn !== null ? (drugs[activeColumn]?.id as string) : ""), [activeColumn]);
 	return (
 		<div className="relative">
 			<h3 className="text-2xl mb-3 font-bold">Drugs</h3>
@@ -96,12 +104,14 @@ const page = () => {
 				<div>
 					{/* Last two on the table will have isLast so the drop down shows at the top instead */}
 					{drugs.map((drug, index) => (
-						<TableColumn key={index} {...drug} isLast={index >= drugs.length - 2} index={index} activeColumn={activeColumn} setActiveColumn={setActiveColumn} />
+						<TableColumn key={index} {...drug} viewDrug={viewDrug} isLast={index >= drugs.length - 2} index={index} activeColumn={activeColumn} setActiveColumn={setActiveColumn} />
 					))}
 				</div>
 			</div>
 
 			{showFilters && <Filters setShowFilters={setShowFilters} />}
+
+			{showDrugDetails && <DrugDetails drugId={drugId} setShowDrugDetails={setShowDrugDetails} />}
 		</div>
 	);
 };

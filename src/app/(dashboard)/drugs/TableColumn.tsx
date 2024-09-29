@@ -13,9 +13,10 @@ interface ITableColumn {
 	activeColumn: number | null;
 	setActiveColumn: React.Dispatch<React.SetStateAction<number | null>>;
 	index: number;
+	viewDrug: () => void;
 }
 
-const TableColumn = ({ name, batch, category, stock, supplier, status, reorderPoint, isLast, activeColumn, setActiveColumn, index }: ITableColumn) => {
+const TableColumn = ({ name, batch, category, stock, supplier, status, reorderPoint, isLast, activeColumn, setActiveColumn, index, viewDrug }: ITableColumn) => {
 	return (
 		<div className="bg-white drugs-table gap-2 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
 			<div className="col-span-4 text-primary py-3 text-left">{name}</div>
@@ -49,7 +50,7 @@ const TableColumn = ({ name, batch, category, stock, supplier, status, reorderPo
 					</button>
 					{activeColumn == index && (
 						<div className={`absolute ${isLast ? "bottom-[100%]" : "top-[100%]"}  right-0 h-auto w-[130px] bg-white selectedStock z-[3] rounded-[5px] card`}>
-							<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+							<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2" onClick={() => viewDrug()}>
 								<Icon icon="hugeicons:view" className="text-lg" />
 								View details
 							</button>
