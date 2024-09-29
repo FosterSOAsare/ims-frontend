@@ -1,7 +1,14 @@
 import React from "react";
 import Select, { components } from "react-select";
-import { Icon } from "@iconify/react/dist/iconify.js"; // Example icon
+import { Icon } from "@iconify/react/dist/iconify.js";
 
+interface ISelect {
+	options: { label: string; value: string }[];
+	placeholder?: string;
+	label?: string;
+	value: any;
+	handleChange: (value: any) => void;
+}
 const CustomDropdownIndicator = (props: any) => {
 	return (
 		<components.DropdownIndicator {...props}>
@@ -18,10 +25,10 @@ const customStyles = {
 		boxShadow: state.isFocused ? "none" : provided.boxShadow,
 		borderRadius: "12px",
 		borderColor: state.isFocused ? "#ddd" : provided.borderColor,
-		backgroundColor: state.isSelected ? "#10B981" : provided.backgroundColor, // Selected option background color
+		backgroundColor: state.isSelected ? "#10B981" : provided.backgroundColor,
 		"&:hover": {
-			borderColor: "#ddd", // Change border color on hover (optional)
-			backgroundColor: "#f0f0f0", // Optional: background color on hover
+			borderColor: "#ddd",
+			backgroundColor: "#f0f0f0",
 		},
 	}),
 	option: (provided: any, state: any) => ({
@@ -34,7 +41,7 @@ const customStyles = {
 	}),
 };
 
-const CustomSelect = ({ options, placeholder = "", label }: { options: { label: string; value: string }[]; placeholder?: string; label?: string }) => {
+const CustomSelect = ({ options, placeholder = "", label, value, handleChange }: ISelect) => {
 	return (
 		<div className="w-full">
 			{label && (
@@ -42,7 +49,14 @@ const CustomSelect = ({ options, placeholder = "", label }: { options: { label: 
 					{label}
 				</label>
 			)}
-			<Select options={options} styles={customStyles} components={{ DropdownIndicator: CustomDropdownIndicator }} placeholder={placeholder} />
+			<Select
+				options={options}
+				styles={customStyles}
+				value={value}
+				onChange={(selected: any) => handleChange(selected)}
+				components={{ DropdownIndicator: CustomDropdownIndicator }}
+				placeholder={placeholder}
+			/>
 		</div>
 	);
 };
