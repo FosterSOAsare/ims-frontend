@@ -10,40 +10,28 @@ import { registerSchema } from "@/libs/hookform";
 import CustomSelect from "@/components/Select";
 import { toast } from "react-toastify";
 
-const facilitiesOptions = [
-	{ value: "1", label: "Facility 1" },
-	{ value: "2", label: "Facility 2" },
-	{ value: "3", label: "Facility 3" },
-];
+const facilitiesOptions = ["Facility 1", "Facility 2", "Facility 3"];
 
-const departmentOptions = [
-	{ value: "1", label: "Department 1" },
-	{ value: "2", label: "Department 2" },
-	{ value: "3", label: "Department 3" },
-];
+const departmentOptions = ["Department 1", "Department 2", "Department 3"];
 
-const roleOptions = [
-	{ value: "1", label: "Role 1" },
-	{ value: "2", label: "Role 2" },
-	{ value: "3", label: "Role 3" },
-];
+const roleOptions = ["Role 1", "Role 2", "Role 3"];
 
 const page = () => {
 	const { register, handleSubmit } = useSelectedValuesFromHookForm(registerSchema);
 
-	const [facility, setFacility] = useState({ value: "", label: "" });
-	const [department, setDepartment] = useState({ value: "", label: "" });
-	const [role, setRole] = useState({ value: "", label: "" });
+	const [facility, setFacility] = useState("");
+	const [department, setDepartment] = useState("");
+	const [role, setRole] = useState("");
 
 	const registerUser = (data: any) => {
+		console.log(facility, department, role);
 		// Check for the selects
-		if (!facility.value) return toast.error("Please select your facility", { autoClose: 1500 });
-		if (!department.value) return toast.error("Please select your department", { autoClose: 1500 });
-		if (!role.value) return toast.error("Please select your role", { autoClose: 1500 });
-
+		if (!facility) return toast.error("Please select your facility", { autoClose: 1500 });
+		if (!department) return toast.error("Please select your department", { autoClose: 1500 });
+		if (!role) return toast.error("Please select your role", { autoClose: 1500 });
 		// Continue
 		// Create data
-		const allData = { ...data, facility: facility.value, role: role.value, department: department.value };
+		const allData = { ...data, facility, role, department };
 		console.log(allData);
 	};
 	return (

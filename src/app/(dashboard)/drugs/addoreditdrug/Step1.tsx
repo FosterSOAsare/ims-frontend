@@ -1,9 +1,11 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 
 import { IDrugDetails } from ".";
 
 import CustomSelect from "@/components/Select";
 import Input from "@/components/Input";
+import useSelectedValuesFromHookForm from "@/hooks/useSelectedValuesFromHookForm";
+import { newDrugStep1Schema } from "@/libs/hookform";
 
 const measurementOptions = [
 	{ label: "A-Z", value: "a-z" },
@@ -27,13 +29,18 @@ const strengthOptions = [
 	{ label: "Z-A", value: "z-a" },
 ];
 const Step1 = ({ drugDetails, setValue, step, setStep }: { drugDetails: IDrugDetails; setValue: (name: string, value: string) => void; step: number; setStep: Dispatch<SetStateAction<number>> }) => {
+	const { register, handleSubmit } = useSelectedValuesFromHookForm(newDrugStep1Schema);
+	const [dosage, setDosage] = useState({ value: "", label: "" });
+	const [strength, setStrength] = useState({ value: "", label: "" });
+	const [unitOfMeasurement, setUnitOfMeasurement] = useState({ value: "", label: "" });
+
 	return (
 		<div className="flex items-start flex-col h-full gap-2">
 			<div className="px-4 h-[calc(100%-100px)] overflow-y-auto space-y-2 pb-12 w-full">
 				<h3 className="mb-3 text-lg font-bold">Drug details</h3>
-				<Input name="name" label="Drug Name" placeholder="eg: paracetamol" labelSx="text-sm" inputSx="text-sm" />
-				<Input name="name" label="Drug Brand" placeholder="eg: Panadol" labelSx="text-sm" inputSx="text-sm" />
-				<Input name="name" label="Drug Code/ID" placeholder="eg: Panadol" labelSx="text-sm" inputSx="text-sm" />
+				<Input name="name" register={register} label="Drug Name" placeholder="eg: paracetamol" labelSx="text-sm" inputSx="text-sm" />
+				<Input name="brand" register={register} label="Drug Brand" placeholder="eg: Panadol" labelSx="text-sm" inputSx="text-sm" />
+				<Input name="code" register={register} label="Drug Code/ID" placeholder="eg: Panadol" labelSx="text-sm" inputSx="text-sm" />
 
 				<CustomSelect options={dosageFormOptions} label="Dosage Form" placeholder="Select option" value={drugDetails.dosageForm} handleChange={(value) => setValue("dosageForm", value)} />
 				<CustomSelect options={strengthOptions} label="Strength" placeholder="Select option" value={drugDetails.strength} handleChange={(value) => setValue("strength", value)} />

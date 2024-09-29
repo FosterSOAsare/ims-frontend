@@ -3,7 +3,7 @@ import Select, { components } from "react-select";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 interface ISelect {
-	options: { label: string; value: string }[];
+	options: string[];
 	placeholder?: string;
 	label?: string;
 	value: any;
@@ -50,10 +50,10 @@ const CustomSelect = ({ options, placeholder = "", label, value, handleChange }:
 				</label>
 			)}
 			<Select
-				options={options}
+				options={options.map((option) => ({ label: option, value: option }))}
 				styles={customStyles}
-				value={value}
-				onChange={(selected: any) => handleChange(selected)}
+				value={{ label: value, value: value }}
+				onChange={(selected: any) => handleChange(selected.value)}
 				components={{ DropdownIndicator: CustomDropdownIndicator }}
 				placeholder={placeholder}
 			/>
