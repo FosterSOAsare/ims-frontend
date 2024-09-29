@@ -43,7 +43,13 @@ const initial: IDrugDetails = {
 	quantity: "",
 };
 
-const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId }: { setShowAddOrEditDrug: React.Dispatch<React.SetStateAction<boolean>>; drugId: string }) => {
+interface IAddOrEditDrug {
+	setActiveColumn: React.Dispatch<React.SetStateAction<null | number>>;
+	setShowAddOrEditDrug: React.Dispatch<React.SetStateAction<boolean>>;
+	drugId: string;
+}
+
+const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId, setActiveColumn }: IAddOrEditDrug) => {
 	const [drugDetails, setDrugDetails] = useState<IDrugDetails>(initial);
 	const [step, setStep] = useState<number>(0);
 
@@ -64,7 +70,12 @@ const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId }: { setShowAddOrEditDrug:
 				<div className="flex items-center justify-between w-full px-4 pt-4">
 					<h3 className="text-xl">{drugId ? "Edit a " : "Add new"} drug </h3>
 
-					<button className="rounded-full bg-gray-100 p-[6px] hover:bg-gray-200" onClick={() => setShowAddOrEditDrug(false)}>
+					<button
+						className="rounded-full bg-gray-100 p-[6px] hover:bg-gray-200"
+						onClick={() => {
+							setShowAddOrEditDrug(false);
+							setActiveColumn(null);
+						}}>
 						<Icon icon="ic:round-close" className="text-xl" />
 					</button>
 				</div>

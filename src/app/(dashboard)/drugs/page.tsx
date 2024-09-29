@@ -128,7 +128,7 @@ const page = () => {
 
 			{showDrugDetails && <DrugDetails drugId={drugId} setShowDrugDetails={setShowDrugDetails} />}
 
-			{showAddOrEditDrug && <AddOrEditDrug drugId={drugId} setShowAddOrEditDrug={setShowAddOrEditDrug} />}
+			{showAddOrEditDrug && <AddOrEditDrug drugId={drugId} setShowAddOrEditDrug={setShowAddOrEditDrug} setActiveColumn={setActiveColumn} />}
 		</div>
 	);
 };

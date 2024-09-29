@@ -96,7 +96,14 @@ const page = () => {
 				</div>
 			</div>
 
-			{showAddOrEditDrug && <AddOrEditCategory categoryId={category?.id as string} categoryName={category?.name as string} setShowAddOrEditCategory={setShowAddOrEditCategory} />}
+			{showAddOrEditDrug && (
+				<AddOrEditCategory
+					setSelectedCategory={setSelectedCategory}
+					categoryId={category?.id as string}
+					categoryName={category?.name as string}
+					setShowAddOrEditCategory={setShowAddOrEditCategory}
+				/>
+			)}
 		</div>
 	);
 };
