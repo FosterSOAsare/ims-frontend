@@ -3,6 +3,7 @@ import React, { useState } from "react";
 
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Step1 from "./Step1";
+import Step2 from "./Step2";
 
 export interface IDrugDetails {
 	dosageForm: { label: string; value: string };
@@ -26,13 +27,16 @@ const initial: IDrugDetails = {
 
 const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId }: { setShowAddOrEditDrug: React.Dispatch<React.SetStateAction<boolean>>; drugId: string }) => {
 	const [drugDetails, setDrugDetails] = useState<IDrugDetails>(initial);
-	const [step, setStep] = useState<number>(0);
+	const [step, setStep] = useState<number>(1);
 
 	const setValue = (name: string, value: string | { name: string; value: string }) => {
 		setDrugDetails((prev) => ({ ...prev, [name]: value }));
 	};
 
-	const steps = [<Step1 key={0} setValue={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />];
+	const steps = [
+		<Step1 key={0} setValue={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,
+		<Step2 key={0} setValue={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,
+	];
 	return (
 		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-end px-3 w-full fixed top-0 left-0 z-[5]">
 			<aside className="w-1/4 flex flex-col gap-4 h-[calc(100%-20px)] bg-white rounded-[5px]">

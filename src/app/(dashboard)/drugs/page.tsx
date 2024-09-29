@@ -85,7 +85,7 @@ const page = () => {
 							<Icon icon="lets-icons:filter" className="text-2xl" />
 							Filters
 						</button>
-						<button className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]">
+						<button className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]" onClick={() => setShowAddOrEditDrug(true)}>
 							<Icon icon="solar:jar-of-pills-bold-duotone" className="text-2xl" />
 							Add new drug
 						</button>

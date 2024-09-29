@@ -29,10 +29,11 @@ const strengthOptions = [
 const Step1 = ({ drugDetails, setValue, step, setStep }: { drugDetails: IDrugDetails; setValue: (name: string, value: string) => void; step: number; setStep: Dispatch<SetStateAction<number>> }) => {
 	return (
 		<div className="flex items-start flex-col h-full gap-2">
-			<div className="px-4 h-[calc(100%-100px)] overflow-y-auto pb-12 w-full">
-				<Input name="name" label="Drug Name" placeholder="eg: paracetamol" />
-				<Input name="name" label="Drug Brand" placeholder="eg: Panadol" />
-				<Input name="name" label="Drug Code/ID" placeholder="eg: Panadol" />
+			<div className="px-4 h-[calc(100%-100px)] overflow-y-auto space-y-2 pb-12 w-full">
+				<h3 className="mb-3 text-lg font-bold">Drug details</h3>
+				<Input name="name" label="Drug Name" placeholder="eg: paracetamol" labelSx="text-sm" inputSx="text-sm" />
+				<Input name="name" label="Drug Brand" placeholder="eg: Panadol" labelSx="text-sm" inputSx="text-sm" />
+				<Input name="name" label="Drug Code/ID" placeholder="eg: Panadol" labelSx="text-sm" inputSx="text-sm" />
 
 				<CustomSelect options={dosageFormOptions} label="Dosage Form" placeholder="Select option" value={drugDetails.dosageForm} handleChange={(value) => setValue("dosageForm", value)} />
 				<CustomSelect options={strengthOptions} label="Strength" placeholder="Select option" value={drugDetails.strength} handleChange={(value) => setValue("strength", value)} />
@@ -54,7 +55,7 @@ const Step1 = ({ drugDetails, setValue, step, setStep }: { drugDetails: IDrugDet
 					))}
 				</div>
 				<button className="w-full bg-sec py-2 rounded-[10px] text-white" onClick={() => setStep((prev) => ++prev)}>
-					Save
+					Next
 				</button>
 			</div>
 		</div>

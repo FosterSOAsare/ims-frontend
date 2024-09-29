@@ -5,13 +5,19 @@ interface IINput {
 	name: string;
 	placeholder?: string;
 	type?: string;
+	labelSx?: string;
+	inputSx?: string;
 }
 
-const Input = ({ label, type = "text", name, placeholder = "" }: IINput) => {
+const Input = ({ label, type = "text", name, placeholder = "", labelSx = "", inputSx = "" }: IINput) => {
 	return (
 		<div className="w-full">
-			{label && <label htmlFor={name}>{label}</label>}
-			<input type={type} id={name} className="w-full p-2 border-[1px] focus:outline-0 border-gray-200 rounded-[10px] bg-white" placeholder={placeholder} />
+			{label && (
+				<label htmlFor={name} className={`${labelSx}`}>
+					{label}
+				</label>
+			)}
+			<input type={type} id={name} className={`w-full p-2 border-[1px] focus:outline-0 border-gray-200 rounded-[10px] bg-white ${inputSx}`} placeholder={placeholder} />
 		</div>
 	);
 };
