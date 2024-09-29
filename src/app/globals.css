@@ -125,3 +125,7 @@ body {
 		@apply bg-[red];
 	}
 }
+
+.drugs-table {
+	grid-template-columns: repeat(24, 1fr);
+}

@@ -119,7 +119,7 @@ const layout = ({ children }: { children: ReactNode }) => {
 					</div>
 				</div>
 			</div>
-			<div className="w-4/5 mx-5 h-screen overflow-y-auto">
+			<div className="w-4/5 mx-5 pb-12 h-screen overflow-y-auto">
 				<div className="w-full h-20 bg-bg stickty top-0 z-[5] left-0 flex items-center justify-between">
 					<div className="w-2/5 relative">
 						<span className="absolute left-3 top-0 bottom-0 flex items-center justify-center">
@@ -148,7 +148,7 @@ const layout = ({ children }: { children: ReactNode }) => {
 						</div>
 					</div>
 				</div>
-				<div className="bg-gray-700 border-[1px] border-[#E2EBF3] p-6 mt-2 rounded-[10px] w-full min-h-[80vh]">{children}</div>
+				<div className="bg-gray-700 border-[1px] border-[#E2EBF3] p-4 mt-2 rounded-[10px] w-full min-h-[80vh]">{children}</div>
 			</div>
 		</div>
 	);
