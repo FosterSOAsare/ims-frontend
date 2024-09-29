@@ -21,10 +21,12 @@ const page = () => {
 					<div className="">
 						<h3 className="text-3xl  font-bold">Welcome back</h3>
 						<p className="">Provide this information from your healthcare facility to get started.</p>
-						<div className="mt-4">
-							<Input label="Email" name="email" placeholder="Eg. iammensahmichael@gmail.com" />
+						<div className="mt-4 ">
+							<div className="space-y-4">
+								<Input label="Email" name="email" placeholder="Eg. iammensahmichael@gmail.com" />
 
-							<Input label="Password" type="password" name="password" placeholder="Enter password" />
+								<Input label="Password" type="password" name="password" placeholder="Enter password" />
+							</div>
 							<Button text="Log in" sx="mt-12" />
 							<div className="flex items-center mt-2 justify-center">
 								<Link className="underline" href={"/auth/reset-password"}>

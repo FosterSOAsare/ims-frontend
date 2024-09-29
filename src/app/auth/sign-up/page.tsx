@@ -22,12 +22,12 @@ const page = () => {
 					<div className="h-[calc(100%-120px)] overflow-y-auto pb-12">
 						<h3 className="text-3xl  font-bold">Get Started</h3>
 						<p className="">Provide this information from your healthcare facility to get started.</p>
-						<div className="">
+						<div className="space-y-4">
 							<Input label="Full name" name="name" placeholder="Eg. iamderez" />
 							<Input label="Email" name="email" placeholder="Eg. iammensahmichael@gmail.com" />
 							<Input label="Phone" name="phone" placeholder="0555534689" />
 
-							<div className="w-full mb-4">
+							<div className="w-full">
 								<label htmlFor="">Facility</label>
 								<select name="" id="" className="w-full p-2 border-[1px] rounded-[10px]">
 									<option value="">Select option</option>
@@ -37,7 +37,7 @@ const page = () => {
 								</select>
 							</div>
 
-							<div className="w-full mb-4">
+							<div className="w-full">
 								<label htmlFor="">Department</label>
 								<select name="" id="" className="w-full p-2 border-[1px] rounded-[10px]">
 									<option value="">Select option</option>
@@ -53,7 +53,7 @@ const page = () => {
 									<p className="text-sm">Please ensure that your listed department is the correct one you are currently in</p>
 								</div>
 							</div>
-							<div className="w-full mb-4">
+							<div className="w-full">
 								<label htmlFor="">Role</label>
 								<select name="" id="" className="w-full p-2 border-[1px] rounded-[10px]">
 									<option value="">Select option</option>
