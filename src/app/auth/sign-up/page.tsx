@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 import Input from "@/components/Input";
 import Button from "@/components/Button";
-import useSelectedValuesFromHookForm from "@/hooks/useSelectedvaluesFromHookForm";
+import useSelectedValuesFromHookForm from "@/hooks/useSelectedValuesFromHookForm";
 import { registerSchema } from "@/libs/hookform";
 
 const page = () => {

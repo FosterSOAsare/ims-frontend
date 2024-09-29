@@ -1,6 +1,6 @@
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-import useSelectedValuesFromHookForm from "@/hooks/useSelectedvaluesFromHookForm";
+import useSelectedValuesFromHookForm from "@/hooks/useSelectedValuesFromHookForm";
 import { resetPasswordSchema } from "@/libs/hookform";
 import React from "react";
 

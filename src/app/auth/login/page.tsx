@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 
-import useSelectedValuesFromHookForm from "@/hooks/useSelectedvaluesFromHookForm";
+import useSelectedValuesFromHookForm from "@/hooks/useSelectedValuesFromHookForm";
 import { loginSchema } from "@/libs/hookform";
 
 import Button from "@/components/Button";

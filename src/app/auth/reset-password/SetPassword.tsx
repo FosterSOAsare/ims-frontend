@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 import Input from "@/components/Input";
 import React from "react";
 import { useRouter } from "next/navigation";
-import useSelectedValuesFromHookForm from "@/hooks/useSelectedvaluesFromHookForm";
+import useSelectedValuesFromHookForm from "@/hooks/useSelectedValuesFromHookForm";
 import { setPasswordSchema } from "@/libs/hookform";
 
 const SetPassword = () => {
