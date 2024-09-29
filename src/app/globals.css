@@ -31,7 +31,7 @@
 
 h3,
 label {
-	@apply text-primary  font-medium;
+	@apply text-primary font-medium;
 }
 
 p,
@@ -85,7 +85,7 @@ body {
 	@apply w-full h-screen bg-bg;
 }
 
-body {
+* {
 	@apply font-satoshi;
 }
 .company {
