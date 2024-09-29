@@ -38,7 +38,7 @@ const page = () => {
 						<span className="absolute left-3 top-0 bottom-0 flex items-center justify-center">
 							<Icon icon="iconoir:search" className="text-xl text-gray-400" />
 						</span>
-						<input type="text" className="bg-gray-300 w-full p-2 border-[2px] border-transparent focus:border-gray-200 rounded-[10px] pl-10" placeholder="Search for drug name" />
+						<input type="text" className="bg-gray-300 w-full p-2 border-[2px] border-transparent focus:border-gray-200 rounded-[10px] pl-10" placeholder="Search category" />
 					</div>
 
 					<div className="flex gap-2 items-center justify-between">
