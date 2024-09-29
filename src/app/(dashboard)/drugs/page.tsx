@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import TableColumn from "./TableColumn";
 import Filters from "./Filters";
 import DrugDetails from "./DrugDetails";
+import AddOrEditDrug from "./addoreditdrug";
 
 const drugs = [
 	{ id: "1", name: "Paracetamol", batch: "344533", category: "Laxatives", stock: "10,000bx", supplier: "Barone LLC.", status: "Low", reorderPoint: 20 },
@@ -18,6 +19,7 @@ const page = () => {
 	const [activeColumn, setActiveColumn] = useState<null | number>(null);
 	const [showFilters, setShowFilters] = useState<boolean>(false);
 	const [showDrugDetails, setShowDrugDetails] = useState<boolean>(false);
+	const [showAddOrEditDrug, setShowAddOrEditDrug] = useState<boolean>(true);
 
 	const viewDrug = () => {
 		setShowDrugDetails(true);
@@ -112,6 +114,8 @@ const page = () => {
 			{showFilters && <Filters setShowFilters={setShowFilters} />}
 
 			{showDrugDetails && <DrugDetails drugId={drugId} setShowDrugDetails={setShowDrugDetails} />}
+
+			{showAddOrEditDrug && <AddOrEditDrug drugId={drugId} setShowAddOrEditDrug={setShowAddOrEditDrug} />}
 		</div>
 	);
 };
