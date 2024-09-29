@@ -1,11 +1,19 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import Input from "@/components/Input";
 import Button from "@/components/Button";
+import useSelectedValuesFromHookForm from "@/hooks/useSelectedvaluesFromHookForm";
+import { registerSchema } from "@/libs/hookform";
 
 const page = () => {
+	const { register, handleSubmit } = useSelectedValuesFromHookForm(registerSchema);
+
+	const registerUser = (data: any) => {
+		console.log(data);
+	};
 	return (
 		<div className="w-full h-screen flex items-center justify-between overflow-hidden">
 			<div className="w-2/5 p-4 overflow-y-auto h-full px-12">
@@ -18,14 +26,14 @@ const page = () => {
 					</Link>
 				</div>
 
-				<form className="mt-4 overflow-y-hidden h-[calc(100vh-100px)]">
+				<form className="mt-4 overflow-y-hidden h-[calc(100vh-100px)]" onSubmit={handleSubmit(registerUser)}>
 					<div className="h-[calc(100%-120px)] overflow-y-auto pb-12">
 						<h3 className="text-3xl  font-bold">Get Started</h3>
 						<p className="">Provide this information from your healthcare facility to get started.</p>
 						<div className="space-y-4">
-							<Input label="Full name" name="name" placeholder="Eg. iamderez" />
-							<Input label="Email" name="email" placeholder="Eg. iammensahmichael@gmail.com" />
-							<Input label="Phone" name="phone" placeholder="0555534689" />
+							<Input register={register} label="Full name" name="name" placeholder="Eg. iamderez" />
+							<Input register={register} label="Email" name="email" placeholder="Eg. iammensahmichael@gmail.com" />
+							<Input register={register} label="Phone" name="phone" placeholder="0555534689" />
 
 							<div className="w-full">
 								<label htmlFor="">Facility</label>
@@ -63,12 +71,12 @@ const page = () => {
 								</select>
 							</div>
 
-							<Input label="Password" type="password" name="password" placeholder="Enter password" />
+							<Input label="Password" register={register} type="password" name="password" placeholder="Enter password" />
 						</div>
 					</div>
 
 					<div className="bg-bg py-2 border-t-[1px] h-[120px]">
-						<Button text="Create account" />
+						<Button text="Create account" type="submit" />
 
 						<p className="mt-3 text-sm">
 							By creating an account, you agree to Stealth{" "}
