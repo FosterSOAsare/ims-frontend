@@ -4,31 +4,20 @@ import React, { useState } from "react";
 import CustomSelect from "@/components/Select";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
-const sortOptions = [
-	{ label: "A-Z", value: "a-z" },
-	{ label: "Z-A", value: "z-a" },
-];
+const sortOptions = ["A-Z", "Z-A"];
 
-const addedDateOptions = [
-	{ label: "This week", value: "week" },
-	{ label: "This month", value: "month" },
-	{ label: "Past 3 months", value: "3_months" },
-	{ label: "This year", value: "year" },
-];
-const stockAlertOptions = [
-	{ label: "A-Z", value: "a-z" },
-	{ label: "Z-A", value: "z-a" },
-];
+const addedDateOptions = ["This week", "This month", "Past 3 months", "This year"];
+const stockAlertOptions = ["A-Z", "Z-A"];
 
 interface IFilter {
-	sort: { label: string; value: string };
-	dateAdded: { label: string; value: string };
-	alert: { label: string; value: string };
+	sort: string;
+	dateAdded: string;
+	alert: string;
 	categories: string[];
-	supplier: { label: string; value: string };
+	supplier: string;
 }
 
-const initial: IFilter = { sort: { label: "", value: "" }, dateAdded: { label: "", value: "" }, alert: { label: "", value: "" }, categories: [], supplier: { label: "", value: "" } };
+const initial: IFilter = { sort: "", dateAdded: "", alert: "", categories: [], supplier: "" };
 
 const Filters = ({ setShowFilters }: { setShowFilters: React.Dispatch<React.SetStateAction<boolean>> }) => {
 	const [filters, setFilters] = useState<IFilter>(initial);
@@ -42,9 +31,7 @@ const Filters = ({ setShowFilters }: { setShowFilters: React.Dispatch<React.SetS
 	};
 
 	const filterDrugs = () => {
-		const { categories, sort, dateAdded, supplier, alert } = filters;
-		const data = { categories, sort: sort.value, dateAdded: dateAdded.value, supplier: supplier.value, alert: alert.value };
-		console.log(data);
+		console.log(filters);
 	};
 	return (
 		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-end px-3 w-full fixed top-0 left-0 z-[5]">
