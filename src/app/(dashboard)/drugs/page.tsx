@@ -19,7 +19,7 @@ const page = () => {
 	const [activeColumn, setActiveColumn] = useState<null | number>(null);
 	const [showFilters, setShowFilters] = useState<boolean>(false);
 	const [showDrugDetails, setShowDrugDetails] = useState<boolean>(false);
-	const [showAddOrEditDrug, setShowAddOrEditDrug] = useState<boolean>(true);
+	const [showAddOrEditDrug, setShowAddOrEditDrug] = useState<boolean>(false);
 
 	const viewDrug = () => {
 		setShowDrugDetails(true);

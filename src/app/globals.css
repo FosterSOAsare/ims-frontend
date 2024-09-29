@@ -25,6 +25,10 @@
 	--gray-300: #f4f7fa;
 }
 
+* {
+	@apply border-[#F1F5F9];
+}
+
 h3,
 label {
 	@apply text-primary  font-medium;
