@@ -2,37 +2,31 @@
 import React, { useMemo, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
-import DrugDetails from "../drugs/DrugDetails";
-import AddOrEditDrug from "../drugs/addoreditdrug";
+import AddOrEditCategory from "./AddOrEditCategory";
 
-const drugs = [
-	{ id: "1", name: "Paracetamol", batch: "344533", category: "Laxatives", stock: "10,000bx", supplier: "Barone LLC.", status: "Low", reorderPoint: 20 },
-	{ id: "2", name: "Amoxicillin", batch: "2345677", category: "Corticosteroids", stock: "5,000pcs", supplier: "Barone LLC.", status: "Stocked", reorderPoint: 56 },
-	{ id: "3", name: "Metformin", batch: "4455667", category: "Laxatives", stock: "0", supplier: "Earnest Chemist LTD", status: "Out of stock", reorderPoint: 2 },
-	{ id: "4", name: "Loratadine", batch: "55555777", category: "Laxatives", stock: "0", supplier: "Barone LLC.", status: "Out of stock", reorderPoint: 45 },
-	{ id: "5", name: "Aspirin", batch: "33344566", category: "Laxatives", stock: "30bx", supplier: "Barone LLC.", status: "Low", reorderPoint: 40 },
-];
+interface ICategory {
+	id: string;
+	name: string;
+	dateCreated: string;
+	status: "Deactivated" | "Active";
+	itemsCount: number;
+}
 
-const categories = [
-	{ name: "Laxatives", dateCreated: "Jun 25, 24", status: "Deactivated", itemsCount: 40 },
-	{ name: "Corticosteroids", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 70 },
-	{ name: "Cough Suppressants", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 2 },
-	{ name: "Cytotoxics", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 45 },
-	{ name: "Decongestants", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 0 },
-	{ name: "Diuretics", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 100 },
-	{ name: "Immunosuppressives", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 70 },
+const categories: ICategory[] = [
+	{ id: "1", name: "Laxatives", dateCreated: "Jun 25, 24", status: "Deactivated", itemsCount: 40 },
+	{ id: "2", name: "Corticosteroids", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 70 },
+	{ id: "3", name: "Cough Suppressants", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 2 },
+	{ id: "4", name: "Cytotoxics", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 45 },
+	{ id: "5", name: "Decongestants", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 0 },
+	{ id: "6", name: "Diuretics", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 100 },
+	{ id: "7", name: "Immunosuppressives", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 70 },
 ];
 
 const page = () => {
-	const [activeColumn, setActiveColumn] = useState<null | number>(null);
-	const [showDrugDetails, setShowDrugDetails] = useState<boolean>(false);
-	const [showAddOrEditDrug, setShowAddOrEditDrug] = useState<boolean>(false);
+	const [selectedCategory, setSelectedCategory] = useState<null | number>(null);
+	const [showAddOrEditDrug, setShowAddOrEditCategory] = useState<boolean>(false);
 
-	const viewDrug = () => {
-		setShowDrugDetails(true);
-	};
-
-	const drugId = useMemo(() => (activeColumn !== null ? (drugs[activeColumn]?.id as string) : ""), [activeColumn]);
+	const category = useMemo(() => (selectedCategory !== null ? categories[selectedCategory] : ({} as ICategory)), [selectedCategory]);
 	return (
 		<div className="relative">
 			<h3 className="text-2xl mb-3 font-bold">Categories</h3>
@@ -48,8 +42,10 @@ const page = () => {
 					</div>
 
 					<div className="flex gap-2 items-center justify-between">
-						<button className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]" onClick={() => setShowAddOrEditDrug(true)}>
-							<Icon icon="solar:jar-of-pills-bold-duotone" className="text-2xl" />
+						<button
+							className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
+							onClick={() => setShowAddOrEditCategory(true)}>
+							<Icon icon="solar:pills-bold-duotone" className="text-2xl" />
 							Add new category
 						</button>
 					</div>
@@ -86,7 +82,12 @@ const page = () => {
 								<button className="p-2 rounded-full hover:bg-gray-200">
 									<Icon icon="ph:trash" />
 								</button>
-								<button className="p-2 rounded-full hover:bg-red-500 hover:text-white">
+								<button
+									className="p-2 rounded-full hover:bg-red-500 hover:text-white"
+									onClick={() => {
+										setSelectedCategory(index);
+										setShowAddOrEditCategory(true);
+									}}>
 									<Icon icon="lucide:edit-2" />
 								</button>
 							</div>
@@ -95,9 +96,7 @@ const page = () => {
 				</div>
 			</div>
 
-			{showDrugDetails && <DrugDetails drugId={drugId} setShowDrugDetails={setShowDrugDetails} />}
-
-			{showAddOrEditDrug && <AddOrEditDrug drugId={drugId} setShowAddOrEditDrug={setShowAddOrEditDrug} />}
+			{showAddOrEditDrug && <AddOrEditCategory categoryId={category?.id as string} categoryName={category?.name as string} setShowAddOrEditCategory={setShowAddOrEditCategory} />}
 		</div>
 	);
 };
