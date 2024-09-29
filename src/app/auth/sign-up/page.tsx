@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
@@ -7,12 +7,44 @@ import Input from "@/components/Input";
 import Button from "@/components/Button";
 import useSelectedValuesFromHookForm from "@/hooks/useSelectedValuesFromHookForm";
 import { registerSchema } from "@/libs/hookform";
+import CustomSelect from "@/components/Select";
+import { toast } from "react-toastify";
+
+const facilitiesOptions = [
+	{ value: "1", label: "Facility 1" },
+	{ value: "2", label: "Facility 2" },
+	{ value: "3", label: "Facility 3" },
+];
+
+const departmentOptions = [
+	{ value: "1", label: "Department 1" },
+	{ value: "2", label: "Department 2" },
+	{ value: "3", label: "Department 3" },
+];
+
+const roleOptions = [
+	{ value: "1", label: "Role 1" },
+	{ value: "2", label: "Role 2" },
+	{ value: "3", label: "Role 3" },
+];
 
 const page = () => {
 	const { register, handleSubmit } = useSelectedValuesFromHookForm(registerSchema);
 
+	const [facility, setFacility] = useState({ value: "", label: "" });
+	const [department, setDepartment] = useState({ value: "", label: "" });
+	const [role, setRole] = useState({ value: "", label: "" });
+
 	const registerUser = (data: any) => {
-		console.log(data);
+		// Check for the selects
+		if (!facility.value) return toast.error("Please select your facility", { autoClose: 1500 });
+		if (!department.value) return toast.error("Please select your department", { autoClose: 1500 });
+		if (!role.value) return toast.error("Please select your role", { autoClose: 1500 });
+
+		// Continue
+		// Create data
+		const allData = { ...data, facility: facility.value, role: role.value, department: department.value };
+		console.log(allData);
 	};
 	return (
 		<div className="w-full h-screen flex items-center justify-between overflow-hidden">
@@ -35,24 +67,9 @@ const page = () => {
 							<Input register={register} label="Email" name="email" placeholder="Eg. iammensahmichael@gmail.com" />
 							<Input register={register} label="Phone" name="phone" placeholder="0555534689" />
 
+							<CustomSelect label="Facility" options={facilitiesOptions} value={facility} handleChange={(selected) => setFacility(selected)} />
 							<div className="w-full">
-								<label htmlFor="">Facility</label>
-								<select name="" id="" className="w-full p-2 border-[1px] rounded-[10px]">
-									<option value="">Select option</option>
-									<option value="">Facility 1</option>
-									<option value="">Facility 2</option>
-									<option value="">Facility 3</option>
-								</select>
-							</div>
-
-							<div className="w-full">
-								<label htmlFor="">Department</label>
-								<select name="" id="" className="w-full p-2 border-[1px] rounded-[10px]">
-									<option value="">Select option</option>
-									<option value="">Department 1</option>
-									<option value="">Department 2</option>
-									<option value="">Department 3</option>
-								</select>
+								<CustomSelect label="Department" options={departmentOptions} value={department} handleChange={(selected) => setDepartment(selected)} />
 
 								<div className="bg-warning-50 mt-2 rounded-[5px] p-2 flex items-center justify-start gap-2">
 									<span className="w-8 h-8 ">
@@ -61,16 +78,8 @@ const page = () => {
 									<p className="text-sm">Please ensure that your listed department is the correct one you are currently in</p>
 								</div>
 							</div>
-							<div className="w-full">
-								<label htmlFor="">Role</label>
-								<select name="" id="" className="w-full p-2 border-[1px] rounded-[10px]">
-									<option value="">Select option</option>
-									<option value="">Role 1</option>
-									<option value="">Role 2</option>
-									<option value="">Role 3</option>
-								</select>
-							</div>
 
+							<CustomSelect label="Role" options={roleOptions} value={role} handleChange={(selected) => setRole(selected)} />
 							<Input label="Password" register={register} type="password" name="password" placeholder="Enter password" />
 						</div>
 					</div>
