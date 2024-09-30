@@ -1,14 +1,8 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
+import { IStock } from "./page";
 
-interface ITableColumn {
-	date: string;
-	reason: string;
-	status: "Submitted" | "Adjusted" | "Rejected";
-	type: "Reduction";
-	createdBy: "Michael Mensah";
-	currentStock: number;
-	actualStock: number;
+interface ITableColumn extends IStock {
 	isLast: boolean;
 	selectedStock: number | null;
 	setSelectedStock: React.Dispatch<React.SetStateAction<number | null>>;
@@ -36,7 +30,9 @@ const TableColumn = ({
 		<div className="bg-white drugs-table gap-4 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
 			<div className="col-span-3 text-primary py-3 text-left">{date}</div>
 			<div className="col-span-2 text-primary py-3 text-left">{reason}</div>
-			<div className="col-span-2"></div>
+			<div className="col-span-2 text-gray-500 px-2">
+				<Icon icon="solar:documents-linear" />
+			</div>
 			<div className="col-span-3 text-sm text-gray-500 py-3 text-left">
 				<div
 					className={`${

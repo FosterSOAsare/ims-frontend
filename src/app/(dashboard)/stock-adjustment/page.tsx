@@ -10,8 +10,8 @@ export interface IStock {
 	date: string;
 	reason: string;
 	status: "Submitted" | "Adjusted" | "Rejected";
-	type: "Reduction";
-	createdBy: "Michael Mensah";
+	type: string;
+	createdBy: string;
 	currentStock: number;
 	actualStock: number;
 }
