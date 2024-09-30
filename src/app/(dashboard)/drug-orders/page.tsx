@@ -36,7 +36,7 @@ const page = () => {
 	const [selectedDrugOrder, setSelectedDrugOrder] = useState<null | number>(null);
 	const [showAddOrEditOrder, setShowAddOrEditDrugOrder] = useState<boolean>(false);
 	const [filters, setFilters] = useState<IFilter>(initialFilter);
-	const [showFilters, setShowFilters] = useState<boolean>(true);
+	const [showFilters, setShowFilters] = useState<boolean>(false);
 
 	const order = useMemo(() => {
 		return selectedDrugOrder !== null ? drugOrders[selectedDrugOrder] : ({} as IDrugOrder);

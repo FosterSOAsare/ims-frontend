@@ -2,68 +2,64 @@
 import React, { useMemo, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
-interface ICategory {
-	id: string;
-	name: string;
-	dateCreated: string;
-	status: "Deactivated" | "Active";
-	itemsCount: number;
-}
-
-const categories: ICategory[] = [
-	{ id: "1", name: "Laxatives", dateCreated: "Jun 25, 24", status: "Deactivated", itemsCount: 40 },
-	{ id: "2", name: "Corticosteroids", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 70 },
-	{ id: "3", name: "Cough Suppressants", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 2 },
-	{ id: "4", name: "Cytotoxics", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 45 },
-	{ id: "5", name: "Decongestants", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 0 },
-	{ id: "6", name: "Diuretics", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 100 },
-	{ id: "7", name: "Immunosuppressives", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 70 },
-];
+import suppliers, { ISuppliers } from "@/data/suppliers";
 
 const page = () => {
 	const [selectedSupplier, setSelectedSupplier] = useState<null | number>(null);
+	const [showFilters, setShowFilters] = useState<boolean>(false);
 	const [showAddOrEditSupplier, setShowAddOrEditSupplier] = useState<boolean>(false);
 
-	const supplier = useMemo(() => (selectedSupplier !== null ? categories[selectedSupplier] : ({} as ICategory)), [selectedSupplier]);
+	const supplier = useMemo(() => (selectedSupplier !== null ? suppliers[selectedSupplier] : ({} as ISuppliers)), [selectedSupplier]);
 	return (
 		<div className="relative">
-			<h3 className="text-2xl mb-3 font-bold">Categories</h3>
+			<h3 className="text-2xl mb-3 font-bold">Suppliers</h3>
 
-			{/* Categories Data  */}
+			{/* Suppliers Data  */}
 			<div className="w-full bg-white  mt-6 rounded-[10px] p-4 ">
 				<div className="w-full flex items-center justify-between">
-					<div className="w-2/5 relative">
-						<span className="absolute left-3 top-0 bottom-0 flex items-center justify-center">
-							<Icon icon="iconoir:search" className="text-xl text-gray-400" />
-						</span>
-						<input type="text" className="bg-gray-300 w-full p-2 border-[2px] border-transparent focus:border-gray-200 rounded-[10px] pl-10" placeholder="Search category" />
+					<div className="w-1/2 flex items-center justify-between gap-4 relative">
+						<div className="flex-1">
+							<span className="absolute left-3 top-0 bottom-0 flex items-center justify-center">
+								<Icon icon="iconoir:search" className="text-xl text-gray-400" />
+							</span>
+							<input type="text" className="bg-gray-300 w-full p-2 border-[2px] border-transparent focus:border-gray-200 rounded-[10px] pl-10" placeholder="Search supplier" />
+						</div>
+						<button className="px-3 flex items-center justify-center gap-2 py-3 hover:bg-gray-200 rounded-[12px] border-[1px]" onClick={() => setShowFilters(true)}>
+							<Icon icon="lets-icons:filter" className="text-2xl" />
+							Filters
+						</button>
 					</div>
 
 					<div className="flex gap-2 items-center justify-between">
 						<button
 							className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
 							onClick={() => setShowAddOrEditSupplier(true)}>
-							<Icon icon="solar:pills-bold-duotone" className="text-2xl" />
-							Add new category
+							<Icon icon="solar:buildings-3-bold-duotone" className="text-2xl" />
+							Add new supplier
 						</button>
 					</div>
 				</div>
 
 				{/* Table title */}
 				<div className="bg-gray-700 drugs-table gap-4 mt-6 items-center rounded-[10px] border-[1px] grid grid-cols-12 px-3">
-					<div className="col-span-6 text-gray-500 uppercase text-sm py-3">Category</div>
-					<div className="col-span-4 text-gray-500 uppercase text-sm py-3">Date Created</div>
+					<div className="col-span-6 text-gray-500 uppercase text-sm py-3">Supplier</div>
+					<div className="col-span-4 text-gray-500 uppercase text-sm py-3">Date Added</div>
+					<div className="col-span-3 text-gray-500 uppercase text-sm py-3">Contact</div>
 					<div className="col-span-4 text-gray-500 uppercase text-sm py-3">Status</div>
-					<div className="col-span-6 text-gray-500 uppercase text-sm py-3">Items In Category</div>
-					{/* <div className="col-span-4 text-gray-500 uppercase text-xs py-3"></div> */}
+					<div className="col-span-4 text-gray-500 uppercase text-sm py-3">Total Drugs</div>
+					<div className="col-span-3 text-gray-500 uppercase text-xs py-3"></div>
 				</div>
 
 				<div>
 					{/* Last two on the table will have isLast so the drop down shows at the top instead */}
-					{categories.map(({ name, dateCreated, status, itemsCount }, index) => (
+					{suppliers.map(({ id, name, dateAdded, contact, status, totalDrugs }, index) => (
 						<div className="bg-white drugs-table gap-2 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
-							<div className="col-span-6 text-primary py-3 text-left">{name}</div>
-							<div className="col-span-4 text-primary py-3 text-left">{dateCreated}</div>
+							<div className="col-span-6 text-primary py-3 text-left flex gap-2 items-center">
+								<Icon icon="solar:buildings-3-line-duotone" />
+								{name}
+							</div>
+							<div className="col-span-4 text-primary py-3 text-left">{dateAdded}</div>
+							<div className="col-span-3 text-primary py-3 flex items-center gap-1 text-left">{contact}</div>
 							<div className="col-span-4 text-sm text-gray-500 py-3 text-left">
 								<div
 									className={`${
@@ -73,13 +69,17 @@ const page = () => {
 									{status}
 								</div>
 							</div>
-							<div className="col-span-6 text-primary py-3 flex items-center gap-1 text-left">{itemsCount}</div>
+							<div className="col-span-4 text-primary py-3 flex items-center gap-1 text-left">{totalDrugs}</div>
 
 							{/* Actions */}
-							<div className="col-span-4 text-primary py-3 gap-2 text-left flex items-center justify-end">
+							<div className="col-span-3 text-primary py-3 gap-1 text-left flex items-center justify-end">
+								<button className="p-2 rounded-full hover:bg-gray-200">
+									<Icon icon="mdi:eye-outline" />
+								</button>
 								<button className="p-2 rounded-full hover:bg-gray-200">
 									<Icon icon="ph:trash" />
 								</button>
+
 								<button
 									className="p-2 rounded-full hover:bg-red-500 hover:text-white"
 									onClick={() => {
