@@ -7,10 +7,7 @@ import { IFilter } from "./page";
 import CustomSelect from "@/components/Select";
 
 export const initialFilter: IFilter = { status: "" };
-const reasonOptions = ["Theft", "Damaged", "Ignorance"];
 const statusOptions = ["Adjusted", "Submitted", "Cancelled"];
-const adjustmentTypeOptions = ["Reduction", "Increment"];
-
 interface IFiltersComponent {
 	setShowFilters: React.Dispatch<React.SetStateAction<boolean>>;
 	filters: IFilter;

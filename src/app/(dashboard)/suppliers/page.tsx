@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 import suppliers, { ISuppliers } from "@/data/suppliers";
 import Filters, { initialFilter } from "./Filters";
+import SupplierDetails from "./SupplierDetails";
 
 export interface IFilter {
 	status: string;
@@ -14,6 +15,7 @@ const page = () => {
 	const [showFilters, setShowFilters] = useState<boolean>(false);
 	const [filters, setFilters] = useState<IFilter>(initialFilter);
 	const [showAddOrEditSupplier, setShowAddOrEditSupplier] = useState<boolean>(false);
+	const [showSupplierDetails, setShowSupplierDetails] = useState<boolean>(true);
 
 	const supplier = useMemo(() => (selectedSupplier !== null ? suppliers[selectedSupplier] : ({} as ISuppliers)), [selectedSupplier]);
 	return (
@@ -79,7 +81,12 @@ const page = () => {
 
 							{/* Actions */}
 							<div className="col-span-3 text-primary py-3 gap-1 text-left flex items-center justify-end">
-								<button className="p-2 rounded-full hover:bg-gray-200">
+								<button
+									className="p-2 rounded-full hover:bg-gray-200"
+									onClick={() => {
+										setSelectedSupplier(index);
+										setShowSupplierDetails(true);
+									}}>
 									<Icon icon="mdi:eye-outline" />
 								</button>
 								<button className="p-2 rounded-full hover:bg-gray-200">
@@ -101,6 +108,7 @@ const page = () => {
 			</div>
 
 			{showFilters && <Filters setShowFilters={setShowFilters} filters={filters} setFilters={setFilters} />}
+			{showSupplierDetails && <SupplierDetails supplierId={supplier.id} setShowSupplierDetails={setShowSupplierDetails} setShowAddOrEditSupplier={setShowAddOrEditSupplier} />}
 		</div>
 	);
 };
