@@ -10,13 +10,28 @@ interface ITableColumn {
 	currentStock: number;
 	actualStock: number;
 	isLast: boolean;
-	activeColumn: number | null;
-	setActiveColumn: React.Dispatch<React.SetStateAction<number | null>>;
+	selectedStock: number | null;
+	setSelectedStock: React.Dispatch<React.SetStateAction<number | null>>;
 	index: number;
-	viewDrug?: () => void;
+	viewStockAdjustment?: () => void;
+	setShowAddOrEditStock: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const TableColumn = ({ date, reason, type, createdBy, currentStock, status, actualStock, isLast, activeColumn, setActiveColumn, index, viewDrug }: ITableColumn) => {
+const TableColumn = ({
+	date,
+	reason,
+	type,
+	createdBy,
+	currentStock,
+	status,
+	actualStock,
+	isLast,
+	selectedStock,
+	setSelectedStock,
+	index,
+	viewStockAdjustment,
+	setShowAddOrEditStock,
+}: ITableColumn) => {
 	return (
 		<div className="bg-white drugs-table gap-4 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
 			<div className="col-span-3 text-primary py-3 text-left">{date}</div>
@@ -41,20 +56,27 @@ const TableColumn = ({ date, reason, type, createdBy, currentStock, status, actu
 			<div className="col-span-3">{actualStock}</div>
 			<div className="col-span-1 text-primary py-3 text-left flex items-center justify-between">
 				<div className="relative">
-					<button className="rounded-full hover:bg-slate-200 p-1" onClick={() => setActiveColumn((prev: number | null) => (prev === index ? null : index))}>
+					<button className="rounded-full hover:bg-slate-200 p-1" onClick={() => setSelectedStock((prev: number | null) => (prev === index ? null : index))}>
 						<Icon icon="bi:three-dots" />
 					</button>
-					{activeColumn == index && (
+					{selectedStock == index && (
 						<div className={`absolute ${isLast ? "bottom-[100%]" : "top-[100%]"}  right-0 h-auto w-[130px] bg-white selectedStock z-[3] rounded-[5px] card`}>
-							<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2" onClick={() => viewDrug && viewDrug()}>
+							<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2" onClick={() => viewStockAdjustment && viewStockAdjustment()}>
 								<Icon icon="hugeicons:view" className="text-lg" />
 								View details
 							</button>
 
-							<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
-								<Icon icon="hugeicons:edit-01" className="text-lg" />
-								Edit
-							</button>
+							{status === "Submitted" && (
+								<button
+									className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
+									onClick={() => {
+										setShowAddOrEditStock(true);
+										setSelectedStock(index);
+									}}>
+									<Icon icon="hugeicons:edit-01" className="text-lg" />
+									Edit
+								</button>
+							)}
 						</div>
 					)}
 				</div>

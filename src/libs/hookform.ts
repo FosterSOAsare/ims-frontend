@@ -35,3 +35,9 @@ export const newDrugStep2Schema = z.object({
   costPrice: z.string().min(1, { message: "Please enter the cost price of the drug" }).regex(/^\d+(\.\d+)?$/, { message: 'Please enter a valid cost price. Numbers only' }),
   sellingPrice: z.string().min(1, { message: "Please enter the selling price of the drug" }).regex(/^\d+(\.\d+)?$/, { message: 'Please enter a valid selling price. Numbers only' })
 });
+
+export const stockAdjustmentSchema = z.object({
+  currentStock: z.string().min(1, { message: "Please enter the current stock of the drug" }).regex(/^\d+(\.\d+)?$/, { message: 'Please enter a valid cost price. Numbers only' }),
+  actualStock: z.string().min(1, { message: "Please enter the actialstock of the drug" }).regex(/^\d+(\.\d+)?$/, { message: 'Please enter a valid quantity. Numbers only' }),
+  notes: z.string().min(1, { message: "Please add a note to the adjustment" }),
+});

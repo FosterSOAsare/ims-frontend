@@ -3,8 +3,10 @@ import React, { useMemo, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import TableColumn from "./TableColumn";
+import AddOrEditStock from "./AddOrEditStock";
 
-export interface IStockAdjustments {
+export interface IStock {
+	id: string;
 	date: string;
 	reason: string;
 	status: "Submitted" | "Adjusted" | "Rejected";
@@ -14,21 +16,24 @@ export interface IStockAdjustments {
 	actualStock: number;
 }
 
-const stockAdjustments: IStockAdjustments[] = [
-	{ date: "04 Sep, 24", reason: "Theft", status: "Submitted", type: "Reduction", createdBy: "Michael Mensah", currentStock: 100, actualStock: 50 },
-	{ date: "04 Sep, 24", reason: "Theft", status: "Adjusted", type: "Reduction", createdBy: "Michael Mensah", currentStock: 100, actualStock: 50 },
-	{ date: "04 Sep, 24", reason: "Theft", status: "Adjusted", type: "Reduction", createdBy: "Michael Mensah", currentStock: 100, actualStock: 50 },
-	{ date: "04 Sep, 24", reason: "Damaged", status: "Adjusted", type: "Reduction", createdBy: "Michael Mensah", currentStock: 100, actualStock: 50 },
-	{ date: "04 Sep, 24", reason: "Theft", status: "Adjusted", type: "Reduction", createdBy: "Michael Mensah", currentStock: 100, actualStock: 50 },
-	{ date: "04 Sep, 24", reason: "Theft", status: "Adjusted", type: "Reduction", createdBy: "Michael Mensah", currentStock: 100, actualStock: 50 },
-	{ date: "04 Sep, 24", reason: "Theft", status: "Adjusted", type: "Reduction", createdBy: "Michael Mensah", currentStock: 100, actualStock: 50 },
+const stockAdjustments: IStock[] = [
+	{ id: "1", date: "04 Sep, 24", reason: "Theft", status: "Adjusted", type: "Reduction", createdBy: "Michael Mensah", currentStock: 100, actualStock: 50 },
+	{ id: "2", date: "04 Sep, 24", reason: "Theft", status: "Adjusted", type: "Reduction", createdBy: "Michael Mensah", currentStock: 100, actualStock: 50 },
+	{ id: "3", date: "04 Sep, 24", reason: "Damaged", status: "Adjusted", type: "Reduction", createdBy: "Michael Mensah", currentStock: 100, actualStock: 50 },
+	{ id: "4", date: "04 Sep, 24", reason: "Theft", status: "Adjusted", type: "Reduction", createdBy: "Michael Mensah", currentStock: 100, actualStock: 50 },
+	{ id: "5", date: "04 Sep, 24", reason: "Theft", status: "Adjusted", type: "Reduction", createdBy: "Michael Mensah", currentStock: 100, actualStock: 50 },
+	{ id: "6", date: "04 Sep, 24", reason: "Theft", status: "Submitted", type: "Reduction", createdBy: "Michael Mensah", currentStock: 100, actualStock: 50 },
+	{ id: "7", date: "04 Sep, 24", reason: "Theft", status: "Adjusted", type: "Reduction", createdBy: "Michael Mensah", currentStock: 100, actualStock: 50 },
 ];
 
 const page = () => {
-	const [activeColumn, setActiveColumn] = useState<null | number>(null);
-	const [showAddOrEditDrug, setShowAddOrEditCategory] = useState<boolean>(false);
+	const [selectedStock, setSelectedStock] = useState<null | number>(null);
+	const [showAddOrEditStock, setShowAddOrEditStock] = useState<boolean>(false);
 
-	// const category = useMemo(() => (selectedCategory !== null ? categories[selectedCategory] : ({} as ICategory)), [selectedCategory]);
+	const stock = useMemo(() => {
+		return selectedStock ? stockAdjustments[selectedStock] : ({} as IStock);
+	}, [selectedStock]);
+
 	return (
 		<div className="relative">
 			<h3 className="text-2xl mb-3 font-bold">Stock Adjustment</h3>
@@ -54,9 +59,7 @@ const page = () => {
 							<Icon icon="solar:document-line-duotone" className="text-2xl text-black" />
 							Generate report
 						</button>
-						<button
-							className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
-							onClick={() => setShowAddOrEditCategory(true)}>
+						<button className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]" onClick={() => setShowAddOrEditStock(true)}>
 							<Icon icon="ph:plus-bold" className="text-2xl" />
 							New
 						</button>
@@ -79,10 +82,19 @@ const page = () => {
 				<div>
 					{/* Last two on the table will have isLast so the drop down shows at the top instead */}
 					{stockAdjustments.map((stock, index) => (
-						<TableColumn {...stock} isLast={index >= stockAdjustments.length - 2} index={index} activeColumn={activeColumn} setActiveColumn={setActiveColumn} />
+						<TableColumn
+							setShowAddOrEditStock={setShowAddOrEditStock}
+							{...stock}
+							isLast={index >= stockAdjustments.length - 2}
+							index={index}
+							selectedStock={selectedStock}
+							setSelectedStock={setSelectedStock}
+						/>
 					))}
 				</div>
 			</div>
+
+			{showAddOrEditStock && <AddOrEditStock stockId={stock?.id as string} setSelectedStock={setSelectedStock} setShowAddOrEditStock={setShowAddOrEditStock} />}
 		</div>
 	);
 };
