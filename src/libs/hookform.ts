@@ -49,3 +49,9 @@ export const drugOrderSchema = z.object({
   deliveryDate: z.string().min(1, { message: "Please add an expected delivery date to the order" }),
   address: z.string().min(1, { message: "Please add your address for delivery" }),
 });
+
+export const newSupplierStep1Schema = z.object({
+  name: z.string().min(1, { message: "Please enter the name of the supplier" }).min(3, { message: 'Name of supplier should not be less than 3 characters' }),
+  tradeName: z.string().min(1, { message: "Please enter the brand of the supplier" }).min(3, { message: 'Trade name should not be less than 3 characters' }),
+  minOrderQuantity: z.string().min(1, { message: "Please enter the min order quantity" }).regex(/^\d+(\.\d+)?$/, { message: 'Please enter a valid quantity. Numbers only' }),
+});

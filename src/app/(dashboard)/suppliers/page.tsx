@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import suppliers, { ISuppliers } from "@/data/suppliers";
 import Filters, { initialFilter } from "./Filters";
 import SupplierDetails from "./SupplierDetails";
+import AddOrEditSupplier from "./addoreditsupplier";
 
 export interface IFilter {
 	status: string;
@@ -14,8 +15,8 @@ const page = () => {
 	const [selectedSupplier, setSelectedSupplier] = useState<null | number>(null);
 	const [showFilters, setShowFilters] = useState<boolean>(false);
 	const [filters, setFilters] = useState<IFilter>(initialFilter);
-	const [showAddOrEditSupplier, setShowAddOrEditSupplier] = useState<boolean>(false);
-	const [showSupplierDetails, setShowSupplierDetails] = useState<boolean>(true);
+	const [showAddOrEditSupplier, setShowAddOrEditSupplier] = useState<boolean>(true);
+	const [showSupplierDetails, setShowSupplierDetails] = useState<boolean>(false);
 
 	const supplier = useMemo(() => (selectedSupplier !== null ? suppliers[selectedSupplier] : ({} as ISuppliers)), [selectedSupplier]);
 	return (
@@ -109,6 +110,7 @@ const page = () => {
 
 			{showFilters && <Filters setShowFilters={setShowFilters} filters={filters} setFilters={setFilters} />}
 			{showSupplierDetails && <SupplierDetails supplierId={supplier.id} setShowSupplierDetails={setShowSupplierDetails} setShowAddOrEditSupplier={setShowAddOrEditSupplier} />}
+			{showAddOrEditSupplier && <AddOrEditSupplier setShowAddOrEditSupplier={setShowAddOrEditSupplier} supplierId={supplier.id as string} setSelectedSupplier={setSelectedSupplier} />}
 		</div>
 	);
 };
