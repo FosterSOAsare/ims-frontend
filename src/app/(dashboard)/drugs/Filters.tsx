@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 import CustomSelect from "@/components/Select";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { IFilter, initialFilter } from "./page";
+import { IFilter } from "./page";
 
 const sortOptions = ["A-Z", "Z-A"];
-
+export const initialFilter: IFilter = { sort: "", dateAdded: "", alert: "", categories: [], supplier: "" };
 const addedDateOptions = ["This week", "This month", "Past 3 months", "This year"];
 const stockAlertOptions = ["A-Z", "Z-A"];
 

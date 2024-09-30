@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import drugs from "@/data/drugs";
 
 import TableColumn from "./TableColumn";
-import Filters from "./Filters";
+import Filters, { initialFilter } from "./Filters";
 import DrugDetails from "./DrugDetails";
 import AddOrEditDrug from "./addoreditdrug";
 
@@ -16,7 +16,6 @@ export interface IFilter {
 	categories: string[];
 	supplier: string;
 }
-export const initialFilter: IFilter = { sort: "", dateAdded: "", alert: "", categories: [], supplier: "" };
 
 const page = () => {
 	const [activeColumn, setActiveColumn] = useState<null | number>(null);

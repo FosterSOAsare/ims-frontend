@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 import TableColumn from "./TableColumn";
 import AddOrEditDrugOrder from "./AddOrEditDrugOrders";
-import Filters from "./Filters";
+import Filters, { initialFilter } from "./Filters";
 
 export interface IDrugOrder {
 	id: string;
@@ -31,7 +31,6 @@ export interface IFilter {
 	drugName: string;
 	status: string;
 }
-export const initialFilter: IFilter = { supplier: "", drugName: "", status: "" };
 
 const page = () => {
 	const [selectedDrugOrder, setSelectedDrugOrder] = useState<null | number>(null);

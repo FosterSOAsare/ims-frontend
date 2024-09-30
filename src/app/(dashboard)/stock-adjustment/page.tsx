@@ -4,7 +4,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 import TableColumn from "./TableColumn";
 import AddOrEditStock from "./AddOrEditStock";
-import Filters from "./Filters";
+import Filters, { initialFilter } from "./Filters";
 
 export interface IStock {
 	id: string;
@@ -32,7 +32,6 @@ export interface IFilter {
 	reason: string;
 	status: string;
 }
-export const initialFilter: IFilter = { adjustmentType: "", reason: "", status: "" };
 
 const page = () => {
 	const [selectedStock, setSelectedStock] = useState<null | number>(null);

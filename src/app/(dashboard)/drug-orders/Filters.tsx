@@ -3,10 +3,12 @@ import React from "react";
 
 import CustomSelect from "@/components/Select";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { IFilter, initialFilter } from "./page";
+import { IFilter } from "./page";
 
 import drugs from "@/data/drugs";
 import suppliers from "@/data/suppliers";
+
+export const initialFilter: IFilter = { supplier: "", drugName: "", status: "" };
 
 const drugOptions = drugs.map((drug) => drug.name);
 

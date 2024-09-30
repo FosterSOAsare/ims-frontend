@@ -1,12 +1,13 @@
 "use client";
 import React from "react";
+import { Icon } from "@iconify/react/dist/iconify.js";
+
+import { IFilter } from "./page";
 
 import CustomSelect from "@/components/Select";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { IFilter, initialFilter } from "./page";
 
+export const initialFilter: IFilter = { adjustmentType: "", reason: "", status: "" };
 const reasonOptions = ["Theft", "Damaged", "Ignorance"];
-
 const statusOptions = ["Adjusted", "Submitted", "Cancelled"];
 const adjustmentTypeOptions = ["Reduction", "Increment"];
 
