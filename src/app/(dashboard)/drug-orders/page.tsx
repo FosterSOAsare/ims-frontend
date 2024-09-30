@@ -3,7 +3,7 @@ import React, { useMemo, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import TableColumn from "./TableColumn";
-import AddOrEditStock from "./AddOrEditDrugOrders";
+import AddOrEditDrugOrder from "./AddOrEditDrugOrders";
 
 export interface IDrugOrder {
 	id: string;
@@ -27,10 +27,10 @@ const drugOrders: IDrugOrder[] = [
 
 const page = () => {
 	const [selectedDrugOrder, setSelectedDrugOrder] = useState<null | number>(null);
-	const [showAddOrEditStock, setShowAddOrEditStock] = useState<boolean>(false);
+	const [showAddOrEditOrder, setShowAddOrEditDrugOrder] = useState<boolean>(false);
 
-	const stock = useMemo(() => {
-		return selectedDrugOrder ? drugOrders[selectedDrugOrder] : ({} as IDrugOrder);
+	const order = useMemo(() => {
+		return selectedDrugOrder !== null ? drugOrders[selectedDrugOrder] : ({} as IDrugOrder);
 	}, [selectedDrugOrder]);
 
 	return (
@@ -58,7 +58,9 @@ const page = () => {
 							<Icon icon="solar:document-line-duotone" className="text-2xl text-black" />
 							Generate report
 						</button>
-						<button className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]" onClick={() => setShowAddOrEditStock(true)}>
+						<button
+							className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
+							onClick={() => setShowAddOrEditDrugOrder(true)}>
 							<Icon icon="ph:plus-bold" className="text-2xl" />
 							New
 						</button>
@@ -79,10 +81,10 @@ const page = () => {
 
 				<div>
 					{/* Last two on the table will have isLast so the drop down shows at the top instead */}
-					{drugOrders.map((stock, index) => (
+					{drugOrders.map((drugOrder, index) => (
 						<TableColumn
-							setShowAddOrEditStock={setShowAddOrEditStock}
-							{...stock}
+							setShowAddOrEditDrugOrder={setShowAddOrEditDrugOrder}
+							{...drugOrder}
 							isLast={index >= drugOrders.length - 2}
 							index={index}
 							selectedDrugOrder={selectedDrugOrder}
@@ -92,7 +94,7 @@ const page = () => {
 				</div>
 			</div>
 
-			{/* {showAddOrEditStock && <AddOrEditStock stockId={stock?.id as string} setSelectedDrugOrder={setSelectedDrugOrder} setShowAddOrEditStock={setShowAddOrEditStock} />} */}
+			{showAddOrEditOrder && <AddOrEditDrugOrder orderId={order?.id as string} setSelectedDrugOrder={setSelectedDrugOrder} setShowAddOrEditDrugOrder={setShowAddOrEditDrugOrder} />}
 		</div>
 	);
 };

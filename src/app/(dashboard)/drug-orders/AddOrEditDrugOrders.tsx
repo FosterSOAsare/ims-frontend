@@ -4,60 +4,63 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { toast, ToastContainer } from "react-toastify";
 
 import useSelectedValuesFromHookForm from "@/hooks/useSelectedValuesFromHookForm";
-import { newDrugStep2Schema, stockAdjustmentSchema } from "@/libs/hookform";
+import { drugOrderSchema } from "@/libs/hookform";
 import drugs from "@/data/drugs";
 
 import Input from "@/components/Input";
 import CustomSelect from "@/components/Select";
 
-export interface IStockDetails {
+export interface IOrderDetails {
 	drug: string;
-	currentStock: string;
-	actualStock: string;
-	adjustmentType: string;
-	dateAdded: string;
-	reason: string;
-	notes: string;
+	quantity: string;
+	supplier: string;
+	// orderNo: string;
+	deliveryDate: string;
+	paymentMethod: string;
+	deliveryMethod: string;
+	address: string;
 }
 
-const initial: IStockDetails = {
+const initial: IOrderDetails = {
 	drug: "",
-	currentStock: "",
-	actualStock: "",
-	adjustmentType: "",
-	dateAdded: "",
-	reason: "",
-	notes: "",
+	quantity: "",
+	supplier: "",
+	// orderNo: "",
+	deliveryDate: "",
+	paymentMethod: "",
+	deliveryMethod: "",
+	address: "",
 };
 
 // const drugs = []
 
 interface IAddOrEditStock {
-	setSelectedStock: React.Dispatch<React.SetStateAction<null | number>>;
-	setShowAddOrEditStock: React.Dispatch<React.SetStateAction<boolean>>;
-	stockId: string;
+	setSelectedDrugOrder: React.Dispatch<React.SetStateAction<null | number>>;
+	setShowAddOrEditDrugOrder: React.Dispatch<React.SetStateAction<boolean>>;
+	orderId: string;
 }
 
-const AddOrEditStock = ({ setShowAddOrEditStock, stockId, setSelectedStock }: IAddOrEditStock) => {
-	const [stockDetails, setStockDetails] = useState<IStockDetails>(initial);
-	const [step, setStep] = useState<number>(0);
+const AddOrEditDrugOrder = ({ setShowAddOrEditDrugOrder, orderId, setSelectedDrugOrder }: IAddOrEditStock) => {
+	const [orderDetails, setOrderDetails] = useState<IOrderDetails>(initial);
 
-	// Fetch drug if it is an edit request
+	// Fetch order if it is an edit request
 
 	// Select fields will change the details directly while inputs will use a hookform for vaidation
-	const { register, handleSubmit } = useSelectedValuesFromHookForm(stockAdjustmentSchema);
+	const { register, handleSubmit } = useSelectedValuesFromHookForm(drugOrderSchema);
 	const setValue = (name: string, value: string) => {
-		setStockDetails((prev) => ({ ...prev, [name]: value }));
+		setOrderDetails((prev) => ({ ...prev, [name]: value }));
 	};
 
-	const addStock = (data: any) => {
-		const { notes, actualStock, currentStock } = data;
-		const { drug, adjustmentType, reason } = stockDetails;
-		if (!drug) return toast.error("Please select the drug you want to adjust", { autoClose: 1500 });
-		if (!adjustmentType) return toast.error("Please select an adjustment type", { autoClose: 1500 });
-		if (!reason) return toast.error("Please select a reason for the stock adjustment", { autoClose: 1500 });
+	const addOrder = (data: any) => {
+		const { quantity, deliveryDate, address } = data;
 
-		const allData = { notes, actualStock, adjustmentType, drug, reason, currentStock };
+		const { drug, supplier, paymentMethod, deliveryMethod } = orderDetails;
+		if (!drug) return toast.error("Please select the drug you want to order", { autoClose: 1500 });
+		if (!paymentMethod) return toast.error("Please select a payment method", { autoClose: 1500 });
+		if (!supplier) return toast.error("Please select the supplier of this drug", { autoClose: 1500 });
+		if (!deliveryMethod) return toast.error("Please select a delivery method for your order", { autoClose: 1500 });
+
+		const allData = { quantity, deliveryDate, address, drug, paymentMethod, deliveryMethod, supplier };
 		console.log(allData);
 	};
 
@@ -65,46 +68,54 @@ const AddOrEditStock = ({ setShowAddOrEditStock, stockId, setSelectedStock }: IA
 		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-end px-3 w-full fixed top-0 left-0 z-[5]">
 			<div className="w-[28%] flex flex-col gap-4 h-[calc(100%-20px)]  bg-white rounded-[5px]">
 				<div className="flex items-center justify-between w-full px-4 pt-4">
-					<h3 className="text-xl">{stockId ? "Edit a " : "Add new"} Adjustment </h3>
+					<h3 className="text-lg font-bold">{orderId ? "Edit a " : "Add new"} order request </h3>
 					<button
 						type="button"
 						className="rounded-full bg-gray-100 p-[6px] hover:bg-gray-200"
 						onClick={() => {
-							setShowAddOrEditStock(false);
-							setSelectedStock(null);
+							setShowAddOrEditDrugOrder(false);
+							setSelectedDrugOrder(null);
 						}}>
 						<Icon icon="ic:round-close" className="text-xl" />
 					</button>
 				</div>
 
-				<form className="h-[calc(100%-60px)]" onSubmit={handleSubmit(addStock)}>
+				<form className="h-[calc(100%-60px)]" onSubmit={handleSubmit(addOrder)}>
 					<div className="flex items-start flex-col h-full gap-2" onSubmit={() => ""}>
 						<div className="px-4 overflow-y-auto space-y-3 pb-12 w-full">
 							<CustomSelect
 								options={drugs.map((drug) => drug.name)}
-								value={stockDetails.drug}
+								value={orderDetails.drug}
 								label="Drug"
 								placeholder="Select option"
 								handleChange={(value) => setValue("drug", value)}
 							/>
-							<Input name="currentStock" register={register} label="Current Stock" placeholder="0" labelSx="text-sm" inputSx="text-sm" />
-							<Input name="actualStock" register={register} label="actual Stock" placeholder="0" labelSx="text-sm" inputSx="text-sm" />
-
+							<Input name="quantity" register={register} label="Quantity" placeholder="0" labelSx="text-sm" inputSx="text-sm" />
 							<CustomSelect
-								options={["Reduction", "Increment"]}
-								label="Adjustment Type"
+								options={["Ernest Chemist", "Ampem Darko Herbal", "taabea"]}
+								label="Supplier"
 								placeholder="Select option"
-								value={stockDetails.adjustmentType}
-								handleChange={(value) => setValue("adjustmentType", value)}
+								value={orderDetails.supplier}
+								handleChange={(value) => setValue("supplier", value)}
 							/>
-							<CustomSelect options={["Theft", "Damaged"]} label="Reason" placeholder="Select option" value={stockDetails.reason} handleChange={(value) => setValue("reason", value)} />
+							{/* <Input name="orderNo" register={register} label="Order #" placeholder="4456677383" labelSx="text-sm" inputSx="text-sm" /> */}
+							<Input name="deliveryDate" register={register} type="date" label="Expected Delivery Date" placeholder="" labelSx="text-sm" inputSx="text-sm" />
+							<CustomSelect
+								options={["Cash", "Mobile Money", "Bank Transfer", "In Kind"]}
+								label="Payment Method"
+								placeholder="Select option"
+								value={orderDetails.paymentMethod}
+								handleChange={(value) => setValue("paymentMethod", value)}
+							/>
+							<CustomSelect
+								options={["Pick Up", "Door to door Delivery", "Delivery Service"]}
+								label="Delivery Method"
+								placeholder="Select option"
+								value={orderDetails.deliveryMethod}
+								handleChange={(value) => setValue("deliveryMethod", value)}
+							/>
 
-							<div className="w-full">
-								<label htmlFor="notes" className="text-sm">
-									Notes
-								</label>
-								<textarea {...register("notes")} className="w-full h-24 resize-none border-[1px] focus:outline-0 p-2 rounded-[10px] border-gray-200"></textarea>
-							</div>
+							<Input name="address" register={register} label="Delivery Address" placeholder="" labelSx="text-sm" inputSx="text-sm" />
 						</div>
 
 						<div className="w-full h-auto white px-4 py-4 mt-auto gap-3">
@@ -120,4 +131,4 @@ const AddOrEditStock = ({ setShowAddOrEditStock, stockId, setSelectedStock }: IA
 	);
 };
 
-export default AddOrEditStock;
+export default AddOrEditDrugOrder;

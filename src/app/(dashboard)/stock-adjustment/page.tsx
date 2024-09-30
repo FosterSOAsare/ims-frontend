@@ -31,7 +31,7 @@ const page = () => {
 	const [showAddOrEditStock, setShowAddOrEditStock] = useState<boolean>(false);
 
 	const stock = useMemo(() => {
-		return selectedStock ? stockAdjustments[selectedStock] : ({} as IStock);
+		return selectedStock !== null ? stockAdjustments[selectedStock] : ({} as IStock);
 	}, [selectedStock]);
 
 	return (

@@ -8,7 +8,7 @@ interface ITableColumn extends IDrugOrder {
 	setSelectedDrugOrder: React.Dispatch<React.SetStateAction<number | null>>;
 	index: number;
 	viewStockAdjustment?: () => void;
-	setShowAddOrEditStock: React.Dispatch<React.SetStateAction<boolean>>;
+	setShowAddOrEditDrugOrder: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const TableColumn = ({
@@ -25,7 +25,7 @@ const TableColumn = ({
 	setSelectedDrugOrder,
 	index,
 	viewStockAdjustment,
-	setShowAddOrEditStock,
+	setShowAddOrEditDrugOrder,
 }: ITableColumn) => {
 	return (
 		<div className="bg-white drugs-table gap-4 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
@@ -75,7 +75,7 @@ const TableColumn = ({
 									<button
 										className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
 										onClick={() => {
-											setShowAddOrEditStock(true);
+											setShowAddOrEditDrugOrder(true);
 											setSelectedDrugOrder(index);
 										}}>
 										<Icon icon="hugeicons:file-edit" className="text-lg" />
