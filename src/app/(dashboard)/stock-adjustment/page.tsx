@@ -38,7 +38,7 @@ const page = () => {
 	const [selectedStock, setSelectedStock] = useState<null | number>(null);
 	const [showAddOrEditStock, setShowAddOrEditStock] = useState<boolean>(false);
 	const [filters, setFilters] = useState<IFilter>(initialFilter);
-	const [showFilters, setShowFilters] = useState<boolean>(true);
+	const [showFilters, setShowFilters] = useState<boolean>(false);
 
 	const stock = useMemo(() => {
 		return selectedStock !== null ? stockAdjustments[selectedStock] : ({} as IStock);

@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 import TableColumn from "./TableColumn";
 import AddOrEditDrugOrder from "./AddOrEditDrugOrders";
+import Filters from "./Filters";
 
 export interface IDrugOrder {
 	id: string;
@@ -25,9 +26,18 @@ const drugOrders: IDrugOrder[] = [
 	{ id: "7", name: "Paracetamol (Tyrenol)", orderNumber: "23345788", supplier: "Earnest Chemist", date: "Jun 28, 24", quantity: "20,000pcs", delivery: "Aug 07, 24", status: "Received" },
 ];
 
+export interface IFilter {
+	supplier: string;
+	drugName: string;
+	status: string;
+}
+export const initialFilter: IFilter = { supplier: "", drugName: "", status: "" };
+
 const page = () => {
 	const [selectedDrugOrder, setSelectedDrugOrder] = useState<null | number>(null);
 	const [showAddOrEditOrder, setShowAddOrEditDrugOrder] = useState<boolean>(false);
+	const [filters, setFilters] = useState<IFilter>(initialFilter);
+	const [showFilters, setShowFilters] = useState<boolean>(true);
 
 	const order = useMemo(() => {
 		return selectedDrugOrder !== null ? drugOrders[selectedDrugOrder] : ({} as IDrugOrder);
@@ -95,6 +105,7 @@ const page = () => {
 			</div>
 
 			{showAddOrEditOrder && <AddOrEditDrugOrder orderId={order?.id as string} setSelectedDrugOrder={setSelectedDrugOrder} setShowAddOrEditDrugOrder={setShowAddOrEditDrugOrder} />}
+			{showFilters && <Filters setFilters={setFilters} setShowFilters={setShowFilters} filters={filters} />}
 		</div>
 	);
 };
