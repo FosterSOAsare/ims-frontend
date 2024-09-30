@@ -3,10 +3,16 @@ import React, { useMemo, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import suppliers, { ISuppliers } from "@/data/suppliers";
+import Filters, { initialFilter } from "./Filters";
+
+export interface IFilter {
+	status: string;
+}
 
 const page = () => {
 	const [selectedSupplier, setSelectedSupplier] = useState<null | number>(null);
 	const [showFilters, setShowFilters] = useState<boolean>(false);
+	const [filters, setFilters] = useState<IFilter>(initialFilter);
 	const [showAddOrEditSupplier, setShowAddOrEditSupplier] = useState<boolean>(false);
 
 	const supplier = useMemo(() => (selectedSupplier !== null ? suppliers[selectedSupplier] : ({} as ISuppliers)), [selectedSupplier]);
@@ -93,6 +99,8 @@ const page = () => {
 					))}
 				</div>
 			</div>
+
+			{showFilters && <Filters setShowFilters={setShowFilters} filters={filters} setFilters={setFilters} />}
 		</div>
 	);
 };
