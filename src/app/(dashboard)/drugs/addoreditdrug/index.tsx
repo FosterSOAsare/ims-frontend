@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Step1 from "./Step1";
@@ -54,6 +54,12 @@ const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId, setActiveColumn }: IAddOr
 	const [step, setStep] = useState<number>(0);
 
 	// Fetch drug if it is an edit request
+
+	useEffect(() => {
+		if (drugId) {
+			// fetch drug and used the data
+		}
+	}, [drugId]);
 
 	const setValue = (data: any) => {
 		setDrugDetails((prev) => ({ ...prev, ...data }));

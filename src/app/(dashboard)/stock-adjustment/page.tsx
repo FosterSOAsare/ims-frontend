@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 import TableColumn from "./TableColumn";
 import AddOrEditStock from "./AddOrEditStock";
+import Filters from "./Filters";
 
 export interface IStock {
 	id: string;
@@ -26,9 +27,18 @@ const stockAdjustments: IStock[] = [
 	{ id: "7", date: "04 Sep, 24", reason: "Theft", status: "Adjusted", type: "Reduction", createdBy: "Michael Mensah", currentStock: 100, actualStock: 50 },
 ];
 
+export interface IFilter {
+	adjustmentType: string;
+	reason: string;
+	status: string;
+}
+export const initialFilter: IFilter = { adjustmentType: "", reason: "", status: "" };
+
 const page = () => {
 	const [selectedStock, setSelectedStock] = useState<null | number>(null);
 	const [showAddOrEditStock, setShowAddOrEditStock] = useState<boolean>(false);
+	const [filters, setFilters] = useState<IFilter>(initialFilter);
+	const [showFilters, setShowFilters] = useState<boolean>(true);
 
 	const stock = useMemo(() => {
 		return selectedStock !== null ? stockAdjustments[selectedStock] : ({} as IStock);
@@ -48,7 +58,7 @@ const page = () => {
 							</span>
 							<input type="text" className="bg-gray-300 w-full p-2 border-[2px] border-transparent focus:border-gray-200 rounded-[10px] pl-10" placeholder="Search category" />
 						</div>
-						<button className="px-3 flex items-center justify-center gap-2 py-3 hover:bg-gray-200 rounded-[12px] border-[1px]">
+						<button className="px-3 flex items-center justify-center gap-2 py-3 hover:bg-gray-200 rounded-[12px] border-[1px]" onClick={() => setShowFilters(true)}>
 							<Icon icon="lets-icons:filter" className="text-2xl" />
 							Filters
 						</button>
@@ -95,6 +105,7 @@ const page = () => {
 			</div>
 
 			{showAddOrEditStock && <AddOrEditStock stockId={stock?.id as string} setSelectedStock={setSelectedStock} setShowAddOrEditStock={setShowAddOrEditStock} />}
+			{showFilters && <Filters filters={filters} setShowFilters={setShowFilters} setFilters={setFilters} />}
 		</div>
 	);
 };
