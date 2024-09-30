@@ -118,9 +118,12 @@ const AddOrEditDrugOrder = ({ setShowAddOrEditDrugOrder, orderId, setSelectedDru
 							<Input name="address" register={register} label="Delivery Address" placeholder="" labelSx="text-sm" inputSx="text-sm" />
 						</div>
 
-						<div className="w-full h-auto white px-4 py-4 mt-auto gap-3">
-							<button className="w-full bg-sec py-2 rounded-[10px] hover:opacity-70 text-white" type="submit">
-								Submit
+						<div className="w-full flex items-center justify-between gap-4 h-auto white px-4 py-4 mt-auto">
+							<button className="w-2/5 bg-gray-100 py-2 rounded-[10px] hover:bg-gray-200" type="button">
+								Save as draft
+							</button>
+							<button className="w-3/5 bg-sec py-2 rounded-[10px] hover:opacity-70 text-white" type="submit">
+								Save and send mail
 							</button>
 						</div>
 					</div>
