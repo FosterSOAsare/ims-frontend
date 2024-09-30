@@ -9,11 +9,21 @@ import Filters from "./Filters";
 import DrugDetails from "./DrugDetails";
 import AddOrEditDrug from "./addoreditdrug";
 
+export interface IFilter {
+	sort: string;
+	dateAdded: string;
+	alert: string;
+	categories: string[];
+	supplier: string;
+}
+export const initialFilter: IFilter = { sort: "", dateAdded: "", alert: "", categories: [], supplier: "" };
+
 const page = () => {
 	const [activeColumn, setActiveColumn] = useState<null | number>(null);
 	const [showFilters, setShowFilters] = useState<boolean>(false);
 	const [showDrugDetails, setShowDrugDetails] = useState<boolean>(false);
 	const [showAddOrEditDrug, setShowAddOrEditDrug] = useState<boolean>(false);
+	const [filters, setFilters] = useState<IFilter>(initialFilter);
 
 	const viewDrug = () => {
 		setShowDrugDetails(true);
@@ -118,7 +128,7 @@ const page = () => {
 				</div>
 			</div>
 
-			{showFilters && <Filters setShowFilters={setShowFilters} />}
+			{showFilters && <Filters setShowFilters={setShowFilters} filters={filters} setFilters={setFilters} />}
 
 			{showDrugDetails && <DrugDetails drugId={drugId} setShowDrugDetails={setShowDrugDetails} />}
 

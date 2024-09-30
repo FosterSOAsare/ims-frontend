@@ -23,8 +23,8 @@ export const registerSchema = z.object({
 
 export const newDrugStep1Schema = z.object({
   name: z.string().min(1, { message: "Please enter the name of the drug" }).min(3, { message: 'Name should not be less than 3 characters' }),
-  brand: z.string().min(1, { message: "Please enter the brand of the drug" }).min(3, { message: 'Brand name should not be less than 3 characters' }),
-  code: z.string().min(1, { message: "Please enter the code of the drug" }).min(3, { message: 'Code should not be less than 3 characters' }),
+  brandName: z.string().min(1, { message: "Please enter the brand of the drug" }).min(3, { message: 'Brand name should not be less than 3 characters' }),
+  drugCode: z.string().min(1, { message: "Please enter the code of the drug" }).min(3, { message: 'Code should not be less than 3 characters' }),
 });
 
 export const newDrugStep2Schema = z.object({

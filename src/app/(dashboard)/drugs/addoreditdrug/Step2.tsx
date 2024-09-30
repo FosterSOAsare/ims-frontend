@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Image from "next/image";
 
 import { IDrugDetails } from ".";
@@ -15,7 +15,12 @@ const storageOptions = ["This week", "This month", "Past 3 months", "This year"]
 
 const Step2 = ({ drugDetails, setValues, step, setStep }: { drugDetails: IDrugDetails; setValues: (data: any) => void; step: number; setStep: Dispatch<SetStateAction<number>> }) => {
 	const [storage, setStorage] = useState(drugDetails.storage);
-	const { register, handleSubmit } = useSelectedValuesFromHookForm(newDrugStep2Schema);
+	const { register, handleSubmit, reset } = useSelectedValuesFromHookForm(newDrugStep2Schema);
+
+	useEffect(() => {
+		const { batchNo, reorderLevel, expDate, quantity, costPrice, sellingPrice } = drugDetails;
+		reset({ batchNo, reorderLevel, expDate, quantity, costPrice, sellingPrice });
+	}, []);
 
 	const step2Data = (data: any) => {
 		const { batchNo, reorderLevel, expDate, quantity, costPrice, sellingPrice } = data;

@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 import { IDrugDetails } from ".";
 
@@ -14,21 +14,26 @@ const supplierOptions = ["This week", "This month", "Past 3 months", "This year"
 const strengthOptions = ["A-Z", "Z-A"];
 
 const Step1 = ({ drugDetails, setValues, step, setStep }: { drugDetails: IDrugDetails; setValues: (data: any) => void; step: number; setStep: Dispatch<SetStateAction<number>> }) => {
-	const { register, handleSubmit } = useSelectedValuesFromHookForm(newDrugStep1Schema);
+	const { register, handleSubmit, reset } = useSelectedValuesFromHookForm(newDrugStep1Schema);
 	const [dosage, setDosage] = useState(drugDetails.dosageForm as string);
 	const [strength, setStrength] = useState(drugDetails.strength as string);
 	const [unitOfMeasurement, setUnitOfMeasurement] = useState(drugDetails.unitOfMeasurement as string);
 	const [manufacturer, setManufacturer] = useState(drugDetails.manufacturer as string);
 
-	// Set Details
+	// Set Details for step
+
+	useEffect(() => {
+		const { name, brandName, drugCode } = drugDetails;
+		reset({ name, brandName, drugCode });
+	}, []);
 
 	const step1Data = (data: any) => {
-		const { name, brand, code } = data;
+		const { name, brandName, drugCode } = data;
 		if (!dosage) return toast.error("Please select a dosage form", { autoClose: 1500 });
 		if (!strength) return toast.error("Please select strength of drug", { autoClose: 1500 });
 		if (!unitOfMeasurement) return toast.error("Please select a unit of measurement of drug", { autoClose: 1500 });
 		if (!manufacturer) return toast.error("Please select the manufacturer of the drug", { autoClose: 1500 });
-		const allData = { dosageForm: dosage, strength, unitOfMeasurement, name, manufacturer, brandName: brand, drugCode: code };
+		const allData = { dosageForm: dosage, strength, unitOfMeasurement, name, manufacturer, brandName, drugCode };
 
 		setValues(allData);
 		setStep((prev) => ++prev);
@@ -39,8 +44,8 @@ const Step1 = ({ drugDetails, setValues, step, setStep }: { drugDetails: IDrugDe
 			<div className="px-4 h-[calc(100%-100px)] overflow-y-auto space-y-2 pb-12 w-full">
 				<h3 className="mb-3 text-lg font-bold">Drug details</h3>
 				<Input name="name" register={register} label="Drug Name" placeholder="eg: paracetamol" labelSx="text-sm" inputSx="text-sm" />
-				<Input name="brand" register={register} label="Drug Brand" placeholder="eg: Panadol" labelSx="text-sm" inputSx="text-sm" />
-				<Input name="code" register={register} label="Drug Code/ID" placeholder="eg: Panadol" labelSx="text-sm" inputSx="text-sm" />
+				<Input name="brandName" register={register} label="Drug Brand" placeholder="eg: Panadol" labelSx="text-sm" inputSx="text-sm" />
+				<Input name="drugCode" register={register} label="Drug Code/ID" placeholder="eg: Panadol" labelSx="text-sm" inputSx="text-sm" />
 
 				<CustomSelect options={dosageFormOptions} value={dosage} label="Dosage Form" placeholder="Select option" handleChange={(value) => setDosage(value)} />
 				<CustomSelect options={strengthOptions} value={strength} label="Strength" placeholder="Select option" handleChange={(value) => setStrength(value)} />

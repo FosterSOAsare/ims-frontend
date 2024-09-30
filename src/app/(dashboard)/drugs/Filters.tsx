@@ -1,27 +1,22 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 
 import CustomSelect from "@/components/Select";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { IFilter, initialFilter } from "./page";
 
 const sortOptions = ["A-Z", "Z-A"];
 
 const addedDateOptions = ["This week", "This month", "Past 3 months", "This year"];
 const stockAlertOptions = ["A-Z", "Z-A"];
 
-interface IFilter {
-	sort: string;
-	dateAdded: string;
-	alert: string;
-	categories: string[];
-	supplier: string;
+interface IFiltersComponent {
+	setShowFilters: React.Dispatch<React.SetStateAction<boolean>>;
+	filters: IFilter;
+	setFilters: React.Dispatch<React.SetStateAction<IFilter>>;
 }
 
-const initial: IFilter = { sort: "", dateAdded: "", alert: "", categories: [], supplier: "" };
-
-const Filters = ({ setShowFilters }: { setShowFilters: React.Dispatch<React.SetStateAction<boolean>> }) => {
-	const [filters, setFilters] = useState<IFilter>(initial);
-
+const Filters = ({ setShowFilters, filters, setFilters }: IFiltersComponent) => {
 	const toggleCategory = (category: string) => {
 		setFilters((prev) => ({ ...prev, categories: prev.categories.includes(category) ? prev.categories.filter((cat) => cat !== category) : [...prev.categories, category] }));
 	};
@@ -64,7 +59,7 @@ const Filters = ({ setShowFilters }: { setShowFilters: React.Dispatch<React.SetS
 				<CustomSelect options={stockAlertOptions} label="Supplier" placeholder="Select option" value={filters.supplier} handleChange={(value) => setValue("supplier", value)} />
 
 				<div className="w-full  mt-auto flex gap-3 justify-between items-stretch">
-					<button className="w-[30%] text-sm rounded-[10px]  py-2 bg-gray-100 hover:bg-gray-200" onClick={() => setFilters(initial)}>
+					<button className="w-[30%] text-sm rounded-[10px]  py-2 bg-gray-100 hover:bg-gray-200" onClick={() => setFilters(initialFilter)}>
 						Clear Filters
 					</button>
 					<button className="w-[65%] bg-sec py-2 rounded-[10px] text-white" onClick={filterDrugs}>
