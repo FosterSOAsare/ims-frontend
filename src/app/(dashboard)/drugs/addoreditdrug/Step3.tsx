@@ -2,11 +2,12 @@ import React, { Dispatch, SetStateAction, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import { IDrugDetails } from ".";
+import suppliers from "@/data/suppliers";
 
 import CustomSelect from "@/components/Select";
 import { toast } from "react-toastify";
 
-const dosageFormOptions = ["This week", "This month", "Past 3 months", "This year"];
+const supplierOptions = suppliers.map((supplier) => supplier.name + " " + supplier.id);
 
 const Step3 = ({ drugDetails, setValues, step, setStep }: { drugDetails: IDrugDetails; setValues: (data: any) => void; step: number; setStep: Dispatch<SetStateAction<number>> }) => {
 	const [supplier, setStupplier] = useState(drugDetails.supplier);
@@ -23,15 +24,15 @@ const Step3 = ({ drugDetails, setValues, step, setStep }: { drugDetails: IDrugDe
 			<div className="px-4 h-[calc(100%-100px)] overflow-y-auto pb-12 w-full">
 				<h3 className="mb-3 text-lg font-bold">Supplier details</h3>
 
-				<CustomSelect options={dosageFormOptions} label="Supplier" placeholder="Select option" value={supplier} handleChange={(value) => setStupplier(value)} />
+				<CustomSelect options={supplierOptions} label="Supplier" placeholder="Select option" value={supplier} handleChange={(value) => setStupplier(value)} />
 
-				{!drugDetails.supplier && (
+				{!supplier && (
 					<div className="w-full bg-gray-100 h-[60vh] flex items-center flex-col justify-center mt-6 rounded-[10px]">
 						<p className="text-sm">Select supplier to see their informations</p>
 					</div>
 				)}
 
-				{drugDetails.supplier && (
+				{supplier && (
 					<div className="w-full bg-gray-100 h-auto p-4 mt-6 rounded-[10px]">
 						<h3 className="text-2xl font-bold flex items-center gap-2">
 							<Icon icon="solar:buildings-3-line-duotone" className="text-xl text-gray-400" />
