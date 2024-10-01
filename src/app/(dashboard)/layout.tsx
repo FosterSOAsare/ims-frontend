@@ -1,5 +1,5 @@
 "use client";
-import React, { ReactNode, Fragment, useState } from "react";
+import React, { ReactNode, Fragment, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -13,6 +13,12 @@ const layout = ({ children }: { children: ReactNode }) => {
 	const [openedTab, setOpenedTab] = useState<null | number>(null);
 	const [mode, setMode] = useState("light");
 	const [showAccountPopup, setShowAccountPopup] = useState(false);
+
+	// Open tab based on pathname
+	useEffect(() => {
+		if (["/drugs", "/categories", "/stock-adjustment"].includes(pathname)) setOpenedTab(1);
+		if (["/drug-orders", "/suppliers"].includes(pathname)) setOpenedTab(2);
+	}, [pathname]);
 
 	return (
 		<div className="flex bg-white items-stretch  justify-between h-screen overflow-hidden">
@@ -90,6 +96,7 @@ const layout = ({ children }: { children: ReactNode }) => {
 							<nav className="mt-2">
 								{helpTabs.map((tab, index) => (
 									<Link
+										key={index}
 										className={`flex px-2 py-2 mb-1 font-medium rounded-[10px] items-center justify-start gap-2 ${
 											(tab.link !== "/" && pathname.startsWith(tab.link)) || tab.link === pathname ? "text-primary bg-blue-100" : "text-gray-500 hover:bg-gray-100"
 										} `}

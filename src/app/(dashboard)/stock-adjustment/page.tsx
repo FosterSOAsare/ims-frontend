@@ -98,6 +98,7 @@ const page = () => {
 							index={index}
 							selectedStock={selectedStock}
 							setSelectedStock={setSelectedStock}
+							key={index}
 						/>
 					))}
 				</div>
