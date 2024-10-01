@@ -2,11 +2,10 @@
 import React, { useEffect, useState } from "react";
 
 import { Icon } from "@iconify/react/dist/iconify.js";
-// import Step1 from "./Step1";
-// import Step2 from "./Step2";
-// import Step3 from "./Step3";
 import { ToastContainer } from "react-toastify";
+
 import Step1 from "./Step1";
+import Step2 from "./Step2";
 
 export interface ISupplierDetails {
 	name: string;
@@ -38,13 +37,13 @@ interface IAddOrEditDrug {
 
 const AddOrEditDrug = ({ setShowAddOrEditSupplier, supplierId, setSelectedSupplier }: IAddOrEditDrug) => {
 	const [supplierDetails, setSupplierDetails] = useState<ISupplierDetails>(initial);
-	const [step, setStep] = useState<number>(0);
+	const [step, setStep] = useState<number>(1);
 
-	// Fetch drug if it is an edit request
+	// Fetch supplier if it is an edit request
 
 	useEffect(() => {
 		if (supplierId) {
-			// fetch drug and used the data
+			// fetch supplier and used the data
 		}
 	}, [supplierId]);
 
@@ -54,7 +53,7 @@ const AddOrEditDrug = ({ setShowAddOrEditSupplier, supplierId, setSelectedSuppli
 
 	const steps = [
 		<Step1 key={0} setValues={setValue} supplierDetails={supplierDetails} step={step} setStep={setStep} />,
-		// <Step2 key={0} setValues={setValue} supplierDetails={supplierDetails} step={step} setStep={setStep} />,
+		<Step2 key={0} setValues={setValue} supplierDetails={supplierDetails} step={step} setStep={setStep} />,
 		// <Step3 key={0} setValues={setValue} supplierDetails={supplierDetails} step={step} setStep={setStep} />,
 	];
 	return (

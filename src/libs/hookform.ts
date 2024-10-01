@@ -55,3 +55,13 @@ export const newSupplierStep1Schema = z.object({
   tradeName: z.string().min(1, { message: "Please enter the brand of the supplier" }).min(3, { message: 'Trade name should not be less than 3 characters' }),
   minOrderQuantity: z.string().min(1, { message: "Please enter the min order quantity" }).regex(/^\d+(\.\d+)?$/, { message: 'Please enter a valid quantity. Numbers only' }),
 });
+
+export const newSupplierStep2Schema = z.object({
+  name: z.string().min(1, { message: "Please enter the name of the supplier's primary contact" }).min(3, { message: 'Name of supplier\'s contact should not be less than 3 characters' }),
+  jobTitle: z.string().min(1, { message: "Please enter the job title of the primary contact of the supplier" }).min(3, { message: 'Job title should not be less than 3 characters' }),
+  department: z.string().min(1, { message: "Please enter the department of primary contact" }),
+  phone: z.string().min(1, { message: "Please enter contact's phone number" }).regex(/^[0-9]{9,12}$/, { message: 'Please enter a valid phone number' }),
+  email: z.string().min(1, { message: "Please enter contact's email address" }).email({ message: "Please enter a valid email address" }),
+  physicalAddress: z.string().min(1, { message: "Please enter the physical address of the contact" }).min(3, { message: 'Physical address should not be less than 3 characters' }),
+  mailingAddress: z.string().min(1, { message: "Please enter the mailing address of the contact" }).min(3, { message: 'Mailing address should not be less than 3 characters' }),
+});

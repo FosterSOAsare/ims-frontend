@@ -15,7 +15,7 @@ const Step1 = ({ supplierDetails, setValues, step, setStep }: { supplierDetails:
 	useEffect(() => {
 		const { name, tradeName, minOrderQuantity } = supplierDetails;
 		reset({ name, tradeName, minOrderQuantity });
-	}, [supplierDetails]);
+	}, []);
 
 	const step1Data = (data: any) => {
 		const { name, tradeName, minOrderQuantity } = data;
