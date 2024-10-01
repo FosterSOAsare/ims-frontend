@@ -65,3 +65,10 @@ export const newSupplierStep2Schema = z.object({
   physicalAddress: z.string().min(1, { message: "Please enter the physical address of the contact" }).min(3, { message: 'Physical address should not be less than 3 characters' }),
   mailingAddress: z.string().min(1, { message: "Please enter the mailing address of the contact" }).min(3, { message: 'Mailing address should not be less than 3 characters' }),
 });
+
+export const newSupplierStep3Schema = z.object({
+  bankName: z.string(),
+  phone: z.string(),
+  accountNumber: z.string(),
+  minOrderQuantity: z.string().min(1, { message: "Please enter the min order quantity" }).regex(/^\d+(\.\d+)?$/, { message: 'Please enter a valid quantity. Numbers only' }),
+});

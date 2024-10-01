@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 
 import Step1 from "./Step1";
 import Step2 from "./Step2";
+import Step3 from "./Step3";
 
 export interface ISupplierDetails {
 	name: string;
@@ -15,7 +16,7 @@ export interface ISupplierDetails {
 	leadTime: string;
 	deliveryMethod: string;
 	contactDetails: { name: string; jobTitle: string; department: string; phone: string; email: string; physicalAddress: string; mailingAddress: string };
-	paymentDetails: { type: string; name: string; accountType: string; accountNumber: string; currency: string; paymentTerms: string };
+	paymentDetails: { paymentType: string; bankName: string; accountType: string; accountNumber: string; currency: string; paymentTerms: string; phone: string; provider: string };
 }
 
 const initial: ISupplierDetails = {
@@ -26,7 +27,7 @@ const initial: ISupplierDetails = {
 	minOrderQuantity: "",
 	leadTime: "",
 	contactDetails: { name: "", jobTitle: "", department: "", phone: "", email: "", physicalAddress: "", mailingAddress: "" },
-	paymentDetails: { type: "", name: "", accountType: "", accountNumber: "", currency: "", paymentTerms: "" },
+	paymentDetails: { paymentType: "", bankName: "", accountType: "", accountNumber: "", currency: "", paymentTerms: "", phone: "", provider: "" },
 };
 
 interface IAddOrEditDrug {
@@ -37,7 +38,7 @@ interface IAddOrEditDrug {
 
 const AddOrEditDrug = ({ setShowAddOrEditSupplier, supplierId, setSelectedSupplier }: IAddOrEditDrug) => {
 	const [supplierDetails, setSupplierDetails] = useState<ISupplierDetails>(initial);
-	const [step, setStep] = useState<number>(1);
+	const [step, setStep] = useState<number>(0);
 
 	// Fetch supplier if it is an edit request
 
@@ -54,7 +55,7 @@ const AddOrEditDrug = ({ setShowAddOrEditSupplier, supplierId, setSelectedSuppli
 	const steps = [
 		<Step1 key={0} setValues={setValue} supplierDetails={supplierDetails} step={step} setStep={setStep} />,
 		<Step2 key={0} setValues={setValue} supplierDetails={supplierDetails} step={step} setStep={setStep} />,
-		// <Step3 key={0} setValues={setValue} supplierDetails={supplierDetails} step={step} setStep={setStep} />,
+		<Step3 key={0} setValues={setValue} supplierDetails={supplierDetails} step={step} setStep={setStep} />,
 	];
 	return (
 		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-end px-3 w-full fixed top-0 left-0 z-[5]">
