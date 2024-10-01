@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import suppliers, { ISuppliers } from "@/data/suppliers";
 import TableColumn from "./TableColumn";
 import Filters, { initialFilter } from "./Filters";
-// import AddOrEditSupplier from "./addoreditsupplier";
+import AddOrEditRequest from "./AddOrEditRequest";
 
 export interface IFilter {
 	status: string;
@@ -34,11 +34,10 @@ const requests: IDepartment[] = [
 ];
 
 const page = () => {
-	const [selectedRequest, setSelectedRequest] = useState<null | number>(0);
-	const [showFilters, setShowFilters] = useState<boolean>(true);
+	const [selectedRequest, setSelectedRequest] = useState<null | number>(null);
+	const [showFilters, setShowFilters] = useState<boolean>(false);
 	const [filters, setFilters] = useState<IFilter>(initialFilter);
-	const [showAddOrEditSupplier, setShowAddOrEditSupplier] = useState<boolean>(false);
-	const [showSupplierDetails, setShowSupplierDetails] = useState<boolean>(false);
+	const [showAddOrEditRequest, setShowAddOrEditRequest] = useState<boolean>(false);
 
 	const request = useMemo(() => (selectedRequest !== null ? suppliers[selectedRequest] : ({} as ISuppliers)), [selectedRequest]);
 	return (
@@ -64,7 +63,7 @@ const page = () => {
 					<div className="flex gap-2 items-center justify-between">
 						<button
 							className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
-							onClick={() => setShowAddOrEditSupplier(true)}>
+							onClick={() => setShowAddOrEditRequest(true)}>
 							Create new request
 						</button>
 					</div>
@@ -84,14 +83,21 @@ const page = () => {
 				<div>
 					{/* Last two on the table will have isLast so the drop down shows at the top instead */}
 					{requests.map((request, index) => (
-						<TableColumn {...request} isLast={index >= requests.length - 2} index={index} activeColumn={selectedRequest} setActiveColumn={setSelectedRequest} />
+						<TableColumn
+							{...request}
+							isLast={index >= requests.length - 2}
+							index={index}
+							activeColumn={selectedRequest}
+							setActiveColumn={setSelectedRequest}
+							setShowAddOrEditRequest={setShowAddOrEditRequest}
+						/>
 					))}
 				</div>
 			</div>
 
 			{showFilters && <Filters setShowFilters={setShowFilters} filters={filters} setFilters={setFilters} />}
-			{/*
-			{showAddOrEditSupplier && <AddOrEditSupplier setShowAddOrEditSupplier={setShowAddOrEditSupplier} supplierId={supplier.id as string} seSelectedRequest={seSelectedRequest} />} */}
+
+			{showAddOrEditRequest && <AddOrEditRequest setShowAddOrEditRequest={setShowAddOrEditRequest} requestId={request.id as string} setSelectedRequest={setSelectedRequest} />}
 		</div>
 	);
 };

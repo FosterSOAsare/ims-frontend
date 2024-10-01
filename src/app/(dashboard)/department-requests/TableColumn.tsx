@@ -7,9 +7,10 @@ interface ITableColumn extends IDepartment {
 	activeColumn: number | null;
 	setActiveColumn: React.Dispatch<React.SetStateAction<number | null>>;
 	index: number;
+	setShowAddOrEditRequest: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const TableColumn = ({ department, requestNumber, drug, quantity, dateRequested, status, isLast, activeColumn, setActiveColumn, index }: ITableColumn) => {
+const TableColumn = ({ department, requestNumber, drug, quantity, dateRequested, status, isLast, activeColumn, setActiveColumn, setShowAddOrEditRequest, index }: ITableColumn) => {
 	return (
 		<div className="bg-white drugs-table gap-2 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
 			<div className="col-span-5 text-primary py-3 text-left">{department}</div>
@@ -51,17 +52,13 @@ const TableColumn = ({ department, requestNumber, drug, quantity, dateRequested,
 							className={`absolute ${isLast ? "bottom-[100%]" : "top-[100%]"}  right-0 h-auto ${
 								status.toLowerCase() === "accepted" ? "w-[180px]" : "w-[130px]"
 							} bg-white selectedStock z-[3] rounded-[5px] card`}>
-							{/* <button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
-								<Icon icon="hugeicons:view" className="text-lg" />
-							</button>
-							<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
-								<Icon icon="solar:box-line-duotone" className="text-lg" />
-								Restock
-							</button> */}
-
 							{status.toLowerCase() === "pending" && (
 								<>
-									<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+									<button
+										className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
+										onClick={() => {
+											setShowAddOrEditRequest(true);
+										}}>
 										<Icon icon="hugeicons:file-edit" className="text-lg" />
 										Edit
 									</button>
