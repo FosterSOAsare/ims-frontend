@@ -4,11 +4,13 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 import suppliers, { ISuppliers } from "@/data/suppliers";
 import TableColumn from "./TableColumn";
-// import Filters, { initialFilter } from "./Filters";
+import Filters, { initialFilter } from "./Filters";
 // import AddOrEditSupplier from "./addoreditsupplier";
 
 export interface IFilter {
 	status: string;
+	department: string;
+	drug: string;
 }
 
 export interface IDepartment {
@@ -33,8 +35,8 @@ const requests: IDepartment[] = [
 
 const page = () => {
 	const [selectedRequest, setSelectedRequest] = useState<null | number>(0);
-	const [showFilters, setShowFilters] = useState<boolean>(false);
-	// const [filters, setFilters] = useState<IFilter>(initialFilter);
+	const [showFilters, setShowFilters] = useState<boolean>(true);
+	const [filters, setFilters] = useState<IFilter>(initialFilter);
 	const [showAddOrEditSupplier, setShowAddOrEditSupplier] = useState<boolean>(false);
 	const [showSupplierDetails, setShowSupplierDetails] = useState<boolean>(false);
 
@@ -87,7 +89,8 @@ const page = () => {
 				</div>
 			</div>
 
-			{/* {showFilters && <Filters setShowFilters={setShowFilters} filters={filters} setFilters={setFilters} />}
+			{showFilters && <Filters setShowFilters={setShowFilters} filters={filters} setFilters={setFilters} />}
+			{/*
 			{showAddOrEditSupplier && <AddOrEditSupplier setShowAddOrEditSupplier={setShowAddOrEditSupplier} supplierId={supplier.id as string} seSelectedRequest={seSelectedRequest} />} */}
 		</div>
 	);
