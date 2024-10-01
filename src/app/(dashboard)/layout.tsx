@@ -12,6 +12,7 @@ const layout = ({ children }: { children: ReactNode }) => {
 	const pathname = usePathname();
 	const [openedTab, setOpenedTab] = useState<null | number>(null);
 	const [mode, setMode] = useState("light");
+	const [showAccountPopup, setShowAccountPopup] = useState(false);
 
 	return (
 		<div className="flex bg-white items-stretch  justify-between h-screen overflow-hidden">
@@ -127,7 +128,7 @@ const layout = ({ children }: { children: ReactNode }) => {
 						</span>
 						<input type="text" className="bg-gray-300 w-full p-2 focus:border-[2px] rounded-[10px] pl-10" placeholder="Search" />
 					</div>
-					<div className="flex items-center gap-8 justify-between">
+					<div className="flex items-center gap-8 justify-between pr-4">
 						<Link href="/" className="flex items-center gap-3 px-4 text-warning-600 rounded-[8px] hover:bg-warning-600 hover:text-white py-2 bg-warning-300 ">
 							Report an incident
 							<span className="">
@@ -137,14 +138,29 @@ const layout = ({ children }: { children: ReactNode }) => {
 						<button className="bg-gray-100 rounded-full hover:text-white hover:bg-gray-400 p-2 ">
 							<Icon icon="ph:bell" className="text-2xl" />
 						</button>
-						<div className="flex gap-2 items-center justify-between">
-							<span className="rounded-full">
-								<Image src={ProfileImage} alt="Profile Image" width={35} height={35} />
-							</span>
-							<p className="text-primary font-medium"> Michael Mensah</p>
-							<button className="p-1 hover:bg-gray-400 hover:text-white rounded-full">
-								<Icon icon="mdi-light:dots-vertical" className="text-2xl" />
-							</button>
+						<div className="flex gap-2 relative items-center justify-between">
+							<div className="flex gap-2 relative items-center justify-between">
+								<span className="rounded-full">
+									<Image src={ProfileImage} alt="Profile Image" width={35} height={35} />
+								</span>
+								<p className="text-primary font-medium"> Michael Mensah</p>
+								<button className="p-1 hover:bg-gray-200 rounded-full" onClick={() => setShowAccountPopup((prev) => !prev)}>
+									<Icon icon="mdi-light:dots-vertical" className="text-2xl" />
+								</button>
+							</div>
+
+							{showAccountPopup && (
+								<div className={`absolute top-[100%] right-2 h-auto w-[200px] bg-white selectedStock z-[3] rounded-[12px] card`}>
+									<Link href="/settings" className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-3">
+										<Icon icon="solar:settings-minimalistic-linear" className="text-lg" />
+										Settings
+									</Link>
+									<button className="px-3 gap-[6px] hover:bg-red-500 hover:text-white text-red-500 flex items-center justify-start text-sm w-full py-3">
+										<Icon icon="solar:logout-2-outline" className="text-lg" />
+										Logout
+									</button>
+								</div>
+							)}
 						</div>
 					</div>
 				</div>
