@@ -15,7 +15,7 @@ const page = () => {
 	const [selectedSupplier, setSelectedSupplier] = useState<null | number>(null);
 	const [showFilters, setShowFilters] = useState<boolean>(false);
 	const [filters, setFilters] = useState<IFilter>(initialFilter);
-	const [showAddOrEditSupplier, setShowAddOrEditSupplier] = useState<boolean>(true);
+	const [showAddOrEditSupplier, setShowAddOrEditSupplier] = useState<boolean>(false);
 	const [showSupplierDetails, setShowSupplierDetails] = useState<boolean>(false);
 
 	const supplier = useMemo(() => (selectedSupplier !== null ? suppliers[selectedSupplier] : ({} as ISuppliers)), [selectedSupplier]);
