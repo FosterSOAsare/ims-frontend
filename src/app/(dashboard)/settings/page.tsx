@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from "react";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 import General from "./General";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import Security from "./Security";
 
 const tabs = [
 	{
@@ -28,9 +29,9 @@ const tabs = [
 ];
 
 const page = () => {
-	const [activeTab, setActiveTab] = useState(0);
+	const [activeTab, setActiveTab] = useState(1);
 
-	const pages = [<General key={0} />];
+	const pages = [<General key={0} />, <Security key={1} />];
 	return (
 		<div className="w-full h-full">
 			<h3 className="text-2xl mb-3 font-bold">Settings</h3>
@@ -38,10 +39,12 @@ const page = () => {
 				<div className="w-1/4 h-[80vh] bg-white rounded-[12px] card p-4">
 					{tabs.map(({ name, icon }, index) => (
 						<button
-							className={`${activeTab === index ? "bg-[#EBF2FF]" : "hover:bg-slate-200"} rounded-[12px] gap-2 w-full flex text-sm items-center p-3 mb-2 justify-start `}
+							className={`${
+								activeTab === index ? "bg-[#EBF2FF] text-primary" : "hover:bg-slate-200 text-[#64748B]"
+							} rounded-[12px] gap-2 w-full flex text-sm items-center p-3 mb-2 justify-start `}
 							key={index}
 							onClick={() => setActiveTab(index)}>
-							<Icon icon={icon} className={`${activeTab === index ? "text-sec" : "text-black"} text-xl`} />
+							<Icon icon={icon} className={`${activeTab === index ? "text-sec" : "text-[#64748B]"} text-xl`} />
 							{name}
 						</button>
 					))}
