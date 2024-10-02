@@ -1,18 +1,22 @@
 "use client";
 import React, { ReactNode, Fragment, useState, useEffect } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import { generalTabs, helpTabs } from "@/data/navLinks";
+
+import Notification from "./Notification";
+
 import ProfileImage from "@/assets/images/profile.svg";
-import { usePathname } from "next/navigation";
 
 const layout = ({ children }: { children: ReactNode }) => {
 	const pathname = usePathname();
 	const [openedTab, setOpenedTab] = useState<null | number>(null);
 	const [mode, setMode] = useState("light");
 	const [showAccountPopup, setShowAccountPopup] = useState(false);
+	const [showNotifications, setShowNotifications] = useState(false);
 
 	// Open tab based on pathname
 	useEffect(() => {
@@ -142,9 +146,16 @@ const layout = ({ children }: { children: ReactNode }) => {
 								<Icon icon="ph:headset-bold" />
 							</span>
 						</Link>
-						<button className="bg-gray-100 rounded-full hover:text-white hover:bg-gray-400 p-2 ">
-							<Icon icon="ph:bell" className="text-2xl" />
-						</button>
+						<div className="relative">
+							<button className="bg-gray-100 rounded-full hover:text-white hover:bg-gray-400 p-2" onClick={() => setShowNotifications((prev) => !prev)}>
+								<Icon icon="ph:bell" className="text-2xl" />
+							</button>
+							{showNotifications && (
+								<div className={`absolute top-[100%] right-2 h-auto w-[470px] bg-white selectedStock z-[3] rounded-[12px] card`}>
+									<Notification />
+								</div>
+							)}
+						</div>
 						<div className="flex gap-2 relative items-center justify-between">
 							<div className="flex gap-2 relative items-center justify-between">
 								<span className="rounded-full">
