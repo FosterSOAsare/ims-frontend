@@ -4,6 +4,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 import General from "./General";
 import Security from "./Security";
+import Departments from "./Departments";
 
 const tabs = [
 	{
@@ -29,9 +30,9 @@ const tabs = [
 ];
 
 const page = () => {
-	const [activeTab, setActiveTab] = useState(1);
+	const [activeTab, setActiveTab] = useState(2);
 
-	const pages = [<General key={0} />, <Security key={1} />];
+	const pages = [<General key={0} />, <Security key={1} />, <Departments key={2} />];
 	return (
 		<div className="w-full h-full">
 			<h3 className="text-2xl mb-3 font-bold">Settings</h3>

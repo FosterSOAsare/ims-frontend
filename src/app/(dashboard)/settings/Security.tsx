@@ -40,10 +40,10 @@ const Security = () => {
 					<p className="text-sm">These devices are curently signed in to your account</p>
 				</div>
 
-				<div className="mt-4 grid-cols-12 bg-[#E2E8F0] uppercase rounded-[12px] grid px-3">
-					<div className="col-span-4 text-sm text-gray-500 py-2">Browser</div>
-					<div className="col-span-3 text-sm text-gray-500 py-2">Location</div>
-					<div className="col-span-4 text-sm text-gray-500 py-2">Recent Activity</div>
+				<div className="mt-4 grid-cols-12 bg-[#FAFAFA] border-[1px] uppercase rounded-[12px] grid px-3">
+					<div className="col-span-4 text-sm text-gray-500 py-3">Browser</div>
+					<div className="col-span-3 text-sm text-gray-500 py-3">Location</div>
+					<div className="col-span-4 text-sm text-gray-500 py-3">Recent Activity</div>
 					<div className="col-span-1"></div>
 				</div>
 
