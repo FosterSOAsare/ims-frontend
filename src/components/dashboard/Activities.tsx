@@ -2,6 +2,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import padNumber from "@/services/padNumber";
+import MonthPicker from "../MonthPicker";
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -28,6 +29,10 @@ const Activities = () => {
 		setDate((prev) => new Date(`${prev.getMonth() + 1}-${prev.getDate() - 1}-${prev.getFullYear()}`));
 	};
 
+	const handleMonthChange = (month: number) => {
+		setDate((prev) => new Date(`${month + 1}-${1}-${prev.getFullYear()}`));
+	};
+
 	// Scroll accordingly
 	useEffect(() => {
 		// if user is moving using next
@@ -52,13 +57,18 @@ const Activities = () => {
 			<h3 className="uppercase text-sm font-medium text-gray-400">Activities</h3>
 
 			<div className="w-full flex items-center justify-between">
-				<div className="w-[100px] h-8 bg-gray-400"></div>
+				<div className="w-[100px] h-auto">
+					<MonthPicker handleMonthChange={(month: number) => handleMonthChange(month)} />
+				</div>
 				<div className="flex items-center gap-1">
-					<button className={`border-[1px] ${date.getDate() === 1 ? "bg-gray-200" : "hover:bg-sec bg-white"} rounded-[5px]  p-1`} disabled={date.getDate() === 1} onClick={setPrevDate}>
+					<button
+						className={`border-[1px] ${date.getDate() === 1 ? "bg-gray-200" : "hover:bg-sec hover:text-white bg-white"} rounded-[5px]  p-1`}
+						disabled={date.getDate() === 1}
+						onClick={setPrevDate}>
 						<Icon icon="material-symbols:chevron-left" className="text-xl" />
 					</button>
 					<button
-						className={`border-[1px] ${date.getDate() === lastDay ? "bg-gray-200" : "hover:bg-sec bg-white"} rounded-[5px] p-1`}
+						className={`border-[1px] ${date.getDate() === lastDay ? "bg-gray-200" : "hover:bg-sec hover:text-white bg-white"} rounded-[5px] p-1`}
 						disabled={date.getDate() === lastDay}
 						onClick={setNextDate}>
 						<Icon icon="material-symbols:chevron-right" className="text-xl" />
@@ -79,6 +89,13 @@ const Activities = () => {
 					))}
 				</div>
 			</div>
+
+			{/* activities */}
+			<section className="mt-6 space-y-4">
+				{[1, 2, 3].map(() => (
+					<div className={"bg-[#F1F5F9] h-14 rounded-[12px]"}></div>
+				))}
+			</section>
 		</section>
 	);
 };
