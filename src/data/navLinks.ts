@@ -43,6 +43,11 @@ export const generalTabs = [
     ],
   },
   {
+    name: "Sales",
+    icon: "solar:bill-list-bold-duotone",
+    link: "/sales",
+  },
+  {
     name: "Department Requests",
     icon: "solar:box-bold-duotone",
     link: "/department-requests",
