@@ -12,7 +12,7 @@ interface IInput {
 	setValue?: (value: string) => void;
 }
 
-const Input = ({ label, type = "text", name, placeholder = "", labelSx = "", inputSx = "", register, value, setValue }: IInput) => {
+const Input = ({ label, type = "text", name, placeholder = "", labelSx = "", inputSx = "", register, value = "", setValue }: IInput) => {
 	return (
 		<div className="w-full">
 			{label && (
