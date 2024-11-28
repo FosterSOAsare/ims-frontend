@@ -24,7 +24,7 @@ const categories: ICategory[] = [
 
 const page = () => {
 	const [selectedCategory, setSelectedCategory] = useState<null | number>(null);
-	const [showAddOrEditDrug, setShowAddOrEditCategory] = useState<boolean>(false);
+	const [showAddOrEditCategory, setShowAddOrEditCategory] = useState<boolean>(false);
 
 	const category = useMemo(() => (selectedCategory !== null ? categories[selectedCategory] : ({} as ICategory)), [selectedCategory]);
 	return (
@@ -96,7 +96,7 @@ const page = () => {
 				</div>
 			</div>
 
-			{showAddOrEditDrug && (
+			{showAddOrEditCategory && (
 				<AddOrEditCategory
 					setSelectedCategory={setSelectedCategory}
 					categoryId={category?.id as string}
