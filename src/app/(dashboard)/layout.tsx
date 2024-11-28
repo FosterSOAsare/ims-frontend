@@ -25,7 +25,7 @@ const layout = ({ children }: { children: ReactNode }) => {
 	}, [pathname]);
 
 	return (
-		<div className="flex bg-white items-stretch  justify-between h-screen overflow-hidden">
+		<div className="flex bg-white items-stretch relative  justify-between h-screen overflow-hidden">
 			<div className={`w-1/5 ${openedTab !== null ? "pb-12" : ""} h-full overflow-y-auto`}>
 				<Link href="/" className="text-2xl px-4 py-2 bg-bg sticky top-0 left-0 z-[2] flex gap-2 items-center">
 					Stealth<span className="uppercase text-xs font-normal bg-red-500 text-white py-[2px] px-2 rounded-full">Beta</span>
@@ -131,8 +131,8 @@ const layout = ({ children }: { children: ReactNode }) => {
 					</div>
 				</div>
 			</div>
-			<div className="w-4/5 ml-5 pl-5 pb-12 h-screen overflow-y-auto">
-				<div className="w-full h-20 bg-bg stickty top-0 z-[5] left-0 flex items-center justify-between">
+			<div className="w-4/5 ml-5 pl-5 h-screen relative overflow-y-auto">
+				<div className="w-full h-20 bg-bg sticky bg-white top-0 z-[5] left-0 flex items-center justify-between">
 					<div className="w-2/5 relative">
 						<span className="absolute left-3 top-0 bottom-0 flex items-center justify-center">
 							<Icon icon="iconoir:search" className="text-xl text-gray-400" />
@@ -182,7 +182,7 @@ const layout = ({ children }: { children: ReactNode }) => {
 						</div>
 					</div>
 				</div>
-				<div className="bg-gray-700 border-[1px] border-[#E2EBF3] p-4 mt-2 rounded-[10px] w-full min-h-[80vh]">{children}</div>
+				<div className="bg-gray-700 border-[1px] border-[#E2EBF3] p-4 mt-2 rounded-[10px] h-auto w-full mb-4 min-h-[80vh]">{children}</div>
 			</div>
 		</div>
 	);

@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import TableColumn from "./TableColumn";
 // import AddOrEditDrugOrder from "./AddOrEditSales";
 import Filters, { initialFilter } from "./Filters";
+import Link from "next/link";
 
 export interface ISale {
 	id: string;
@@ -63,11 +64,9 @@ const page = () => {
 					</div>
 
 					<div className="flex gap-2 items-center justify-between">
-						<button
-							className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
-							onClick={() => setShowAddOrEditDrugOrder(true)}>
+						<Link href="/sales/new" className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]">
 							Record New Sale
-						</button>
+						</Link>
 					</div>
 				</div>
 
