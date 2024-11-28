@@ -30,14 +30,14 @@ const tabs = [
 ];
 
 const page = () => {
-	const [activeTab, setActiveTab] = useState(2);
+	const [activeTab, setActiveTab] = useState(0);
 
 	const pages = [<General key={0} />, <Security key={1} />, <Departments key={2} />];
 	return (
-		<div className="w-full h-full">
-			<h3 className="text-2xl mb-3 font-bold">Settings</h3>
-			<div className="flex items-start justify-between gap-8 ">
-				<div className="w-1/4 h-[80vh] bg-white rounded-[12px] card p-4">
+		<div className="w-full h-[80vh]">
+			<h3 className="text-2xl mb-2 font-bold">Settings</h3>
+			<div className="flex items-start h-[calc(100%-30px)] justify-between gap-8 ">
+				<div className="w-1/4 h-full bg-white rounded-[12px] card p-4">
 					{tabs.map(({ name, icon }, index) => (
 						<button
 							className={`${
@@ -50,7 +50,7 @@ const page = () => {
 						</button>
 					))}
 				</div>
-				<div className="w-3/4 h-full rounded-[12px] bg-white card p-6">{pages[activeTab]}</div>
+				<div className="w-3/4 h-full rounded-[12px] bg-white overflow-y-auto card p-6">{pages[activeTab]}</div>
 			</div>
 		</div>
 	);

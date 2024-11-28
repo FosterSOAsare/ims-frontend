@@ -6,7 +6,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Input from "@/components/Input";
 
 const General = () => {
-	const [showEditGeneral, setShowEditGeneral] = useState(true);
+	const [showEditGeneral, setShowEditGeneral] = useState(false);
 	return (
 		<div className="w-full">
 			<div className="pb-6 border-b-[1px]">
@@ -18,8 +18,8 @@ const General = () => {
 						<Image src={ProfileImage} alt="Profile" fill />
 					</div>
 					<div>
-						<h3 className="text-xl flex items-center gap-1 font-bold">
-							Michael Mensah <span className="uppercase text-xs bg-[#D97706] text-white px-2 py-1 rounded-full">Central Admin</span>
+						<h3 className="text-lg flex items-center gap-1 font-bold">
+							Michael Mensah <span className="uppercase text-[10px] bg-[#D97706] text-white px-2  rounded-full">Central Admin</span>
 						</h3>
 						<p className="text-sm">michael@gmail.com</p>
 					</div>
@@ -29,7 +29,7 @@ const General = () => {
 				<div className="w-full py-4">
 					<div className="flex items-center justify-between">
 						<h3 className="text-xl font-bold">Account</h3>
-						<button className="border-[1px] rounded-[6px] px-3 py-2 hover:bg-slate-100" onClick={() => setShowEditGeneral(true)}>
+						<button className="border-[1px] rounded-[8px] px-3 py-2 hover:bg-slate-100" onClick={() => setShowEditGeneral(true)}>
 							<Icon icon="hugeicons:edit-01" className="inline mr-2" />
 							Edit
 						</button>
@@ -65,23 +65,23 @@ const General = () => {
 					<div className="flex items-center justify-between">
 						<h3 className="text-xl font-bold">Account</h3>
 						<div className="flex gap-2">
-							<button className="border-[1px] rounded-[6px] px-6 py-2 bg-[#FEF2F2] text-[#DC2626] hover:bg-[#DC2626] hover:text-white" onClick={() => setShowEditGeneral(false)}>
+							<button className="border-[1px] rounded-[8px] px-6 py-2 bg-[#FEF2F2] text-[#DC2626] hover:bg-[#DC2626] hover:text-white" onClick={() => setShowEditGeneral(false)}>
 								Discard
 							</button>
-							<button className="border-[1px] rounded-[6px] px-6 py-2 hover:opacity-80 bg-sec text-white">Save</button>
+							<button className="border-[1px] rounded-[8px] px-6 py-2 hover:opacity-80 bg-sec text-white">Save</button>
 						</div>
 					</div>
 
 					<div className="mt-4">
 						<div className="w-1/2 mb-4">
-							<Input name="name" label="Fullname" placeholder="Eg. iamderez" />
+							<Input name="name" inputSx="text-sm" label="Fullname" placeholder="Eg. iamderez" />
 						</div>
 						<div className="flex items-center gap-4 justify-between">
 							<div className="w-full mb-4">
-								<Input name="email" label="Email" placeholder="eg: michael@gmail.com" />
+								<Input name="email" inputSx="text-sm" label="Email" placeholder="eg: michael@gmail.com" />
 							</div>
 							<div className="w-full mb-4">
-								<Input name="phone" label="Phone" placeholder="eg: 0555534689" />
+								<Input name="phone" inputSx="text-sm" label="Phone" placeholder="eg: 0555534689" />
 							</div>
 						</div>
 					</div>
