@@ -37,7 +37,7 @@ const page = () => {
 	const [selectedRequest, setSelectedRequest] = useState<null | number>(null);
 	const [showFilters, setShowFilters] = useState<boolean>(false);
 	const [filters, setFilters] = useState<IFilter>(initialFilter);
-	const [showAddOrEditRequest, setShowAddOrEditRequest] = useState<boolean>(false);
+	const [showAddOrEditRequest, setShowAddOrEditRequest] = useState<boolean>(true);
 
 	const request = useMemo(() => (selectedRequest !== null ? suppliers[selectedRequest] : ({} as ISuppliers)), [selectedRequest]);
 	return (

@@ -26,6 +26,7 @@ const customStyles = {
 		borderRadius: "12px",
 		borderColor: state.isFocused ? "#ddd" : provided.borderColor,
 		backgroundColor: state.isSelected ? "#10B981" : provided.backgroundColor,
+		textTransform: "capitalize",
 		"&:hover": {
 			borderColor: "#ddd",
 			backgroundColor: "#f0f0f0",
@@ -34,10 +35,16 @@ const customStyles = {
 	option: (provided: any, state: any) => ({
 		...provided,
 		fontSize: "14px",
+		textTransform: "capitalize",
 		backgroundColor: state.isSelected ? "#16a34a" : provided.backgroundColor,
 		"&:hover": {
 			backgroundColor: state.isSelected ? "" : "#f0f0f0",
 		},
+
+		singleValue: (provided: any) => ({
+			...provided,
+			textTransform: "capitalize", // Capitalize the selected value
+		}),
 	}),
 };
 
