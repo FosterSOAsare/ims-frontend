@@ -56,6 +56,8 @@ const CustomSelect = ({ options, placeholder = "", label, value, handleChange }:
 				onChange={(selected: any) => handleChange(selected.value)}
 				components={{ DropdownIndicator: CustomDropdownIndicator }}
 				placeholder={placeholder}
+				menuPlacement="auto"
+				menuPosition="fixed"
 			/>
 		</div>
 	);
