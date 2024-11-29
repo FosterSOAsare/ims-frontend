@@ -16,6 +16,12 @@ const General = () => {
 				<div className="flex mt-4 gap-2">
 					<div className="w-14 h-14 rounded-full relative">
 						<Image src={ProfileImage} alt="Profile" fill />
+						<label
+							htmlFor="file"
+							className="w-6 flex items-center justify-center hover:cursor-pointer h-6 rounded-full bg-white border-[1px] shadow-md absolute -right-1 -bottom-1 z-[100]">
+							<Icon icon="hugeicons:edit-01" className="text-sm" />
+						</label>
+						<input type="file" id="file" accept="images/*" className="w-0 h-0" />
 					</div>
 					<div>
 						<h3 className="text-lg flex items-center gap-1 font-bold">
