@@ -32,7 +32,7 @@ const tabs = [
 ];
 
 const page = () => {
-	const [activeTab, setActiveTab] = useState(3);
+	const [activeTab, setActiveTab] = useState(0);
 
 	const pages = [<General key={0} />, <Security key={1} />, <Departments key={2} />, <Users key={3} />, <Notifications key={4} />];
 	return (

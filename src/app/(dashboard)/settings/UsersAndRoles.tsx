@@ -21,7 +21,7 @@ const users: IUser[] = [
 
 const Users = () => {
 	const [selectedUser, setSelectedUser] = useState<null | number>(null);
-	const [showAddOrEditUser, setShowAddOrEditUser] = useState<boolean>(true);
+	const [showAddOrEditUser, setShowAddOrEditUser] = useState<boolean>(false);
 
 	const department = useMemo(() => (selectedUser !== null ? users[selectedUser] : ({} as IUser)), [selectedUser]);
 	return (
