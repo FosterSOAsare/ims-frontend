@@ -9,26 +9,54 @@ import drugs from "@/data/drugs";
 
 import Input from "@/components/Input";
 import CustomSelect from "@/components/Select";
+import { permission } from "process";
 
 export interface IUserDetails {
 	role: string;
 	department: string;
+	permissions: { value: string; accessLevel: "READ" | "READ_WRITE" | "READ_WRITE_DELETE" | "" }[];
 }
 
 const initial: IUserDetails = {
 	role: "",
 	department: "",
+	permissions: [
+		{ value: "ITEMS", accessLevel: "" },
+		{ value: "ITEMS_CATEGORIES", accessLevel: "" },
+		{ value: "STOCK_ADJUSTMENT", accessLevel: "" },
+		{ value: "DRUG_ORDERS", accessLevel: "" },
+		{ value: "REPORTS", accessLevel: "" },
+		{ value: "SUPPLIERS", accessLevel: "" },
+		{ value: "SALES", accessLevel: "" },
+		{ value: "DEPARTMENT_REQUESTS", accessLevel: "" },
+		{ value: "DEPARTMENTS", accessLevel: "" },
+		{ value: "USERS", accessLevel: "" },
+	],
 };
 
-const roles = ["Central Admin", "Admin", "Pharmacist"];
+const roles = ["Central Admin", "Department Admin", "Pharmacist"];
 
-interface IAddOrEditStock {
+interface IAddOrEditUser {
 	setSelectedUser: React.Dispatch<React.SetStateAction<null | number>>;
 	setShowAddOrEditUser: React.Dispatch<React.SetStateAction<boolean>>;
 	userId: string;
 }
 
-const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOrEditStock) => {
+const accessLevels = ["READ", "READ_WRITE", "READ_WRITE_DELETE"];
+const permissions = [
+	{ value: "ITEMS", desc: "Items" },
+	{ value: "ITEMS_CATEGORIES", desc: "Item Categories" },
+	{ value: "STOCK_ADJUSTMENT", desc: "Stock Adjustment" },
+	{ value: "DRUG_ORDERS", desc: "Item Orders" },
+	{ value: "REPORTS", desc: "Reports" },
+	{ value: "SUPPLIERS", desc: "Suppliers" },
+	{ value: "SALES", desc: "Sales" },
+	{ value: "DEPARTMENT_REQUESTS", desc: "Department Requests" },
+	{ value: "DEPARTMENTS", desc: "Departments" },
+	{ value: "USERS", desc: "Users" },
+];
+
+const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOrEditUser) => {
 	const [user, setUser] = useState<IUserDetails>(initial);
 
 	// Fetch order if it is an edit request
@@ -50,6 +78,11 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 		console.log(allData);
 	};
 
+	const changePermission = (value: string, accessLevel: "READ" | "READ_WRITE" | "READ_WRITE_DELETE") => {
+		console.log(value, accessLevel);
+		setUser((prev) => ({ ...prev, permissions: prev.permissions.map((p) => (p.value === value ? { ...p, accessLevel } : p)) }));
+	};
+
 	return (
 		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-end px-3 w-full fixed top-0 left-0 z-[5]">
 			<div className="w-[28%] flex flex-col gap-4 h-[calc(100%-20px)]  bg-white rounded-[5px]">
@@ -66,31 +99,57 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 					</button>
 				</div>
 
-				<form className="h-[calc(100%-60px)] flex items-start flex-col  gap-2" onSubmit={handleSubmit(addOrder)}>
-					<div className="px-4 overflow-y-auto space-y-3 w-full">
-						<CustomSelect options={roles} value={user.role} label="Assign role" placeholder="Select option" handleChange={(value) => setValue("role", value)} />
-						{!userId && (
-							<>
-								<Input name="name" register={register} label="Name" placeholder="eg: Michael Mensah" labelSx="text-sm" inputSx="text-sm" />
-								<CustomSelect
-									options={Array.from({ length: 20 }, (_i, i) => `Department ${i + 1}`)}
-									value={user.department}
-									label="Department"
-									placeholder="Select option"
-									handleChange={(value) => setValue("department", value)}
-								/>
-								<Input name="email" register={register} label="Email" placeholder="eg: username@example.com" labelSx="text-sm" inputSx="text-sm" />
-								<Input name="password" register={register} label="Password" placeholder="Generate password" labelSx="text-sm" inputSx="text-sm" />
-							</>
-						)}
+				<form className="h-[calc(100%-60px)] flex items-start flex-col gap-2" onSubmit={handleSubmit(addOrder)}>
+					<div className="px-4 space-y-3 overflow-y-auto h-[calc(100%-30px)] w-full">
+						<div className="w-full">
+							<CustomSelect options={roles} value={user.role} label="Assign role" placeholder="Select option" handleChange={(value) => setValue("role", value)} />
+							{!userId && (
+								<>
+									<Input name="name" register={register} label="Name" placeholder="eg: Michael Mensah" labelSx="text-sm" inputSx="text-sm" />
+									<CustomSelect
+										options={Array.from({ length: 20 }, (_i, i) => `Department ${i + 1}`)}
+										value={user.department}
+										label="Department"
+										placeholder="Select option"
+										handleChange={(value) => setValue("department", value)}
+									/>
+									<Input name="email" register={register} label="Email" placeholder="eg: username@example.com" labelSx="text-sm" inputSx="text-sm" />
+									<Input name="password" register={register} label="Password" placeholder="Generate password" labelSx="text-sm" inputSx="text-sm" />
+								</>
+							)}
+						</div>
+						<div className="mt-6">
+							<h3 className="mb-4">Permission</h3>
+
+							<div>
+								{permissions.map(({ value, desc }: { value: string; desc: string }, index: number) => {
+									const permission = user.permissions.find((p) => p.value === value);
+									console.log(permission);
+									return (
+										<div className="w-full flex mb-4 items-center justify-between" key={index}>
+											<p className="text-sm font-medium">{desc}</p>
+											<div>
+												<select
+													name=""
+													value={permission?.accessLevel}
+													onChange={(e) => changePermission(value, e.target.value as "READ" | "READ_WRITE" | "READ_WRITE_DELETE")}
+													className="w-auto text-xs border-[1px] p-3 py-2 rounded-[8px]"
+													id="">
+													<option value="">Select permission</option>
+
+													{accessLevels.map((accessLevel, index) => (
+														<option value={accessLevel} className="text-xs">
+															{accessLevel}
+														</option>
+													))}
+												</select>
+											</div>
+										</div>
+									);
+								})}
+							</div>
+						</div>
 					</div>
-
-					<div className="px-4 mt-4">
-						<h3>Permission</h3>
-
-						<div></div>
-					</div>
-
 					<div className="w-full flex items-center justify-between gap-4 h-auto white px-4 py-4 mt-auto">
 						<button className="w-full bg-sec py-2 rounded-[10px] hover:opacity-70 text-white" type="submit">
 							Add user
