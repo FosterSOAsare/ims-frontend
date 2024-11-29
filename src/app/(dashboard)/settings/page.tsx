@@ -5,6 +5,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import General from "./General";
 import Security from "./Security";
 import Departments from "./Departments";
+import Users from "./UsersAndRoles";
 
 const tabs = [
 	{
@@ -20,7 +21,7 @@ const tabs = [
 		icon: "solar:buildings-bold-duotone",
 	},
 	{
-		name: "Manage Roles",
+		name: "Manage Users & Roles",
 		icon: "solar:users-group-rounded-bold-duotone",
 	},
 	{
@@ -30,9 +31,9 @@ const tabs = [
 ];
 
 const page = () => {
-	const [activeTab, setActiveTab] = useState(2);
+	const [activeTab, setActiveTab] = useState(3);
 
-	const pages = [<General key={0} />, <Security key={1} />, <Departments key={2} />];
+	const pages = [<General key={0} />, <Security key={1} />, <Departments key={2} />, <Users key={3} />];
 	return (
 		<div className="w-full h-[80vh]">
 			<h3 className="text-2xl mb-2 font-bold">Settings</h3>
