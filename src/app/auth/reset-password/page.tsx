@@ -7,9 +7,10 @@ import Otp from "./OTP";
 import SetPassword from "./SetPassword";
 
 const page = () => {
-	const [step, setStep] = useState(0);
+	const [step, setStep] = useState(1);
+	const [email, setEmail] = useState("");
 
-	const steps = [<Reset key={0} setStep={setStep} />, <Otp key={1} setStep={setStep} />, <SetPassword key={2} />];
+	const steps = [<Reset key={0} setStep={setStep} setEmail={setEmail} />, <Otp key={1} setStep={setStep} email={email} />, <SetPassword key={2} email={email} />];
 	return (
 		<div className="w-full h-screen flex items-center justify-between overflow-hidden">
 			<div className="w-2/5 p-4 flex flex-col  overflow-y-auto h-full px-12">

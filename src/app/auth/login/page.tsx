@@ -25,7 +25,6 @@ const page = () => {
 	useEffect(() => {
 		if (!data) return;
 		toast.success(data.message, { autoClose: 1500 });
-		console.log(data);
 
 		// Store tokens
 		const { accessToken, refreshToken } = data.data.tokens;

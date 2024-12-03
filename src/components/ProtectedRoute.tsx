@@ -38,7 +38,7 @@ const ProtectedRoute = ({ children, loginRequired = false }: ProtectedRouteProps
 		<>
 			{(isLoading || !routingChecked) && (
 				<div className=" w-full h-screen bg-bg flex items-center justify-center flex-col">
-					<Loading sx="!border-[green] !h-16 !w-16" />
+					<Loading sx="!border-sec !h-16 !w-16" />
 				</div>
 			)}
 			{routingChecked && (

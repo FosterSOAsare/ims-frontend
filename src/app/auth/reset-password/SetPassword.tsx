@@ -1,19 +1,34 @@
 "use client";
 import Button from "@/components/Button";
 import Input from "@/components/Input";
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useSelectedValuesFromHookForm from "@/hooks/useSelectedValuesFromHookForm";
 import { setPasswordSchema } from "@/libs/hookform";
+import { useSetNewPasswordResetRequestMutation } from "@/apis/authApi";
+import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
+import { toast } from "react-toastify";
 
-const SetPassword = () => {
+const SetPassword = ({ email }: { email: string }) => {
 	const router = useRouter();
 	const { register, handleSubmit } = useSelectedValuesFromHookForm(setPasswordSchema);
+	const [setNewPasswordRequest, { data, isLoading, error }] = useSetNewPasswordResetRequestMutation();
 
 	const setPassword = (data: any) => {
-		console.log(data);
-		router.push("/auth/login");
+		const { password, confirmpassword } = data;
+		if (password !== confirmpassword) return toast.error("Passwords do not match", { autoClose: 1500 });
+
+		// Set password
+		setNewPasswordRequest({ newPassword: password, email });
 	};
+
+	useEffect(() => {
+		if (!data) return;
+		toast.success("Password was successfully changed, proceed to login", { autoClose: 1500 });
+		router.replace("/auth/login");
+	}, [data]);
+
+	useCreateErrorFromApiRequest(error);
 	return (
 		<>
 			<form className="mt-20" onSubmit={handleSubmit(setPassword)}>
@@ -26,7 +41,7 @@ const SetPassword = () => {
 							<Input label="Confirm password" register={register} type="password" name="confirmpassword" placeholder="Confirm password" />
 						</div>
 
-						<Button text="Reset password" type="submit" sx="mt-12" />
+						<Button text="Reset password" type="submit" sx="mt-12" isLoading={isLoading} />
 					</div>
 				</div>
 			</form>

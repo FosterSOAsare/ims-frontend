@@ -54,18 +54,25 @@ const authApi = createApi({
         url: '/changePassword'
       })
     }),
-    requestPasswordResetRequest: builder.mutation({
-      query: (email) => ({
+    requestPasswordResetRequest: builder.mutation<any, { email: string }>({
+      query: ({ email }) => ({
         method: 'POST',
-        url: '/resetPassword',
+        url: '/forgot-password/send-mail',
         body: { email: email }
       })
     }),
-    confirmPasswordResetRequest: builder.mutation({
-      query: ({ code, newPassword, email }) => ({
+    validatePasswordResetCodeRequest: builder.mutation<any, { email: string, code: number }>({
+      query: ({ code, email }) => ({
         method: 'POST',
-        url: '/confirmReset',
-        body: { code, newPassword, email }
+        url: '/forgot-password/validate-code',
+        body: { code, email }
+      })
+    }),
+    setNewPasswordResetRequest: builder.mutation({
+      query: ({ newPassword, email }) => ({
+        method: 'PATCH',
+        url: '/forgot-password/reset',
+        body: { newPassword, email }
       })
     }),
 
@@ -84,8 +91,9 @@ export const {
   useLoginRequestMutation,
   useLazyLogoutRequestQuery,
   useRequestPasswordResetRequestMutation,
-  useConfirmPasswordResetRequestMutation,
-  useFetchLoggedInUserRequestQuery
+  useSetNewPasswordResetRequestMutation,
+  useFetchLoggedInUserRequestQuery,
+  useValidatePasswordResetCodeRequestMutation
 } = authApi
 
 export default authApi
