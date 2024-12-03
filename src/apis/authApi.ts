@@ -49,9 +49,11 @@ const authApi = createApi({
       //   dispatch(userApi.util.invalidateTags(["User"]));
       // },
     }),
-    changePassword: builder.mutation({
-      query: () => ({
-        url: '/changePassword'
+    changePassword: builder.mutation<any, { newPassword: string }>({
+      query: ({ newPassword }) => ({
+        url: '/change-password',
+        method: 'PUT',
+        body: { newPassword }
       })
     }),
     requestPasswordResetRequest: builder.mutation<any, { email: string }>({
@@ -93,7 +95,8 @@ export const {
   useRequestPasswordResetRequestMutation,
   useSetNewPasswordResetRequestMutation,
   useFetchLoggedInUserRequestQuery,
-  useValidatePasswordResetCodeRequestMutation
+  useValidatePasswordResetCodeRequestMutation,
+  useChangePasswordMutation
 } = authApi
 
 export default authApi

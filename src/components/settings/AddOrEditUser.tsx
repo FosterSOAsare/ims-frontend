@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 import useSelectedValuesFromHookForm from "@/hooks/useSelectedValuesFromHookForm";
 import { drugOrderSchema } from "@/libs/hookform";
@@ -157,7 +157,6 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 					</div>
 				</form>
 			</div>
-			<ToastContainer />
 		</div>
 	);
 };

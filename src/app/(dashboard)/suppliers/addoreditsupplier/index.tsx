@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { ToastContainer } from "react-toastify";
 
 import Step1 from "./Step1";
 import Step2 from "./Step2";
@@ -75,7 +74,6 @@ const AddOrEditDrug = ({ setShowAddOrEditSupplier, supplierId, setSelectedSuppli
 
 				<div className="h-[calc(100%-50px)]">{steps[step]}</div>
 			</aside>
-			<ToastContainer />
 		</div>
 	);
 };

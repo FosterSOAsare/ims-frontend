@@ -1,6 +1,10 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Input from "@/components/Input";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useChangePasswordMutation } from "@/apis/authApi";
+import { toast } from "react-toastify";
+import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
+import Loading from "@/components/Loading";
 
 const sessions = [
 	{ browser: "Chrome - Mac OS X", location: "Accra, GH", activity: "Current Session" },
@@ -11,6 +15,24 @@ const sessions = [
 const Security = () => {
 	const [showEditPassword, setShowEditPassword] = useState(false);
 	const [password, setPassword] = useState("");
+	const [changePasswordRequest, { data, isLoading, error }] = useChangePasswordMutation();
+
+	const changePassword = () => {
+		if (!password) return toast.error("Enter your new password", { autoClose: 1500 });
+		if (password.length < 8) return toast.error("Password must be at least 8 characters", { autoClose: 1500 });
+
+		// Change password
+		changePasswordRequest({ newPassword: password });
+	};
+
+	useEffect(() => {
+		if (!data) return;
+		toast.success("Password changed successfully", { autoClose: 1500 });
+		setShowEditPassword(false);
+	}, [data]);
+
+	useCreateErrorFromApiRequest(error);
+
 	return (
 		<div className="relative">
 			<h3 className="text-xl font-bold">Security</h3>
@@ -52,7 +74,9 @@ const Security = () => {
 						<button className="border-[1px] rounded-[8px] px-6 py-2 bg-[#FEF2F2] text-[#DC2626] hover:bg-[#DC2626] hover:text-white" onClick={() => setShowEditPassword(false)}>
 							Discard
 						</button>
-						<button className="border-[1px] rounded-[8px] px-6 py-2 hover:opacity-80 bg-sec text-white">Save</button>
+						<button className="border-[1px] rounded-[8px] px-6 py-2 hover:opacity-80 bg-sec text-white" onClick={changePassword}>
+							{isLoading ? <Loading /> : "Save"}
+						</button>
 					</div>
 				)}
 			</div>

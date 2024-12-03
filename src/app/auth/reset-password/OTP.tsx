@@ -46,7 +46,7 @@ const Otp = ({ setStep, email }: { setStep: React.Dispatch<React.SetStateAction<
 						</label>
 						<input type="number" autoFocus={true} value={otp} onChange={(e) => e.target.value?.length < 6 && setOtp(e.target.value)} id="otp" className="w-0 h-0" ref={inputRef} />
 
-						<Button text="Verify Code" sx={`${otp.length < 5 && "opacity-60"} mt-12`} handleClick={validateCode} disabled={otp?.length < 5} />
+						<Button text="Verify Code" isLoading={isLoading} sx={`${otp.length < 5 && "opacity-60"} mt-12`} handleClick={validateCode} disabled={otp?.length < 5} />
 						<Link href="/auth/login" className="text-center block hover:underline mt-8">
 							Back to Login
 						</Link>

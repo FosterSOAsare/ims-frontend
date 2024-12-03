@@ -7,7 +7,7 @@ import Otp from "./OTP";
 import SetPassword from "./SetPassword";
 
 const page = () => {
-	const [step, setStep] = useState(1);
+	const [step, setStep] = useState(0);
 	const [email, setEmail] = useState("");
 
 	const steps = [<Reset key={0} setStep={setStep} setEmail={setEmail} />, <Otp key={1} setStep={setStep} email={email} />, <SetPassword key={2} email={email} />];

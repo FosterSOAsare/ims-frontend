@@ -3,6 +3,7 @@ import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
 import store from "@/store";
 import React, { ReactNode } from "react";
 import { Provider } from "react-redux";
+import { ToastContainer } from "react-toastify";
 
 const InitialDispatch = ({ children }: { children: ReactNode }) => {
 	useFetchLoggedInUserRequestQuery();
@@ -11,7 +12,11 @@ const InitialDispatch = ({ children }: { children: ReactNode }) => {
 const ReduxProvider = ({ children }: { children: ReactNode }) => {
 	return (
 		<Provider store={store}>
-			<InitialDispatch>{children}</InitialDispatch>
+			<InitialDispatch>
+				{children}
+
+				<ToastContainer />
+			</InitialDispatch>
 		</Provider>
 	);
 };

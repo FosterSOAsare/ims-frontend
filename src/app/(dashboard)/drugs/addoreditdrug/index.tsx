@@ -5,7 +5,6 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
-import { ToastContainer } from "react-toastify";
 
 export interface IDrugDetails {
 	dosageForm: string;
@@ -88,7 +87,6 @@ const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId, setActiveColumn }: IAddOr
 
 				<div className="h-[calc(100%-50px)]">{steps[step]}</div>
 			</aside>
-			<ToastContainer />
 		</div>
 	);
 };

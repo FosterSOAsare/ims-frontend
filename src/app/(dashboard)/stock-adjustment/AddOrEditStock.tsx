@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 import useSelectedValuesFromHookForm from "@/hooks/useSelectedValuesFromHookForm";
 import { stockAdjustmentSchema } from "@/libs/hookform";
@@ -115,7 +115,6 @@ const AddOrEditStock = ({ setShowAddOrEditStock, stockId, setSelectedStock }: IA
 					</div>
 				</form>
 			</div>
-			<ToastContainer />
 		</div>
 	);
 };
