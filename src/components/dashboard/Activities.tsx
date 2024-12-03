@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import padNumber from "@/services/padNumber";
+import padNumber from "@/utils/padNumber";
 import MonthPicker from "../MonthPicker";
 
 const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Input from "@/components/Input";
 import CustomSelect from "@/components/Select";
 import drugs from "@/data/drugs";
-import padNumber from "@/services/padNumber";
+import padNumber from "@/utils/padNumber";
 import { toast, ToastContainer } from "react-toastify";
 
 export interface INewOrEditRequestDetails {

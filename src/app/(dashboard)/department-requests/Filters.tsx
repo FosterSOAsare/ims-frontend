@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { IFilter } from "./page";
 import drugs from "@/data/drugs";
 import CustomSelect from "@/components/Select";
-import padNumber from "@/services/padNumber";
+import padNumber from "@/utils/padNumber";
 
 export const initialFilter: IFilter = { status: "", department: "", drug: "" };
 const statusOptions = ["Adjusted", "Submitted", "Cancelled"];

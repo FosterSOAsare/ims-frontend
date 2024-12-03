@@ -1,18 +1,42 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
 
 import useSelectedValuesFromHookForm from "@/hooks/useSelectedValuesFromHookForm";
 import { loginSchema } from "@/libs/hookform";
+import authApi, { useLoginRequestMutation } from "@/apis/authApi";
+import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
+import { setSession } from "@/utils/session";
 
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 
 const page = () => {
+	const [loginRequest, { data, isLoading, error }] = useLoginRequestMutation();
 	const { register, handleSubmit } = useSelectedValuesFromHookForm(loginSchema);
+	const dispatch = useDispatch();
 	const loginUser = (data: any) => {
-		console.log(data);
+		const { email, password } = data;
+		loginRequest({ email, password });
 	};
+
+	useEffect(() => {
+		if (!data) return;
+		toast.success(data.message, { autoClose: 1500 });
+		console.log(data);
+
+		// Store tokens
+		const { accessToken, refreshToken } = data.data.tokens;
+		localStorage.setItem("refresh_token", accessToken);
+		setSession(accessToken);
+
+		// Refetch user
+		dispatch(authApi.util.invalidateTags(["USER"])); // Invalidate the tag
+		dispatch(authApi.util.resetApiState());
+	}, [data]);
+	useCreateErrorFromApiRequest(error);
 
 	return (
 		<div className="w-full h-screen flex items-center justify-between overflow-hidden">
@@ -26,7 +50,7 @@ const page = () => {
 					</Link>
 				</div>
 
-				<form className="my-auto" onClick={handleSubmit(loginUser)}>
+				<form className="my-auto" onSubmit={handleSubmit(loginUser)}>
 					<div className="">
 						<h3 className="text-3xl  font-bold">Welcome back</h3>
 						<p className="">Provide this information from your healthcare facility to get started.</p>
@@ -36,7 +60,7 @@ const page = () => {
 
 								<Input label="Password" type="password" register={register} name="password" placeholder="Enter password" />
 							</div>
-							<Button type="submit" text="Log in" sx="mt-12" />
+							<Button type="submit" text="Log in" sx="mt-12" isLoading={isLoading} />
 							<div className="flex items-center mt-2 justify-center">
 								<Link className="underline" href={"/auth/reset-password"}>
 									Forgot password
