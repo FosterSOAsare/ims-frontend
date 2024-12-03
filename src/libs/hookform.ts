@@ -50,6 +50,11 @@ export const drugOrderSchema = z.object({
   address: z.string().min(1, { message: "Please add your address for delivery" }),
 });
 
+export const newUserSchema = z.object({
+  name: z.string().min(1, { message: "Please enter fullname" }).min(3, { message: 'Full name should not be less than 3 characters' }),
+  email: z.string().min(1, { message: "Please enter email address" }).email({ message: "Please enter a valid email address" }),
+});
+
 export const newSupplierStep1Schema = z.object({
   name: z.string().min(1, { message: "Please enter the name of the supplier" }).min(3, { message: 'Name of supplier should not be less than 3 characters' }),
   tradeName: z.string().min(1, { message: "Please enter the brand of the supplier" }).min(3, { message: 'Trade name should not be less than 3 characters' }),

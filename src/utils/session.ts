@@ -10,8 +10,9 @@ export function createAuthorizationHeader(headers: any) {
   const token = getSession();
   // Convert headers to Headers object if needed
   const headersInstance = new Headers(headers);
+
   headersInstance.set("domain", process.env.NEXT_PUBLIC_API_URL as string)
-  if (token) {
+  if (token && !headersInstance.get('Authorization')) {
     headersInstance.set('Authorization', `Bearer ${token}`);
   }
   return headersInstance;

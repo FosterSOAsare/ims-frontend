@@ -10,7 +10,7 @@ import NoData from "@/components/NoData";
 interface IDepartment {
 	name: string;
 	createdAt: Date;
-	createdBy: string;
+	createdBy: { name: string };
 	id: string;
 }
 
@@ -61,7 +61,7 @@ const Departments = () => {
 								{data.data.rows.map(({ name, createdAt, createdBy }: IDepartment, index: number) => (
 									<div className="mt-4 grid-cols-12 border-[1px] border-[#E2E8F0] items-center rounded-[12px] gap-3 grid px-3" key={index}>
 										<div className="col-span-3 line-clamp-1 text-[13px] py-2">{name}</div>
-										<div className={`col-span-5 text-gray-500 text-[13px] py-2`}>{createdBy}</div>
+										<div className={`col-span-5 text-gray-500 text-[13px] py-2`}>{createdBy?.name}</div>
 										<div className="col-span-2 text-gray-500 text-[13px] py-2">{formatDate(createdAt)}</div>
 
 										{/* Actions */}

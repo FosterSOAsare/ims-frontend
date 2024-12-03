@@ -28,7 +28,7 @@ const page = () => {
 
 		// Store tokens
 		const { accessToken, refreshToken } = data.data.tokens;
-		localStorage.setItem("refresh_token", accessToken);
+		localStorage.setItem("refresh_token", refreshToken);
 		setSession(accessToken);
 
 		// Refetch user

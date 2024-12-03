@@ -10,10 +10,10 @@ interface IUserCard extends IUser {
 	viewStockAdjustment?: () => void;
 	setShowAddOrEditUser: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const User = ({ name, role, selectedUser, index, isLast, setShowAddOrEditUser, setSelectedUser, status }: IUserCard) => {
+const User = ({ fullName, role, selectedUser, index, isLast, setShowAddOrEditUser, setSelectedUser, status }: IUserCard) => {
 	return (
 		<div className="mt-4 grid-cols-12 border-[1px] border-[#E2E8F0] items-center rounded-[12px] grid px-3" key={index}>
-			<div className="col-span-5 text-sm py-2">{name}</div>
+			<div className="col-span-5 text-sm py-2">{fullName}</div>
 			<div className="col-span-3 text-gray-500 text-sm py-2">{role}</div>
 			<div className={`"col-span-2 text-gray-500 text-sm py-2`}>
 				<div
@@ -48,10 +48,10 @@ const User = ({ name, role, selectedUser, index, isLast, setShowAddOrEditUser, s
 									Change Role
 								</button>
 							</>
-							{status === "active" && (
+							{status?.toLowerCase() === "active" && (
 								<button className="px-3 gap-[6px] hover:bg-red-500 flex hover:text-white items-center justify-start text-sm text-red-500 w-full py-2">Deactivate User</button>
 							)}
-							{status === "deactivated" && (
+							{status?.toLowerCase() === "deactivated" && (
 								<button className="px-3 gap-[6px] hover:bg-green-500 flex hover:text-white items-center justify-start text-sm text-green-500 w-full py-2">Re-activate User</button>
 							)}
 						</div>

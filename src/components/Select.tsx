@@ -57,7 +57,7 @@ const CustomSelect = ({ options, placeholder = "", label, value, handleChange }:
 				</label>
 			)}
 			<Select
-				options={options.map((option) => ({ label: option, value: option }))}
+				options={options?.map((option) => ({ label: option, value: option }))}
 				styles={customStyles}
 				value={{ label: value, value: value }}
 				onChange={(selected: any) => handleChange(selected.value)}

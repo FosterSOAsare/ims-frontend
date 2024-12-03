@@ -81,6 +81,14 @@ const authApi = createApi({
     fetchLoggedInUserRequest: builder.query<any, void>({
       query: () => '/user',
       providesTags: () => [{ type: 'USER' }]
+    }),
+    refreshAccessTokenRequest: builder.query<any, { token: string }>({
+      query: ({ token }) => {
+        return {
+          url: '/refresh',
+          headers: { 'Authorization': `Bearer ${token}` },
+        }
+      }
     })
 
   })
@@ -96,7 +104,8 @@ export const {
   useSetNewPasswordResetRequestMutation,
   useFetchLoggedInUserRequestQuery,
   useValidatePasswordResetCodeRequestMutation,
-  useChangePasswordMutation
+  useChangePasswordMutation,
+  useLazyRefreshAccessTokenRequestQuery
 } = authApi
 
 export default authApi

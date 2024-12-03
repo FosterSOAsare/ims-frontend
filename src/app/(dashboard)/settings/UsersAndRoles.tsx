@@ -1,29 +1,43 @@
+import { useLazyGetUsersQuery } from "@/apis/usersApi";
+import { PageLoading } from "@/components/Loading";
+import NoData from "@/components/NoData";
 import AddOrEditUser from "@/components/settings/AddOrEditUser";
 import User from "@/components/settings/User";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 // import AddOrEditUser from "./AddOrEditUser";
 
 export interface IUser {
-	name: string;
+	fullName: string;
 	role: string;
 	status: "active" | "deactivated" | "pending";
 	id: string;
 }
 
-const users: IUser[] = [
-	{ id: "1", name: "Grace Ashley", role: "Central Admin", status: "pending" },
-	{ id: "2", name: "Bright Tod", role: "Admin", status: "active" },
-	{ id: "3", name: "Judith Bill", role: "Pharmacist", status: "active" },
-	{ id: "4", name: "Judith Bill", role: "Admin", status: "deactivated" },
-	{ id: "5", name: "Judith Bill", role: "Admin", status: "active" },
-];
+// const users: IUser[] = [
+// 	{ id: "1", name: "Grace Ashley", role: "Central Admin", status: "pending" },
+// 	{ id: "2", name: "Bright Tod", role: "Admin", status: "active" },
+// 	{ id: "3", name: "Judith Bill", role: "Pharmacist", status: "active" },
+// 	{ id: "4", name: "Judith Bill", role: "Admin", status: "deactivated" },
+// 	{ id: "5", name: "Judith Bill", role: "Admin", status: "active" },
+// ];
 
 const Users = () => {
 	const [selectedUser, setSelectedUser] = useState<null | number>(null);
-	const [showAddOrEditUser, setShowAddOrEditUser] = useState<boolean>(false);
+	const [showAddOrEditUser, setShowAddOrEditUser] = useState<boolean>(true);
 
-	const department = useMemo(() => (selectedUser !== null ? users[selectedUser] : ({} as IUser)), [selectedUser]);
+	const [page] = useState(0);
+
+	const [getUsersRequest, { data, isLoading, error }] = useLazyGetUsersQuery();
+
+	useEffect(() => {
+		getUsersRequest({ page: page + 1 });
+	}, [page]);
+
+	const user = useMemo(() => {
+		if (!data || selectedUser === null) return {} as IUser;
+		return data?.data?.rows[selectedUser];
+	}, [selectedUser, data]);
 	return (
 		<div>
 			<div className="flex items-center justify-between">
@@ -45,22 +59,31 @@ const Users = () => {
 					<div className="col-span-3"></div>
 				</div>
 
-				<div>
-					{users.map((user: IUser, index) => (
-						<User
-							{...user}
-							key={index}
-							index={index}
-							selectedUser={selectedUser}
-							setSelectedUser={setSelectedUser}
-							setShowAddOrEditUser={setShowAddOrEditUser}
-							isLast={index >= users.length - 2}
-						/>
-					))}
-				</div>
+				{!isLoading && data && (
+					<div>
+						{data?.data?.rows?.length > 0 && (
+							<>
+								{data?.data?.rows.map((user: IUser, index: number) => (
+									<User
+										{...user}
+										key={index}
+										index={index}
+										selectedUser={selectedUser}
+										setSelectedUser={setSelectedUser}
+										setShowAddOrEditUser={setShowAddOrEditUser}
+										isLast={data?.data?.rows > 5 && index >= data?.data?.rows.length - 2}
+									/>
+								))}
+							</>
+						)}
+						{data?.data?.rows?.length === 0 && <NoData />}
+					</div>
+				)}
+
+				{isLoading && <PageLoading />}
 			</div>
 
-			{showAddOrEditUser && <AddOrEditUser setSelectedUser={setSelectedUser} userId={department?.id as string} setShowAddOrEditUser={setShowAddOrEditUser} />}
+			{showAddOrEditUser && <AddOrEditUser setSelectedUser={setSelectedUser} userId={user?.id as string} setShowAddOrEditUser={setShowAddOrEditUser} />}
 		</div>
 	);
 };
