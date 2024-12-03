@@ -26,13 +26,13 @@ const ProtectedRoute = ({ children, loginRequired = false }: ProtectedRouteProps
 		}
 
 		// If login is required but user is not authenticated, redirect to login page
-		if (!isLoading && loginRequired && (!user?.email || error)) {
+		if (!isLoading && loginRequired && (!user?.data?.email || error)) {
 			router.replace("/auth/login");
 			return;
 		}
 
 		setRoutingChecked(true);
-	}, [router, isLoading, error, user?.email]);
+	}, [router, isLoading, error, user?.data.email]);
 
 	return (
 		<>
@@ -43,9 +43,9 @@ const ProtectedRoute = ({ children, loginRequired = false }: ProtectedRouteProps
 			)}
 			{routingChecked && (
 				<>
-					{!isLoading && loginRequired && !error && user?.email && <>{children}</>}
+					{!isLoading && loginRequired && !error && user?.data?.email && <>{children}</>}
 
-					{!isLoading && !loginRequired && !user?.email && <>{children}</>}
+					{!isLoading && !loginRequired && !user?.data?.email && <>{children}</>}
 				</>
 			)}
 		</>
