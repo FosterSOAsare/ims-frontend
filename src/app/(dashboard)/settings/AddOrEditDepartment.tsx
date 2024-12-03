@@ -1,6 +1,7 @@
 import { useCreateADepartmentRequestMutation, useEditADepartmentRequestMutation } from "@/apis/departmentsApi";
 import Input from "@/components/Input";
 import Loading from "@/components/Loading";
+import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -27,10 +28,13 @@ const AddOrEditDepartment = ({ setShowAddOrEditDepartment, departmentId, departm
 
 	useEffect(() => {
 		if (!created && !updated) return;
-		toast.success(`Departed ${created ? "created" : "updated"} successfully`, { autoClose: 1500 });
+		toast.success(`Department ${created ? "created" : "updated"} successfully`, { autoClose: 1500 });
 
 		setShowAddOrEditDepartment(false);
 	}, [created, updated]);
+
+	useCreateErrorFromApiRequest(createError);
+	useCreateErrorFromApiRequest(updateError);
 
 	return (
 		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-center px-3 w-full fixed top-0 left-0 z-[5]">

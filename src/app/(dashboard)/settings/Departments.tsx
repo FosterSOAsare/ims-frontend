@@ -5,6 +5,7 @@ import { useDeleteADepartmentRequestMutation, useGetDepartmentsQuery } from "@/a
 import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 import Loading, { PageLoading } from "@/components/Loading";
 import { formatDate } from "@/utils/date";
+import NoData from "@/components/NoData";
 
 interface IDepartment {
 	name: string;
@@ -82,6 +83,8 @@ const Departments = () => {
 								))}
 							</>
 						)}
+
+						{data?.data?.rows?.length === 0 && <NoData />}
 					</div>
 				)}
 

@@ -3,30 +3,28 @@ import React, { useMemo, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import AddOrEditCategory from "./AddOrEditCategory";
+import { useGetItemCategoriesQuery } from "@/apis/itemCategories";
+import NoData from "@/components/NoData";
+import { PageLoading } from "@/components/Loading";
+import { formatDate } from "@/utils/date";
 
 interface ICategory {
 	id: string;
 	name: string;
-	dateCreated: string;
+	createdAt: string;
 	status: "Deactivated" | "Active";
 	itemsCount: number;
 }
 
-const categories: ICategory[] = [
-	{ id: "1", name: "Laxatives", dateCreated: "Jun 25, 24", status: "Deactivated", itemsCount: 40 },
-	{ id: "2", name: "Corticosteroids", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 70 },
-	{ id: "3", name: "Cough Suppressants", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 2 },
-	{ id: "4", name: "Cytotoxics", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 45 },
-	{ id: "5", name: "Decongestants", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 0 },
-	{ id: "6", name: "Diuretics", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 100 },
-	{ id: "7", name: "Immunosuppressives", dateCreated: "Jun 25, 24", status: "Active", itemsCount: 70 },
-];
-
 const page = () => {
 	const [selectedCategory, setSelectedCategory] = useState<null | number>(null);
 	const [showAddOrEditCategory, setShowAddOrEditCategory] = useState<boolean>(false);
+	const { data, isLoading, error } = useGetItemCategoriesQuery();
 
-	const category = useMemo(() => (selectedCategory !== null ? categories[selectedCategory] : ({} as ICategory)), [selectedCategory]);
+	const category = useMemo(() => {
+		if (!data || selectedCategory === null) return {} as ICategory;
+		return data?.data?.rows[selectedCategory];
+	}, [selectedCategory, data]);
 	return (
 		<div className="relative">
 			<h3 className="text-2xl mb-3 font-bold">Categories</h3>
@@ -60,40 +58,52 @@ const page = () => {
 					{/* <div className="col-span-4 text-gray-500 uppercase text-xs py-3"></div> */}
 				</div>
 
-				<div>
-					{/* Last two on the table will have isLast so the drop down shows at the top instead */}
-					{categories.map(({ name, dateCreated, status, itemsCount }, index) => (
-						<div className="bg-white drugs-table gap-2 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
-							<div className="col-span-6 text-primary py-3 text-left">{name}</div>
-							<div className="col-span-4 text-primary py-3 text-left">{dateCreated}</div>
-							<div className="col-span-4 text-sm text-gray-500 py-3 text-left">
-								<div
-									className={`${
-										status.toLowerCase() === "deactivated" ? "text-red-500 bg-red-100" : "bg-green-100 text-green-500"
-									} inline-flex rounded-full px-2 py-1 items-center gap-1`}>
-									<span className={`inline-block w-[6px] h-[6px] rounded-full ${status.toLowerCase() === "deactivated" ? " bg-red-500" : "bg-green-500"}`}></span>
-									{status}
-								</div>
-							</div>
-							<div className="col-span-6 text-primary py-3 flex items-center gap-1 text-left">{itemsCount}</div>
+				<>
+					{!isLoading && data && (
+						<>
+							{data?.data?.rows?.length > 0 && (
+								<div>
+									{/* Last two on the table will have isLast so the drop down shows at the top instead */}
+									{data?.data?.rows?.map(({ name, createdAt, status, itemsCount }: ICategory, index: number) => (
+										<div key={index} className="bg-white drugs-table gap-2 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
+											<div className="col-span-6 text-primary py-3 text-left">{name}</div>
+											<div className="col-span-4 text-primary py-3 text-left">{formatDate(createdAt)}</div>
+											<div className="col-span-4 text-sm text-gray-500 py-3 text-left">
+												<div
+													className={`${
+														status.toLowerCase() === "deactivated" ? "text-red-500 bg-red-100" : "bg-green-100 text-green-500"
+													} inline-flex rounded-full px-2 py-1 items-center gap-1`}>
+													<span className={`inline-block w-[6px] h-[6px] rounded-full ${status.toLowerCase() === "deactivated" ? " bg-red-500" : "bg-green-500"}`}></span>
+													{status}
+												</div>
+											</div>
+											<div className="col-span-6 text-primary py-3 flex items-center gap-1 text-left">{itemsCount || 0}</div>
 
-							{/* Actions */}
-							<div className="col-span-4 text-primary py-3 gap-2 text-left flex items-center justify-end">
-								<button className="p-2 rounded-full hover:bg-gray-200">
-									<Icon icon="ph:trash" />
-								</button>
-								<button
-									className="p-2 rounded-full hover:bg-red-500 hover:text-white"
-									onClick={() => {
-										setSelectedCategory(index);
-										setShowAddOrEditCategory(true);
-									}}>
-									<Icon icon="lucide:edit-2" />
-								</button>
-							</div>
-						</div>
-					))}
-				</div>
+											{/* Actions */}
+											<div className="col-span-4 text-primary py-3 gap-2 text-left flex items-center justify-end">
+												<button className="p-2 rounded-full hover:bg-gray-200">
+													<Icon icon="ph:trash" />
+												</button>
+												<button
+													className="p-2 rounded-full hover:bg-red-500 hover:text-white"
+													onClick={() => {
+														setSelectedCategory(index);
+														setShowAddOrEditCategory(true);
+													}}>
+													<Icon icon="lucide:edit-2" />
+												</button>
+											</div>
+										</div>
+									))}
+								</div>
+							)}
+
+							{data?.data?.row?.length === 0 && <NoData />}
+						</>
+					)}
+
+					{isLoading && <PageLoading />}
+				</>
 			</div>
 
 			{showAddOrEditCategory && (
