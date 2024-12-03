@@ -28,7 +28,7 @@ const Departments = () => {
 	const deleteDepartment = (index: number) => {
 		setSelectedDepartment(index);
 		const d = data?.data?.rows[index];
-		deleteDepartmentRequest({ departmentId: department.id });
+		deleteDepartmentRequest({ departmentId: d.id });
 	};
 
 	useCreateErrorFromApiRequest(error);

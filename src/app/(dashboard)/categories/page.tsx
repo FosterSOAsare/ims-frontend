@@ -3,10 +3,11 @@ import React, { useMemo, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import AddOrEditCategory from "./AddOrEditCategory";
-import { useGetItemCategoriesQuery } from "@/apis/itemCategories";
-import NoData from "@/components/NoData";
-import { PageLoading } from "@/components/Loading";
+import { useDeleteAnItemCategoryRequestMutation, useGetItemCategoriesQuery } from "@/apis/itemCategories";
 import { formatDate } from "@/utils/date";
+
+import NoData from "@/components/NoData";
+import Loading, { PageLoading } from "@/components/Loading";
 
 interface ICategory {
 	id: string;
@@ -20,11 +21,19 @@ const page = () => {
 	const [selectedCategory, setSelectedCategory] = useState<null | number>(null);
 	const [showAddOrEditCategory, setShowAddOrEditCategory] = useState<boolean>(false);
 	const { data, isLoading, error } = useGetItemCategoriesQuery();
+	const [deleteACategoryRequest, { isLoading: deleting, error: deleteError }] = useDeleteAnItemCategoryRequestMutation();
 
 	const category = useMemo(() => {
 		if (!data || selectedCategory === null) return {} as ICategory;
 		return data?.data?.rows[selectedCategory];
 	}, [selectedCategory, data]);
+
+	const deleteCategory = (index: number) => {
+		setSelectedCategory(index);
+		const d = data?.data?.rows[index];
+		deleteACategoryRequest({ categoryId: d.id });
+	};
+
 	return (
 		<div className="relative">
 			<h3 className="text-2xl mb-3 font-bold">Categories</h3>
@@ -81,8 +90,8 @@ const page = () => {
 
 											{/* Actions */}
 											<div className="col-span-4 text-primary py-3 gap-2 text-left flex items-center justify-end">
-												<button className="p-2 rounded-full hover:bg-gray-200">
-													<Icon icon="ph:trash" />
+												<button className="p-2 rounded-full hover:bg-gray-200" onClick={() => deleteCategory(index)}>
+													{deleting && selectedCategory === index ? <Loading sx="!w-5 !h-5 !border-sec" /> : <Icon icon="ph:trash" />}
 												</button>
 												<button
 													className="p-2 rounded-full hover:bg-red-500 hover:text-white"
