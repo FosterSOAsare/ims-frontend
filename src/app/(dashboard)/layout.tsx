@@ -6,18 +6,24 @@ import Link from "next/link";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import { generalTabs, helpTabs } from "@/data/navLinks";
+import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
+import useLogout from "@/hooks/useLogout";
 
 import Notification from "./Notification";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 import ProfileImage from "@/assets/images/profile.svg";
+import AvatarImage from "@/assets/images/avatar.webp";
 
 const layout = ({ children }: { children: ReactNode }) => {
+	const { data: user } = useFetchLoggedInUserRequestQuery();
 	const pathname = usePathname();
 	const [openedTab, setOpenedTab] = useState<null | number>(null);
 	const [mode, setMode] = useState("light");
 	const [showAccountPopup, setShowAccountPopup] = useState(false);
 	const [showNotifications, setShowNotifications] = useState(false);
+
+	const logOutUser = useLogout();
 
 	// Open tab based on pathname
 	useEffect(() => {
@@ -148,6 +154,7 @@ const layout = ({ children }: { children: ReactNode }) => {
 									<Icon icon="ph:headset-bold" />
 								</span>
 							</Link>
+
 							<div className="relative">
 								<button className="bg-gray-100 rounded-full hover:text-white hover:bg-gray-400 p-2" onClick={() => setShowNotifications((prev) => !prev)}>
 									<Icon icon="ph:bell" className="text-2xl" />
@@ -161,9 +168,9 @@ const layout = ({ children }: { children: ReactNode }) => {
 							<div className="flex gap-2 relative items-center justify-between">
 								<div className="flex gap-2 relative items-center justify-between">
 									<span className="rounded-full">
-										<Image src={ProfileImage} alt="Profile Image" width={35} height={35} />
+										<Image src={user?.data?.imageUrl ? user?.data?.imageUrl : AvatarImage} alt="Profile Image" className="rounded-full" width={35} height={35} />
 									</span>
-									<p className="text-primary font-medium"> Michael Mensah</p>
+									<p className="text-primary font-medium"> {user?.data?.fullName}</p>
 									<button className="p-1 hover:bg-gray-200 rounded-full" onClick={() => setShowAccountPopup((prev) => !prev)}>
 										<Icon icon="mdi-light:dots-vertical" className="text-2xl" />
 									</button>
@@ -175,7 +182,9 @@ const layout = ({ children }: { children: ReactNode }) => {
 											<Icon icon="solar:settings-minimalistic-linear" className="text-lg" />
 											Settings
 										</Link>
-										<button className="px-3 gap-[6px] hover:bg-red-500 hover:text-white text-red-500 flex items-center justify-start text-sm w-full py-3">
+										<button
+											onClick={() => logOutUser()}
+											className="px-3 gap-[6px] hover:bg-red-500 hover:text-white text-red-500 flex items-center justify-start text-sm w-full py-3">
 											<Icon icon="solar:logout-2-outline" className="text-lg" />
 											Logout
 										</button>

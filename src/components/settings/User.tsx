@@ -25,11 +25,11 @@ const User = ({ fullName, role, selectedUser, index, isLast, setShowAddOrEditUse
 			<div className={`"col-span-2 text-gray-500 text-sm py-2`}>
 				<div
 					className={`${
-						status.toLowerCase() === "deactivated" ? "text-red-500 bg-red-100" : status === "active" ? "bg-green-100 text-green-500" : "bg-[#FFFAEB] text-[#B54708]"
+						status.toLowerCase() === "deactivated" ? "text-red-500 bg-red-100" : status.toLowerCase() === "active" ? "bg-green-100 text-green-500" : "bg-[#FFFAEB] text-[#B54708]"
 					} capitalize inline-flex rounded-full px-2 py-1 items-center gap-1 `}>
 					<span
 						className={`inline-block w-[6px] h-[6px] rounded-full ${
-							status.toLowerCase() === "deactivated" ? " bg-red-500" : status == "active" ? " bg-green-500" : " bg-[#B54708]"
+							status.toLowerCase() === "deactivated" ? " bg-red-500" : status.toLowerCase() == "active" ? " bg-green-500" : " bg-[#B54708]"
 						}`}></span>
 					{status}
 				</div>
@@ -63,7 +63,7 @@ const User = ({ fullName, role, selectedUser, index, isLast, setShowAddOrEditUse
 									Deactivate User
 								</button>
 							)}
-							{(status?.toLowerCase() === "deactivated" || status?.toLowerCase() === "pending") && (
+							{status?.toLowerCase() === "deactivated" && (
 								<button
 									disabled={isLoading}
 									onClick={() => changeUserAccountStatusRequest({ status: "activate", userId: id })}

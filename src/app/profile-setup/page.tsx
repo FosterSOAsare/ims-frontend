@@ -46,8 +46,6 @@ const page = () => {
 		// Refetch user
 		dispatch(authApi.util.invalidateTags(["USER"])); // Invalidate the tag
 		dispatch(authApi.util.resetApiState());
-
-		// Redirect
 	}, [data]);
 
 	useCreateErrorFromApiRequest(error);

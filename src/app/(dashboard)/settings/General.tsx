@@ -1,12 +1,15 @@
 import Image from "next/image";
 import React, { useState } from "react";
 
-import ProfileImage from "@/assets/images/profile.svg";
+import AvatarImage from "@/assets/images/avatar.webp";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Input from "@/components/Input";
+import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
 
 const General = () => {
 	const [showEditGeneral, setShowEditGeneral] = useState(false);
+
+	const { data: user } = useFetchLoggedInUserRequestQuery();
 	return (
 		<div className="w-full">
 			<div className="pb-6 border-b-[1px]">
@@ -14,8 +17,8 @@ const General = () => {
 				<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, rerum!</p>
 
 				<div className="flex mt-4 gap-2">
-					<div className="w-14 h-14 rounded-full relative">
-						<Image src={ProfileImage} alt="Profile" fill />
+					<div className="w-14 h-14 rounded-full shadow-md border-[1px] relative">
+						<Image src={user?.data?.imageUrl ? user?.data?.imageUrl : AvatarImage} alt="Profile" fill className="rounded-full" />
 						<label
 							htmlFor="file"
 							className="w-6 flex items-center justify-center hover:cursor-pointer h-6 rounded-full bg-white border-[1px] shadow-md absolute -right-1 -bottom-1 z-[100]">
@@ -25,9 +28,9 @@ const General = () => {
 					</div>
 					<div>
 						<h3 className="text-lg flex items-center gap-1 font-bold">
-							Michael Mensah <span className="uppercase text-[10px] bg-[#D97706] text-white px-2  rounded-full">Central Admin</span>
+							{user?.data?.fullName} <span className="uppercase text-[10px] bg-[#D97706] text-white px-2  rounded-full">{user?.data?.role}</span>
 						</h3>
-						<p className="text-sm">michael@gmail.com</p>
+						<p className="text-sm">{user?.data?.email}</p>
 					</div>
 				</div>
 			</div>
@@ -44,16 +47,16 @@ const General = () => {
 					<div className="mt-4">
 						<div className="w-full mb-4">
 							<p>Name</p>
-							<h3>Michael Mensah</h3>
+							<h3>{user?.data?.fullName} </h3>
 						</div>
 						<div className="flex items-center justify-between">
 							<div className="w-full mb-4">
 								<p>Email</p>
-								<h3>michael@gmail.com</h3>
+								<h3>{user?.data?.email} </h3>
 							</div>
 							<div className="w-full mb-4">
 								<p>Phone number</p>
-								<h3>+ 233 555567457</h3>
+								<h3>{user?.data?.phoneNumber || "-"} </h3>
 							</div>
 						</div>
 					</div>
