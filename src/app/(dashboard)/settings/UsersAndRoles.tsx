@@ -14,17 +14,9 @@ export interface IUser {
 	id: string;
 }
 
-// const users: IUser[] = [
-// 	{ id: "1", name: "Grace Ashley", role: "Central Admin", status: "pending" },
-// 	{ id: "2", name: "Bright Tod", role: "Admin", status: "active" },
-// 	{ id: "3", name: "Judith Bill", role: "Pharmacist", status: "active" },
-// 	{ id: "4", name: "Judith Bill", role: "Admin", status: "deactivated" },
-// 	{ id: "5", name: "Judith Bill", role: "Admin", status: "active" },
-// ];
-
 const Users = () => {
 	const [selectedUser, setSelectedUser] = useState<null | number>(null);
-	const [showAddOrEditUser, setShowAddOrEditUser] = useState<boolean>(true);
+	const [showAddOrEditUser, setShowAddOrEditUser] = useState<boolean>(false);
 
 	const [page] = useState(0);
 

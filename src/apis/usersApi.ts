@@ -23,11 +23,10 @@ const usersApi = createApi({
       }),
       invalidatesTags: [{ type: 'Users' }]
     }),
-    editADepartmentRequest: builder.mutation<any, { name: string; departmentId: string }>({
-      query: ({ name, departmentId }) => ({
+    changeUserAccountStatusRequest: builder.mutation<any, { userId: string; status: 'activate' | 'deactivate' }>({
+      query: ({ userId, status }) => ({
         method: 'PATCH',
-        url: `/${departmentId}`,
-        body: { name }
+        url: `/users/${userId}/${status}`,
       }),
       invalidatesTags: [{ type: 'Users' }]
     }),
@@ -38,9 +37,20 @@ const usersApi = createApi({
       }),
       invalidatesTags: [{ type: 'Users' }]
     }),
-    getUserRolesRequest: builder.query<any, void>({
+    getAllRolesRequest: builder.query<any, void>({
       query: () => '/roles'
-    })
+    }),
+    getAUserRequest: builder.query<any, { userId: string }>({
+      query: ({ userId }) => `/users/${userId}`
+    }),
+    updateUserRoleRequest: builder.mutation<any, { permissions: string[]; userId: string; role: string }>({
+      query: ({ permissions, role, userId, }) => ({
+        method: 'PATCH',
+        url: `/users/${userId}/role`,
+        body: { permissions, role, }
+      }),
+      invalidatesTags: [{ type: 'Users' }]
+    }),
   })
 
 })
@@ -48,9 +58,11 @@ const usersApi = createApi({
 export const {
   useLazyGetUsersQuery,
   useCreateANewUserRequestMutation,
-  useEditADepartmentRequestMutation,
+  useChangeUserAccountStatusRequestMutation,
   useDeleteADepartmentRequestMutation,
-  useGetUserRolesRequestQuery
+  useGetAllRolesRequestQuery,
+  useLazyGetAUserRequestQuery,
+  useUpdateUserRoleRequestMutation
 } = usersApi
 
 export default usersApi

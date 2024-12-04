@@ -14,7 +14,7 @@ interface ICategory {
 	name: string;
 	createdAt: string;
 	status: "Deactivated" | "Active";
-	itemsCount: number;
+	itemCount: number;
 }
 
 const page = () => {
@@ -73,7 +73,7 @@ const page = () => {
 							{data?.data?.rows?.length > 0 && (
 								<div>
 									{/* Last two on the table will have isLast so the drop down shows at the top instead */}
-									{data?.data?.rows?.map(({ name, createdAt, status, itemsCount }: ICategory, index: number) => (
+									{data?.data?.rows?.map(({ name, createdAt, status, itemCount }: ICategory, index: number) => (
 										<div key={index} className="bg-white drugs-table gap-2 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
 											<div className="col-span-6 text-primary py-3 text-left">{name}</div>
 											<div className="col-span-4 text-primary py-3 text-left">{formatDate(createdAt)}</div>
@@ -86,7 +86,7 @@ const page = () => {
 													{status}
 												</div>
 											</div>
-											<div className="col-span-6 text-primary py-3 flex items-center gap-1 text-left">{itemsCount || 0}</div>
+											<div className="col-span-6 text-primary py-3 flex items-center gap-1 text-left">{itemCount || 0}</div>
 
 											{/* Actions */}
 											<div className="col-span-4 text-primary py-3 gap-2 text-left flex items-center justify-end">

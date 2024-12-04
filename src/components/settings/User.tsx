@@ -1,6 +1,9 @@
+import { useChangeUserAccountStatusRequestMutation } from "@/apis/usersApi";
 import { IUser } from "@/app/(dashboard)/settings/UsersAndRoles";
+import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
+import Loading from "../Loading";
 
 interface IUserCard extends IUser {
 	isLast: boolean;
@@ -8,9 +11,13 @@ interface IUserCard extends IUser {
 	setSelectedUser: React.Dispatch<React.SetStateAction<number | null>>;
 	index: number;
 	viewStockAdjustment?: () => void;
+	id: string;
 	setShowAddOrEditUser: React.Dispatch<React.SetStateAction<boolean>>;
 }
-const User = ({ fullName, role, selectedUser, index, isLast, setShowAddOrEditUser, setSelectedUser, status }: IUserCard) => {
+const User = ({ fullName, role, selectedUser, index, isLast, setShowAddOrEditUser, setSelectedUser, status, id }: IUserCard) => {
+	const [changeUserAccountStatusRequest, { data, isLoading, error }] = useChangeUserAccountStatusRequestMutation();
+
+	useCreateErrorFromApiRequest(error);
 	return (
 		<div className="mt-4 grid-cols-12 border-[1px] border-[#E2E8F0] items-center rounded-[12px] grid px-3" key={index}>
 			<div className="col-span-5 text-sm py-2">{fullName}</div>
@@ -49,10 +56,20 @@ const User = ({ fullName, role, selectedUser, index, isLast, setShowAddOrEditUse
 								</button>
 							</>
 							{status?.toLowerCase() === "active" && (
-								<button className="px-3 gap-[6px] hover:bg-red-500 flex hover:text-white items-center justify-start text-sm text-red-500 w-full py-2">Deactivate User</button>
+								<button
+									disabled={isLoading}
+									onClick={() => changeUserAccountStatusRequest({ status: "deactivate", userId: id })}
+									className="px-3 gap-[6px] hover:bg-red-500 flex hover:text-white items-center justify-start text-sm text-red-500 w-full py-2">
+									Deactivate User
+								</button>
 							)}
-							{status?.toLowerCase() === "deactivated" && (
-								<button className="px-3 gap-[6px] hover:bg-green-500 flex hover:text-white items-center justify-start text-sm text-green-500 w-full py-2">Re-activate User</button>
+							{(status?.toLowerCase() === "deactivated" || status?.toLowerCase() === "pending") && (
+								<button
+									disabled={isLoading}
+									onClick={() => changeUserAccountStatusRequest({ status: "activate", userId: id })}
+									className="px-3 gap-[6px] hover:bg-green-500 flex hover:text-white items-center justify-start text-sm text-green-500 w-full py-2">
+									{isLoading ? <Loading /> : "Re-activate User"}
+								</button>
 							)}
 						</div>
 					)}
