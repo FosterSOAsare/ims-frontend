@@ -2,7 +2,7 @@
 import React, { useMemo, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
-import suppliers, { ISuppliers } from "@/data/suppliers";
+import suppliers, { ISupplier } from "@/data/suppliers";
 import TableColumn from "./TableColumn";
 import Filters, { initialFilter } from "./Filters";
 import AddOrEditRequest from "./AddOrEditRequest";
@@ -39,7 +39,7 @@ const page = () => {
 	const [filters, setFilters] = useState<IFilter>(initialFilter);
 	const [showAddOrEditRequest, setShowAddOrEditRequest] = useState<boolean>(true);
 
-	const request = useMemo(() => (selectedRequest !== null ? suppliers[selectedRequest] : ({} as ISuppliers)), [selectedRequest]);
+	const request = useMemo(() => (selectedRequest !== null ? suppliers[selectedRequest] : ({} as ISupplier)), [selectedRequest]);
 	return (
 		<div className="relative">
 			<h3 className="text-2xl mb-3 font-bold">Department requests</h3>
