@@ -18,8 +18,12 @@ const ProtectedRoute = ({ children, loginRequired = false }: ProtectedRouteProps
 	const [routingChecked, setRoutingChecked] = useState(false);
 
 	useEffect(() => {
-		// if the route doesn't require login but user is authenticated redirect to account page - (Auth pages)
+		// if the route doesn't require login but user is authenticated redirect to account or profile setup page - (Auth pages)
 		if (!isLoading && !loginRequired && !error && user?.data?.email) {
+			if (user.data.status.toLowerCase() === "pending") {
+				router.replace("/profile-setup");
+				return;
+			}
 			// TODO: check permissions
 			router.replace("/");
 			return;
@@ -29,6 +33,11 @@ const ProtectedRoute = ({ children, loginRequired = false }: ProtectedRouteProps
 		if (!isLoading && loginRequired && (!user?.data?.email || error)) {
 			router.replace("/auth/login");
 			return;
+		}
+
+		// If user is logged in but doesn't have status set. Redirect to profile-setup page
+		if (!isLoading && loginRequired && !error && user?.data?.email && user?.data?.status?.toLowerCase() === "pending") {
+			router.replace("/profile-setup");
 		}
 
 		setRoutingChecked(true);

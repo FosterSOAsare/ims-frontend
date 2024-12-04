@@ -100,6 +100,8 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 		let { role, permissions } = user;
 		if (!role) return toast.error("Please select the role of user", { autoClose: 1500 });
 		permissions = permissions.filter((p: string) => p.split(":")[1]);
+
+		console.log(JSON.stringify({ role, permissions }));
 		updateUserRoleRequest({ role, permissions, userId });
 	};
 
@@ -114,12 +116,6 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 			};
 		});
 	};
-
-	// // Change permissions based on selected role
-	// useEffect(() => {
-	// 	if (!user.role) return;
-	//
-	// }, [user.role]);
 
 	// Creating user check
 	useEffect(() => {
