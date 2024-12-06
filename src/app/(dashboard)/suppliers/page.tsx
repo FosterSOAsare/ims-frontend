@@ -5,13 +5,13 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { ISupplier } from "@/data/suppliers";
 import { formatDate } from "@/utils/date";
 import useDebounce from "@/hooks/useDebounce";
-import { useLazyGetSuppliersRequestQuery } from "@/apis/suppliersApi";
+import { useDeleteASupplierRequestMutation, useLazyGetSuppliersRequestQuery } from "@/apis/suppliersApi";
 import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 
 import SupplierDetails from "./SupplierDetails";
 import Filters, { initialFilter } from "./Filters";
 import AddOrEditSupplier from "./addoreditsupplier";
-import { PageLoading } from "@/components/Loading";
+import Loading, { PageLoading } from "@/components/Loading";
 import NoData from "@/components/NoData";
 
 export interface IFilter {
@@ -20,13 +20,14 @@ export interface IFilter {
 
 const page = () => {
 	const [getSuppliersRequest, { data: suppliers, isLoading: gettingSuppliers, error: suppliersError }] = useLazyGetSuppliersRequestQuery();
+	const [deleteASupplierRequest, { isLoading: deleting, error: deleteError }] = useDeleteASupplierRequestMutation();
 
-	const [selectedSupplier, setSelectedSupplier] = useState<null | number>(null);
+	const [selectedSupplier, setSelectedSupplier] = useState<null | number>(0);
 	const [search, setSearch] = useState("");
 	const [filters, setFilters] = useState<IFilter>(initialFilter);
 
 	const [showFilters, setShowFilters] = useState<boolean>(false);
-	const [showAddOrEditSupplier, setShowAddOrEditSupplier] = useState<boolean>(true);
+	const [showAddOrEditSupplier, setShowAddOrEditSupplier] = useState<boolean>(false);
 	const [showSupplierDetails, setShowSupplierDetails] = useState<boolean>(false);
 
 	const query = useDebounce(search, 1000);
@@ -41,6 +42,7 @@ const page = () => {
 	}, [selectedSupplier, suppliers]);
 
 	useCreateErrorFromApiRequest(suppliersError);
+	useCreateErrorFromApiRequest(deleteError);
 	return (
 		<div className="relative">
 			<h3 className="text-2xl mb-3 font-bold">Suppliers</h3>
@@ -113,6 +115,7 @@ const page = () => {
 										{/* Actions */}
 										<div className="col-span-3 text-primary py-3 gap-1 text-left flex items-center justify-end">
 											<button
+												disabled={deleting}
 												className="p-2 rounded-full hover:bg-gray-200"
 												onClick={() => {
 													setSelectedSupplier(index);
@@ -120,11 +123,18 @@ const page = () => {
 												}}>
 												<Icon icon="mdi:eye-outline" />
 											</button>
-											<button className="p-2 rounded-full hover:bg-gray-200">
-												<Icon icon="ph:trash" />
+											<button
+												onClick={() => {
+													setSelectedSupplier(index);
+													deleteASupplierRequest({ supplierId: id });
+												}}
+												disabled={deleting}
+												className="p-2 rounded-full hover:bg-gray-200">
+												{deleting && selectedSupplier === index ? <Loading sx="!border-[red] !w-4 !h-4" /> : <Icon icon="ph:trash" />}
 											</button>
 
 											<button
+												disabled={deleting}
 												className="p-2 rounded-full hover:bg-red-500 hover:text-white"
 												onClick={() => {
 													setSelectedSupplier(index);

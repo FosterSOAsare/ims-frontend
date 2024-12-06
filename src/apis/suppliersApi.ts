@@ -26,13 +26,20 @@ const suppliersApi = createApi({
       }),
       invalidatesTags: [{ type: 'Suppliers' }]
     }),
-    updateASupplierRequest: builder.mutation<any, { data: any, supplierId?: string }>({
+    updateASupplierRequest: builder.mutation<any, { data: any, supplierId: string }>({
       query: ({ data, supplierId }) => ({
         method: 'PATCH',
         url: `/${supplierId}`,
         body: data
       }),
       invalidatesTags: ({ supplierId }) => [{ type: 'Suppliers' }, { type: 'Supplier', id: supplierId }]
+    }),
+    deleteASupplierRequest: builder.mutation<any, { supplierId: string }>({
+      query: ({ supplierId }) => ({
+        method: 'DELETE',
+        url: `/${supplierId}`
+      }),
+      invalidatesTags: () => [{ type: 'Suppliers' }]
     })
   })
 })
@@ -41,7 +48,8 @@ export const {
   useLazyGetSuppliersRequestQuery,
   useGetASupplierDetailsRequestQuery,
   useCreateASupplierRequestMutation,
-  useUpdateASupplierRequestMutation
+  useUpdateASupplierRequestMutation,
+  useDeleteASupplierRequestMutation
 } = suppliersApi
 
 export default suppliersApi
