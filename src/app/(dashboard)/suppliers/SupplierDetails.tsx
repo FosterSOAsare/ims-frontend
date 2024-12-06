@@ -3,7 +3,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 
 import suppliers from "@/data/suppliers";
 
-import { useGetASupplierDetailsQuery } from "@/apis/suppliersApi";
+import { useGetASupplierDetailsRequestQuery } from "@/apis/suppliersApi";
 import { PageLoading } from "@/components/Loading";
 
 interface ISupplierDetailsComponent {
@@ -14,7 +14,7 @@ interface ISupplierDetailsComponent {
 
 const SupplierDetails = ({ supplierId, setShowSupplierDetails, setShowAddOrEditSupplier }: ISupplierDetailsComponent) => {
 	// Get supplier details
-	const { data: supplierDetails, isLoading, error } = useGetASupplierDetailsQuery({ supplierId });
+	const { data: supplierDetails, isLoading, error } = useGetASupplierDetailsRequestQuery({ supplierId });
 	const [showPaymentInfo, setShowPaymentInfo] = useState(false);
 
 	const paymentInfo = [

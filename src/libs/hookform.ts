@@ -57,18 +57,22 @@ export const newUserSchema = z.object({
 
 export const newSupplierStep1Schema = z.object({
   name: z.string().min(1, { message: "Please enter the name of the supplier" }).min(3, { message: 'Name of supplier should not be less than 3 characters' }),
-  tradeName: z.string().min(1, { message: "Please enter the brand of the supplier" }).min(3, { message: 'Trade name should not be less than 3 characters' }),
-  minOrderQuantity: z.string().min(1, { message: "Please enter the min order quantity" }).regex(/^\d+(\.\d+)?$/, { message: 'Please enter a valid quantity. Numbers only' }),
+  brandTradeName: z.string(),
+  minimumOrderQuantity: z.string().min(1, { message: "Please enter the min order quantity" }).regex(/^\d+(\.\d+)?$/, { message: 'Please enter a valid quantity. Numbers only' }),
+  leadTime: z.string().min(1, { message: "Please enter the lead time in days" }).regex(/^\d+(\.\d+)?$/, { message: 'Please enter a valid lead time. Numbers only' }),
 });
 
 export const newSupplierStep2Schema = z.object({
-  name: z.string().min(1, { message: "Please enter the name of the supplier's primary contact" }).min(3, { message: 'Name of supplier\'s contact should not be less than 3 characters' }),
+  primaryContactName: z.string().min(1, { message: "Please enter the name of the supplier's primary contact" }).min(3, { message: 'Name of supplier\'s primary contact should not be less than 3 characters' }),
   jobTitle: z.string().min(1, { message: "Please enter the job title of the primary contact of the supplier" }).min(3, { message: 'Job title should not be less than 3 characters' }),
   department: z.string().min(1, { message: "Please enter the department of primary contact" }),
-  phone: z.string().min(1, { message: "Please enter contact's phone number" }).regex(/^[0-9]{9,12}$/, { message: 'Please enter a valid phone number' }),
+  phoneNumber: z.string().min(1, { message: "Please enter contact's phone number" }).regex(/^[0-9]{9,12}$/, { message: 'Please enter a valid phone number' }),
   email: z.string().min(1, { message: "Please enter contact's email address" }).email({ message: "Please enter a valid email address" }),
   physicalAddress: z.string().min(1, { message: "Please enter the physical address of the contact" }).min(3, { message: 'Physical address should not be less than 3 characters' }),
-  mailingAddress: z.string().min(1, { message: "Please enter the mailing address of the contact" }).min(3, { message: 'Mailing address should not be less than 3 characters' }),
+  mailingAddress: z.string(),
+  emergencyContactName: z.string().min(3, { message: 'Name of supplier\'s emergency contact should not be less than 3 characters' }).optional(),
+  emergencyContactTitle: z.string().min(3, { message: 'Job title should not be less than 3 characters' }).optional(),
+  emergencyContactNumber: z.string().optional().refine((value) => value === undefined || value === "" || /^[0-9]{9,12}$/.test(value), { message: 'Please enter a valid phone number for emergency contact' }),
 });
 
 export const newSupplierStep3Schema = z.object({

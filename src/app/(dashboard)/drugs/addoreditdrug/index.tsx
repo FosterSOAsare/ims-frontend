@@ -50,7 +50,7 @@ interface IAddOrEditDrug {
 
 const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId, setActiveColumn }: IAddOrEditDrug) => {
 	const [drugDetails, setDrugDetails] = useState<IDrugDetails>(initial);
-	const [step, setStep] = useState<number>(0);
+	const [step, setStep] = useState<number>(2);
 
 	// Fetch drug if it is an edit request
 

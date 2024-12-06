@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import { ISupplierDetails } from ".";
@@ -8,19 +8,40 @@ import Input from "@/components/Input";
 import CustomSelect from "@/components/Select";
 
 import GhanaImage from "@/assets/images/ghana.svg";
+import { useCreateASupplierRequestMutation, useUpdateASupplierRequestMutation } from "@/apis/suppliersApi";
+import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
+import Loading from "@/components/Loading";
 
-const Step3 = ({ supplierDetails, setValues, step, setStep }: { supplierDetails: ISupplierDetails; setValues: (data: any) => void; step: number; setStep: Dispatch<SetStateAction<number>> }) => {
+interface IStep3 {
+	supplierDetails: ISupplierDetails;
+	setValues: (data: any) => void;
+	step: number;
+	setStep: Dispatch<SetStateAction<number>>;
+	supplierId: string;
+	closeModal: () => void;
+}
+
+const Step3 = ({ supplierDetails, setValues, step, setStep, supplierId, closeModal }: IStep3) => {
 	const { paymentDetails: details } = supplierDetails;
-
+	const [createSupplierRequest, { data: created, isLoading: creating, error: createError }] = useCreateASupplierRequestMutation();
+	const [updateSupplierRequest, { data: updated, isLoading: updating, error: updateError }] = useUpdateASupplierRequestMutation();
 	const [paymentDetails, setPaymentDetails] = useState(details);
 
 	const setValue = (name: string, value: string) => {
 		setPaymentDetails((prev) => ({ ...prev, [name]: value }));
 	};
 
+	// Save data without validation
+	const goBack = () => {
+		const { paymentType, bankName, accountType, accountNumber, currency, paymentTerms, mobileMoneyPhoneNumber, provider } = paymentDetails;
+
+		setValues({ paymentDetails: { paymentType, bankName, accountType, accountNumber, currency, paymentTerms, mobileMoneyPhoneNumber, provider } });
+		setStep((prev) => --prev);
+	};
+
 	const step3Data = (e: any) => {
 		e.preventDefault();
-		const { paymentType, bankName, accountType, accountNumber, currency, paymentTerms, phone, provider } = paymentDetails;
+		const { paymentType, bankName, accountType, accountNumber, currency, paymentTerms, mobileMoneyPhoneNumber, provider } = paymentDetails;
 		// Validate fields
 		if (!paymentType) return toast.error("Please select a payment type", { autoClose: 1500 });
 		if (paymentType.toLowerCase() === "bank") {
@@ -30,16 +51,48 @@ const Step3 = ({ supplierDetails, setValues, step, setStep }: { supplierDetails:
 		}
 		if (paymentType.toLowerCase() === "mobile money") {
 			if (!provider) return toast.error("Please select supplier's service provider", { autoClose: 1500 });
-			if (!/^[0-9]{9,12}$/.test(phone)) return toast.error("Please enter the valid phone number of supplier", { autoClose: 1500 });
+			if (!/^[0-9]{9,12}$/.test(mobileMoneyPhoneNumber)) return toast.error("Please enter the valid phone number of supplier", { autoClose: 1500 });
 		}
 
 		if (!currency) return toast.error("Please select supplier's currency", { autoClose: 1500 });
 		if (!paymentTerms) return toast.error("Please enter supplier's payment terms", { autoClose: 1500 });
 
-		setValues({ paymentDetails: { paymentType, bankName, accountType, accountNumber, currency, paymentTerms, phone, provider } });
-		// setStep((prev) => ++prev);
-		toast.success("Supplier created successfully", { autoClose: 1500 });
+		setValues({ paymentDetails: { paymentType, bankName, accountType, accountNumber, currency, paymentTerms, mobileMoneyPhoneNumber, provider } });
+
+		const { contactDetails, paymentDetails: pay, ...rest } = supplierDetails;
+		let data: any = {
+			...rest,
+			...contactDetails,
+			...{
+				paymentType,
+				bankName,
+				accountType,
+				accountNumber,
+				currency,
+				paymentTerms,
+				mobileMoneyPhoneNumber,
+				provider,
+				minimumOrderQuantity: +rest.minimumOrderQuantity,
+				phoneNumber: "+233" + contactDetails.phoneNumber,
+			},
+		};
+
+		// Trim data
+		data = Object.entries(data).reduce((result, [key, value]) => {
+			return value ? { ...result, [key]: value } : result;
+		}, {});
+
+		supplierId ? updateSupplierRequest({ data, supplierId }) : createSupplierRequest(data);
 	};
+
+	useEffect(() => {
+		if (!created && !updated) return;
+		toast.success(`Supplier successfully ${created ? "created" : "updated"}...`, { autoClose: 1500 });
+		closeModal();
+	}, [created, updated]);
+
+	useCreateErrorFromApiRequest(createError);
+	useCreateErrorFromApiRequest(updateError);
 	return (
 		<form className="flex items-start flex-col h-full gap-2" onSubmit={step3Data}>
 			<div className="px-4 h-[calc(100%-100px)]  overflow-y-auto space-y-2 pb-12 w-full">
@@ -48,7 +101,7 @@ const Step3 = ({ supplierDetails, setValues, step, setStep }: { supplierDetails:
 				<CustomSelect
 					options={["Bank", "Mobile Money"]}
 					value={paymentDetails.paymentType}
-					label="Supplier Type"
+					label="Payment Type"
 					placeholder="Select option"
 					handleChange={(value) => setValue("paymentType", value)}
 				/>
@@ -67,7 +120,7 @@ const Step3 = ({ supplierDetails, setValues, step, setStep }: { supplierDetails:
 								/>
 								<div className="flex items-center gap-2">
 									<CustomSelect
-										options={["Current", "Savings"]}
+										options={["Checking", "Savings", "Merchant", "Corporate", "Money Market", "Joint"]}
 										value={paymentDetails.accountType}
 										label="Account type"
 										placeholder="Select option"
@@ -88,7 +141,7 @@ const Step3 = ({ supplierDetails, setValues, step, setStep }: { supplierDetails:
 						{paymentDetails.paymentType.toLowerCase() === "mobile money" && (
 							<>
 								<CustomSelect
-									options={["MTN", "Telecel", "AirtelTigo"]}
+									options={["MTN", "Vodafone", "AirtelTigo"]}
 									value={paymentDetails.provider}
 									label="Provider"
 									placeholder="Select option"
@@ -105,8 +158,8 @@ const Step3 = ({ supplierDetails, setValues, step, setStep }: { supplierDetails:
 										</div>
 										<input
 											type="text"
-											value={paymentDetails.phone}
-											onChange={(e) => setValue("phone", e.target.value)}
+											value={paymentDetails.mobileMoneyPhoneNumber}
+											onChange={(e) => setValue("mobileMoneyPhoneNumber", e.target.value)}
 											className="flex-1 focus:outline-0 p-2 text-sm"
 											placeholder="555 553 8672"
 										/>
@@ -141,12 +194,12 @@ const Step3 = ({ supplierDetails, setValues, step, setStep }: { supplierDetails:
 					))}
 				</div>
 				<div className="flex items-center justify-center gap-2">
-					<button className="w-full hover:bg-gray-200 border-[1px] py-2 rounded-[10px]" onClick={() => setStep((prev) => --prev)}>
+					<button className="w-full hover:bg-gray-200 border-[1px] py-2 rounded-[10px]" onClick={() => goBack()}>
 						Go back
 					</button>
 
-					<button className="w-full bg-sec py-2 border-[1px] hover:opacity-70 rounded-[10px] text-white" type="submit">
-						Next
+					<button disabled={updating || creating} className="w-full bg-sec py-2 border-[1px] hover:opacity-70 rounded-[10px] text-white" type="submit">
+						{updating || creating ? <Loading /> : supplierId ? "Update" : "Create"}
 					</button>
 				</div>
 			</div>

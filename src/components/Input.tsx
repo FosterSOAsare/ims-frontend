@@ -10,14 +10,16 @@ interface IInput {
 	register?: any;
 	value?: string;
 	setValue?: (value: string) => void;
+	required?: boolean;
 }
 
-const Input = ({ label, type = "text", name, placeholder = "", labelSx = "", inputSx = "", register, value = "", setValue }: IInput) => {
+const Input = ({ label, type = "text", name, placeholder = "", labelSx = "", inputSx = "", register, value = "", setValue, required = true }: IInput) => {
 	return (
 		<div className="w-full">
 			{label && (
-				<label htmlFor={name} className={`${labelSx}`}>
+				<label htmlFor={name} className={`${labelSx} flex items-center justify-start gap-1`}>
 					{label}
+					{required && <span className="text-red-600">*</span>}
 				</label>
 			)}
 			{register && (

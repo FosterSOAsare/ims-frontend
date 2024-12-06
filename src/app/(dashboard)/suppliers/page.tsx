@@ -5,7 +5,7 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import { ISupplier } from "@/data/suppliers";
 import { formatDate } from "@/utils/date";
 import useDebounce from "@/hooks/useDebounce";
-import { useLazyGetSuppliersQuery } from "@/apis/suppliersApi";
+import { useLazyGetSuppliersRequestQuery } from "@/apis/suppliersApi";
 import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 
 import SupplierDetails from "./SupplierDetails";
@@ -19,14 +19,14 @@ export interface IFilter {
 }
 
 const page = () => {
-	const [getSuppliersRequest, { data: suppliers, isLoading: gettingSuppliers, error: suppliersError }] = useLazyGetSuppliersQuery();
+	const [getSuppliersRequest, { data: suppliers, isLoading: gettingSuppliers, error: suppliersError }] = useLazyGetSuppliersRequestQuery();
 
 	const [selectedSupplier, setSelectedSupplier] = useState<null | number>(null);
 	const [search, setSearch] = useState("");
 	const [filters, setFilters] = useState<IFilter>(initialFilter);
 
 	const [showFilters, setShowFilters] = useState<boolean>(false);
-	const [showAddOrEditSupplier, setShowAddOrEditSupplier] = useState<boolean>(false);
+	const [showAddOrEditSupplier, setShowAddOrEditSupplier] = useState<boolean>(true);
 	const [showSupplierDetails, setShowSupplierDetails] = useState<boolean>(false);
 
 	const query = useDebounce(search, 1000);

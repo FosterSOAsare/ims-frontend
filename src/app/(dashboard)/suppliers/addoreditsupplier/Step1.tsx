@@ -9,21 +9,19 @@ import { toast } from "react-toastify";
 const Step1 = ({ supplierDetails, setValues, step, setStep }: { supplierDetails: ISupplierDetails; setValues: (data: any) => void; step: number; setStep: Dispatch<SetStateAction<number>> }) => {
 	const { register, handleSubmit, reset } = useSelectedValuesFromHookForm(newSupplierStep1Schema);
 	const [supplierType, setSupplierType] = useState(supplierDetails.supplierType as string);
-	const [leadTime, setLeadTime] = useState(supplierDetails.leadTime as string);
 	const [deliveryMethod, setDeliveryMethod] = useState(supplierDetails.deliveryMethod as string);
 
 	useEffect(() => {
-		const { name, tradeName, minOrderQuantity } = supplierDetails;
-		reset({ name, tradeName, minOrderQuantity });
+		const { name, brandTradeName, minimumOrderQuantity, leadTime } = supplierDetails;
+		reset({ name, brandTradeName, minimumOrderQuantity, leadTime });
 	}, []);
 
 	const step1Data = (data: any) => {
-		const { name, tradeName, minOrderQuantity } = data;
+		const { name, brandTradeName, minimumOrderQuantity, leadTime } = data;
 		if (!supplierType) return toast.error("Please select a supplier type", { autoClose: 1500 });
-		if (!leadTime) return toast.error("Please select a lead time of supplier", { autoClose: 1500 });
 		if (!deliveryMethod) return toast.error("Please select a delivery method for supplier", { autoClose: 1500 });
 
-		const allData = { supplierType, leadTime, deliveryMethod, name, tradeName, minOrderQuantity };
+		const allData = { supplierType, leadTime, deliveryMethod, name, brandTradeName, minimumOrderQuantity };
 		setValues(allData);
 
 		setStep((prev) => ++prev);
@@ -31,14 +29,29 @@ const Step1 = ({ supplierDetails, setValues, step, setStep }: { supplierDetails:
 	return (
 		<form className="flex items-start flex-col h-full gap-2" onSubmit={handleSubmit(step1Data)}>
 			<div className="px-4 h-[calc(100%-100px)]  overflow-y-auto space-y-2 pb-12 w-full">
-				<h3 className="mb-3 text-lg font-bold">Drug details</h3>
 				<Input name="name" register={register} label="Supplier Name" placeholder="Eg: MDS Pharmaceuticals Ltd." labelSx="text-sm" inputSx="text-sm" />
-				<Input name="tradeName" register={register} label="Brand/Trade Name" placeholder="eg: Paracetamol" labelSx="text-sm" inputSx="text-sm" />
-				<CustomSelect options={["Free", "Monthly", "Paid"]} value={supplierType} label="Supplier Type" placeholder="Select option" handleChange={(value) => setSupplierType(value)} />
-				<Input name="minOrderQuantity" register={register} label="Minimun order qty" placeholder="eg: Panadol" labelSx="text-sm" inputSx="text-sm" />
-				<CustomSelect options={["Lead 1", "Lead 2", "Lead 3"]} value={leadTime} label="Lead Time" placeholder="Select option" handleChange={(value) => setLeadTime(value)} />
+				<Input required={false} name="brandTradeName" register={register} label="Brand/Trade Name" placeholder="eg: Paracetamol" labelSx="text-sm" inputSx="text-sm" />
 				<CustomSelect
-					options={["Delivery 1", "Delivery 2", "Delivery 3"]}
+					options={["Manufacturer", "Distributor", "Wholesaler"]}
+					value={supplierType}
+					label="Supplier Type"
+					placeholder="Select option"
+					handleChange={(value) => setSupplierType(value)}
+				/>
+				<Input name="minimumOrderQuantity" register={register} label="Minimun order qty" placeholder="eg: 6700" labelSx="text-sm" inputSx="text-sm" />
+				<Input name="leadTime" register={register} label="Lead Time(In days)" placeholder="Eg: 7" labelSx="text-sm" inputSx="text-sm" />
+				<CustomSelect
+					options={[
+						"Wholesalers/Distributors",
+						"From Manufacturers",
+						"Couriers",
+						"Specialized Pharma Logistics",
+						"Company-Owned Vehicles",
+						"Bike/Motorcycle Deliveries",
+						"B2B Pharmaceutical Platforms",
+						"E-Pharmacy Integration",
+						"Cold Chain Delivery",
+					]}
 					value={deliveryMethod}
 					label="Delivery Method"
 					placeholder="Select option"

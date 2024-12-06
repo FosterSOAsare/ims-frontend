@@ -10,20 +10,38 @@ const suppliersApi = createApi({
   }),
   tagTypes: ['Suppliers', 'Supplier'],
   endpoints: (builder) => ({
-    getSuppliers: builder.query<any, { page: number, search?: string }>({
+    getSuppliersRequest: builder.query<any, { page: number, search?: string }>({
       query: ({ page, search }) => `?pageSize=20&page=${page}&search=${search || ''}`,
       providesTags: () => [{ type: 'Suppliers', }]
     }),
-    getASupplierDetails: builder.query<any, { supplierId: string }>({
+    getASupplierDetailsRequest: builder.query<any, { supplierId: string }>({
       query: ({ supplierId }) => `/${supplierId}`,
       providesTags: ({ supplierId }) => [{ type: 'Supplier', id: supplierId }]
     }),
+    createASupplierRequest: builder.mutation<any, any>({
+      query: (data) => ({
+        method: 'POST',
+        url: '/',
+        body: data
+      }),
+      invalidatesTags: [{ type: 'Suppliers' }]
+    }),
+    updateASupplierRequest: builder.mutation<any, { data: any, supplierId?: string }>({
+      query: ({ data, supplierId }) => ({
+        method: 'PATCH',
+        url: `/${supplierId}`,
+        body: data
+      }),
+      invalidatesTags: ({ supplierId }) => [{ type: 'Suppliers' }, { type: 'Supplier', id: supplierId }]
+    })
   })
 })
 
 export const {
-  useLazyGetSuppliersQuery,
-  useGetASupplierDetailsQuery
+  useLazyGetSuppliersRequestQuery,
+  useGetASupplierDetailsRequestQuery,
+  useCreateASupplierRequestMutation,
+  useUpdateASupplierRequestMutation
 } = suppliersApi
 
 export default suppliersApi

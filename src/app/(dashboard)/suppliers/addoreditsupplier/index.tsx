@@ -9,33 +9,76 @@ import Step3 from "./Step3";
 
 export interface ISupplierDetails {
 	name: string;
-	tradeName: string;
+	brandTradeName: string;
 	supplierType: string;
-	minOrderQuantity: string;
+	minimumOrderQuantity: string;
 	leadTime: string;
 	deliveryMethod: string;
-	contactDetails: { name: string; jobTitle: string; department: string; phone: string; email: string; physicalAddress: string; mailingAddress: string };
-	paymentDetails: { paymentType: string; bankName: string; accountType: string; accountNumber: string; currency: string; paymentTerms: string; phone: string; provider: string };
+	contactDetails: {
+		primaryContactName: string;
+		jobTitle: string;
+		department: string;
+		phoneNumber: string;
+		email: string;
+		physicalAddress: string;
+		mailingAddress: string;
+		emergencyContactName: string;
+		emergencyContactTitle: string;
+		emergencyContactNumber: string;
+	};
+	paymentDetails: { paymentType: string; bankName: string; accountType: string; accountNumber: string; currency: string; paymentTerms: string; mobileMoneyPhoneNumber: string; provider: string };
 }
 
 const initial: ISupplierDetails = {
 	name: "",
-	tradeName: "",
+	brandTradeName: "",
 	supplierType: "",
 	deliveryMethod: "",
-	minOrderQuantity: "",
+	minimumOrderQuantity: "",
 	leadTime: "",
-	contactDetails: { name: "", jobTitle: "", department: "", phone: "", email: "", physicalAddress: "", mailingAddress: "" },
-	paymentDetails: { paymentType: "", bankName: "", accountType: "", accountNumber: "", currency: "", paymentTerms: "", phone: "", provider: "" },
+	contactDetails: {
+		primaryContactName: "",
+		jobTitle: "",
+		department: "",
+		phoneNumber: "",
+		email: "",
+		physicalAddress: "",
+		mailingAddress: "",
+		emergencyContactName: "",
+		emergencyContactTitle: "",
+		emergencyContactNumber: "",
+	},
+	paymentDetails: { paymentType: "", bankName: "", accountType: "", accountNumber: "", currency: "", paymentTerms: "", mobileMoneyPhoneNumber: "", provider: "" },
 };
+// const initial: ISupplierDetails = {
+// 	name: "MDS Pharmaceutical",
+// 	brandTradeName: "MDS",
+// 	supplierType: "manufacturer",
+// 	deliveryMethod: "couriers",
+// 	minimumOrderQuantity: "50",
+// 	leadTime: "7",
+// 	contactDetails: {
+// 		primaryContactName: "Asare Foster",
+// 		jobTitle: "Sales Manager",
+// 		department: "Sales",
+// 		phoneNumber: "550529015",
+// 		email: "asare4ster@gmail.com",
+// 		physicalAddress: "test address",
+// 		mailingAddress: "",
+// 		emergencyContactName: "James Ofori",
+// 		emergencyContactTitle: "Sales Manager",
+// 		emergencyContactNumber: "2335567783",
+// 	},
+// 	paymentDetails: { paymentType: "", bankName: "", accountType: "", accountNumber: "", currency: "", paymentTerms: "", mobileMoneyPhoneNumber: "", provider: "" },
+// };
 
-interface IAddOrEditDrug {
+interface IAddOrEditSupplier {
 	setSelectedSupplier: React.Dispatch<React.SetStateAction<null | number>>;
 	setShowAddOrEditSupplier: React.Dispatch<React.SetStateAction<boolean>>;
 	supplierId: string;
 }
 
-const AddOrEditDrug = ({ setShowAddOrEditSupplier, supplierId, setSelectedSupplier }: IAddOrEditDrug) => {
+const AddOrEditSupplier = ({ setShowAddOrEditSupplier, supplierId, setSelectedSupplier }: IAddOrEditSupplier) => {
 	const [supplierDetails, setSupplierDetails] = useState<ISupplierDetails>(initial);
 	const [step, setStep] = useState<number>(0);
 
@@ -51,10 +94,15 @@ const AddOrEditDrug = ({ setShowAddOrEditSupplier, supplierId, setSelectedSuppli
 		setSupplierDetails((prev) => ({ ...prev, ...data }));
 	};
 
+	const closeSupplierModal = () => {
+		setShowAddOrEditSupplier(false);
+		setSelectedSupplier(null);
+	};
+
 	const steps = [
 		<Step1 key={0} setValues={setValue} supplierDetails={supplierDetails} step={step} setStep={setStep} />,
-		<Step2 key={0} setValues={setValue} supplierDetails={supplierDetails} step={step} setStep={setStep} />,
-		<Step3 key={0} setValues={setValue} supplierDetails={supplierDetails} step={step} setStep={setStep} />,
+		<Step2 key={1} setValues={setValue} supplierDetails={supplierDetails} step={step} setStep={setStep} />,
+		<Step3 key={2} setValues={setValue} supplierDetails={supplierDetails} step={step} setStep={setStep} supplierId={supplierId} closeModal={closeSupplierModal} />,
 	];
 	return (
 		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-end px-3 w-full fixed top-0 left-0 z-[5]">
@@ -62,12 +110,7 @@ const AddOrEditDrug = ({ setShowAddOrEditSupplier, supplierId, setSelectedSuppli
 				<div className="flex items-center justify-between w-full px-4 pt-4">
 					<h3 className="text-lg font-bold">{supplierId ? "Edit a " : "Add new"} supplier </h3>
 
-					<button
-						className="rounded-full bg-gray-100 p-[6px] hover:bg-gray-200"
-						onClick={() => {
-							setShowAddOrEditSupplier(false);
-							setSelectedSupplier(null);
-						}}>
+					<button className="rounded-full bg-gray-100 p-[6px] hover:bg-gray-200" onClick={closeSupplierModal}>
 						<Icon icon="ic:round-close" className="text-xl" />
 					</button>
 				</div>
@@ -78,4 +121,4 @@ const AddOrEditDrug = ({ setShowAddOrEditSupplier, supplierId, setSelectedSuppli
 	);
 };
 
-export default AddOrEditDrug;
+export default AddOrEditSupplier;
