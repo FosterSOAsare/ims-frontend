@@ -70,8 +70,8 @@ export const newSupplierStep2Schema = z.object({
   email: z.string().min(1, { message: "Please enter contact's email address" }).email({ message: "Please enter a valid email address" }),
   physicalAddress: z.string().min(1, { message: "Please enter the physical address of the contact" }).min(3, { message: 'Physical address should not be less than 3 characters' }),
   mailingAddress: z.string(),
-  emergencyContactName: z.string().min(3, { message: 'Name of supplier\'s emergency contact should not be less than 3 characters' }).optional(),
-  emergencyContactTitle: z.string().min(3, { message: 'Job title should not be less than 3 characters' }).optional(),
+  emergencyContactName: z.string().optional().refine((value) => value === undefined || value === "" || value.length > 3, { message: 'Name of supplier\'s emergency contact should not be less than 3 characters' }),
+  emergencyContactTitle: z.string().optional().refine((value) => value === undefined || value === "" || value.length > 3, { message: 'Job title should not be less than 3 characters' }),
   emergencyContactNumber: z.string().optional().refine((value) => value === undefined || value === "" || /^[0-9]{9,12}$/.test(value), { message: 'Please enter a valid phone number for emergency contact' }),
 });
 

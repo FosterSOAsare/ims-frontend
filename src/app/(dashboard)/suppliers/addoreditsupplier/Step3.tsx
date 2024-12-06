@@ -82,6 +82,9 @@ const Step3 = ({ supplierDetails, setValues, step, setStep, supplierId, closeMod
 			return value ? { ...result, [key]: value } : result;
 		}, {});
 
+		// Appending +233 to contacts
+		data = data?.emergencyContactNumber ? { ...data, emergencyContactNumber: `+233${data.emergencyContactNumber}` } : data;
+		data = data?.mobileMoneyPhoneNumber ? { ...data, mobileMoneyPhoneNumber: `+233${data.mobileMoneyPhoneNumber}` } : data;
 		supplierId ? updateSupplierRequest({ data, supplierId }) : createSupplierRequest(data);
 	};
 

@@ -22,7 +22,7 @@ const page = () => {
 	const [getSuppliersRequest, { data: suppliers, isLoading: gettingSuppliers, error: suppliersError }] = useLazyGetSuppliersRequestQuery();
 	const [deleteASupplierRequest, { isLoading: deleting, error: deleteError }] = useDeleteASupplierRequestMutation();
 
-	const [selectedSupplier, setSelectedSupplier] = useState<null | number>(0);
+	const [selectedSupplier, setSelectedSupplier] = useState<null | number>(null);
 	const [search, setSearch] = useState("");
 	const [filters, setFilters] = useState<IFilter>(initialFilter);
 
