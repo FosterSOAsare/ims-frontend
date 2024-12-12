@@ -3,7 +3,7 @@ import React from "react";
 
 interface ITableColumn {
 	name: string;
-	batch: string;
+	batchNumber: string;
 	category: string;
 	stock: string;
 	supplier: string;
@@ -17,11 +17,11 @@ interface ITableColumn {
 	editDrug: () => void;
 }
 
-const TableColumn = ({ name, batch, category, stock, supplier, status, reorderPoint, isLast, activeColumn, setActiveColumn, index, viewDrug, editDrug }: ITableColumn) => {
+const TableColumn = ({ name, batchNumber, category, stock, supplier, status, reorderPoint, isLast, activeColumn, setActiveColumn, index, viewDrug, editDrug }: ITableColumn) => {
 	return (
 		<div className="bg-white drugs-table gap-2 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
 			<div className="col-span-4 text-primary py-3 text-left">{name}</div>
-			<div className="col-span-3 text-primary py-3 text-left">{batch}</div>
+			<div className="col-span-3 text-primary py-3 text-left">{batchNumber}</div>
 			<div className="col-span-3 text-gray-500 py-3 text-left">
 				<div className="inline-block text-sm bg-gray-200 rounded-full px-3 py-1" title={category}>
 					{category.length > 10 ? category.substring(0, 10) + "..." : category}
@@ -34,11 +34,15 @@ const TableColumn = ({ name, batch, category, stock, supplier, status, reorderPo
 			<div className="col-span-3 text-sm text-gray-500 py-3 text-left">
 				<div
 					className={`${
-						status.toLowerCase() === "low" ? "text-red-500 bg-red-100" : status.toLowerCase() === "stocked" ? "bg-green-100 text-green-500" : "bg-gray-100 text-[#344054]"
+						status.toLowerCase() === "low" || status.toLowerCase() === "out_of_stock"
+							? "text-red-500 bg-red-100"
+							: status.toLowerCase() === "stocked"
+							? "bg-green-100 text-green-500"
+							: "bg-gray-100 text-[#344054]"
 					} inline-flex rounded-full px-2 py-1 items-center gap-1`}>
 					<span
 						className={`inline-block w-[6px] h-[6px] rounded-full ${
-							status.toLowerCase() === "low" ? " bg-red-500" : status.toLowerCase() === "stocked" ? "bg-green-500" : " bg-[#344054]"
+							status.toLowerCase() === "low" || status.toLowerCase() === "out_of_stock" ? " bg-red-500" : status.toLowerCase() === "stocked" ? "bg-green-500" : " bg-[#344054]"
 						}`}></span>
 					{status}
 				</div>

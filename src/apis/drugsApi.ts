@@ -11,8 +11,16 @@ const drugsApi = createApi({
   }),
   tagTypes: ['Drugs'],
   endpoints: (builder) => ({
-    getDrugsRequest: builder.query<any, { page: number; search: string  }>({
+    getDrugsRequest: builder.query<any, { page: number; search: string }>({
       query: ({ page, search }) => `?pageSize=20&page=${page}&search=${search}`,
+      transformResponse: (response: any) => {
+        let { rows, totalPages } = response.data
+        let drugs = rows.map((row: any) => {
+          const { brandName, name, stock, categoryId, reorderPoint, status, batch, supplierId } = row
+          return { brandName, name, stock, category: categoryId?.name || '-', reorderPoint, status, batchNumber: batch.batchNumber, supplier: supplierId || '-' }
+        })
+        return { drugs, totalPages }
+      },
       providesTags: () => [{ type: 'Drugs' }]
     }),
     createADrugRequest: builder.mutation<any, { name: string }>({

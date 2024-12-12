@@ -10,6 +10,8 @@ import DrugDetails from "./DrugDetails";
 import AddOrEditDrug from "./addoreditdrug";
 import useDebounce from "@/hooks/useDebounce";
 import { useLazyGetDrugsRequestQuery } from "@/apis/drugsApi";
+import NoData from "@/components/NoData";
+import { PageLoading } from "@/components/Loading";
 
 export interface IFilter {
 	sort: string;
@@ -44,6 +46,8 @@ const page = () => {
 	const editDrug = () => {
 		setShowAddOrEditDrug(true);
 	};
+
+	console.log(data);
 
 	const drugId = useMemo(() => (activeColumn !== null ? (drugs[activeColumn]?.id as string) : ""), [activeColumn]);
 	return (
@@ -130,21 +134,35 @@ const page = () => {
 					<div className="col-span-3 text-gray-500 uppercase text-xs py-3">Reorder Point</div>
 				</div>
 
-				<div>
-					{/* Last two on the table will have isLast so the drop down shows at the top instead */}
-					{drugs.map((drug, index) => (
-						<TableColumn
-							key={index}
-							{...drug}
-							editDrug={editDrug}
-							viewDrug={viewDrug}
-							isLast={index >= drugs.length - 2}
-							index={index}
-							activeColumn={activeColumn}
-							setActiveColumn={setActiveColumn}
-						/>
-					))}
-				</div>
+				{!isLoading && data && (
+					<div>
+						{data?.drugs?.length > 0 && (
+							<>
+								{/* Last two on the table will have isLast so the drop down shows at the top instead */}
+								{data?.drugs.map(
+									(
+										drug: { brandName: string; name: string; stock: string; category: string; reorderPoint: number; status: string; batchNumber: string; supplier: string },
+										index: number
+									) => (
+										<TableColumn
+											key={index}
+											{...drug}
+											editDrug={editDrug}
+											viewDrug={viewDrug}
+											isLast={index >= drugs.length - 2}
+											index={index}
+											activeColumn={activeColumn}
+											setActiveColumn={setActiveColumn}
+										/>
+									)
+								)}
+							</>
+						)}
+						{data?.data?.rows?.length == 0 && <NoData />}
+					</div>
+				)}
+
+				{isLoading && <PageLoading />}
 			</div>
 
 			{showFilters && <Filters setShowFilters={setShowFilters} filters={filters} setFilters={setFilters} />}
