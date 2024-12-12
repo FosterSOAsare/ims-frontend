@@ -6,6 +6,8 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
+import { useLazyGetASupplierDetailsRequestQuery } from "@/apis/suppliersApi";
+import { PageLoading } from "@/components/Loading";
 
 export interface ISupplierDetails {
 	name: string;
@@ -80,15 +82,85 @@ interface IAddOrEditSupplier {
 
 const AddOrEditSupplier = ({ setShowAddOrEditSupplier, supplierId, setSelectedSupplier }: IAddOrEditSupplier) => {
 	const [supplierDetails, setSupplierDetails] = useState<ISupplierDetails>(initial);
+	const [getASupplierRequest, { data, error, isLoading }] = useLazyGetASupplierDetailsRequestQuery();
+	const [pageLoaded, setPageLoaded] = useState(true);
 	const [step, setStep] = useState<number>(0);
 
 	// Fetch supplier if it is an edit request
 
 	useEffect(() => {
 		if (supplierId) {
+			setPageLoaded(false);
 			// fetch supplier and used the data
+			getASupplierRequest({ supplierId: supplierId as string });
 		}
 	}, [supplierId]);
+
+	useEffect(() => {
+		if (!data) return;
+
+		const {
+			name,
+			brandTradeName,
+			supplierType,
+			deliveryMethod,
+			minimumOrderQuantity,
+			leadTime,
+			primaryContactName,
+			jobTitle,
+			department,
+			phoneNumber,
+			email,
+			physicalAddress,
+			mailingAddress,
+			emergencyContactName,
+			emergencyContactTitle,
+			emergencyContactNumber,
+			paymentType,
+			bankName,
+			accountType,
+			accountNumber,
+			currency,
+			paymentTerms,
+			mobileMoneyPhoneNumber,
+			provider,
+		} = data?.data;
+
+		setSupplierDetails({
+			name,
+			brandTradeName,
+			supplierType,
+			deliveryMethod,
+			minimumOrderQuantity: "" + minimumOrderQuantity,
+			leadTime: "" + leadTime,
+			contactDetails: {
+				primaryContactName,
+				jobTitle,
+				department,
+				phoneNumber: phoneNumber.split("+233")[1],
+				email,
+				physicalAddress,
+				mailingAddress: mailingAddress || "",
+				emergencyContactName: emergencyContactName || "",
+				emergencyContactTitle: emergencyContactTitle || "",
+				emergencyContactNumber: emergencyContactNumber ? emergencyContactNumber.split("+233")[1] : "",
+			},
+			paymentDetails: {
+				paymentType,
+				bankName: bankName || "",
+				accountType: accountType || "",
+				accountNumber: accountNumber || "",
+				currency,
+				paymentTerms,
+				mobileMoneyPhoneNumber: mobileMoneyPhoneNumber ? mobileMoneyPhoneNumber.split("+233")[1] : "",
+				provider: provider || "",
+			},
+		});
+
+		setPageLoaded(true);
+	}, [data]);
+
+	console.log({ supplierDetails, pageLoaded });
 
 	const setValue = (data: any) => {
 		setSupplierDetails((prev) => ({ ...prev, ...data }));
@@ -115,7 +187,10 @@ const AddOrEditSupplier = ({ setShowAddOrEditSupplier, supplierId, setSelectedSu
 					</button>
 				</div>
 
-				<div className="h-[calc(100%-50px)]">{steps[step]}</div>
+				<div className="h-[calc(100%-50px)]">
+					{pageLoaded && <>{steps[step]}</>}
+					{!pageLoaded && <PageLoading />}
+				</div>
 			</aside>
 		</div>
 	);

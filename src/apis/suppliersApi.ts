@@ -47,6 +47,7 @@ const suppliersApi = createApi({
 export const {
   useLazyGetSuppliersRequestQuery,
   useGetASupplierDetailsRequestQuery,
+  useLazyGetASupplierDetailsRequestQuery,
   useCreateASupplierRequestMutation,
   useUpdateASupplierRequestMutation,
   useDeleteASupplierRequestMutation

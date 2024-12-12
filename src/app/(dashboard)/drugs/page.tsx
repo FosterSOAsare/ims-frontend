@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import drugs from "@/data/drugs";
@@ -8,6 +8,8 @@ import TableColumn from "./TableColumn";
 import Filters, { initialFilter } from "./Filters";
 import DrugDetails from "./DrugDetails";
 import AddOrEditDrug from "./addoreditdrug";
+import useDebounce from "@/hooks/useDebounce";
+import { useLazyGetDrugsRequestQuery } from "@/apis/drugsApi";
 
 export interface IFilter {
 	sort: string;
@@ -19,10 +21,21 @@ export interface IFilter {
 
 const page = () => {
 	const [activeColumn, setActiveColumn] = useState<null | number>(null);
+	const [getDrugsRequest, { data, isLoading, error }] = useLazyGetDrugsRequestQuery();
+
+	const [filters, setFilters] = useState<IFilter>(initialFilter);
+	const [search, setSearch] = useState("");
+	const [page, setPage] = useState(0);
+
 	const [showFilters, setShowFilters] = useState<boolean>(false);
 	const [showDrugDetails, setShowDrugDetails] = useState<boolean>(false);
 	const [showAddOrEditDrug, setShowAddOrEditDrug] = useState<boolean>(false);
-	const [filters, setFilters] = useState<IFilter>(initialFilter);
+
+	const query = useDebounce(search, 1000);
+
+	useEffect(() => {
+		getDrugsRequest({ page: page + 1, search: query });
+	}, [query, page]);
 
 	const viewDrug = () => {
 		setShowDrugDetails(true);
@@ -81,10 +94,17 @@ const page = () => {
 
 				<div className="w-full flex items-center justify-between">
 					<div className="w-2/5 relative">
+						{/* Search */}
 						<span className="absolute left-3 top-0 bottom-0 flex items-center justify-center">
 							<Icon icon="iconoir:search" className="text-xl text-gray-400" />
 						</span>
-						<input type="text" className="bg-gray-300 w-full p-2 border-[2px] border-transparent focus:border-gray-200 rounded-[10px] pl-10" placeholder="Search for drug name" />
+						<input
+							value={search}
+							onChange={(e) => setSearch(e.target.value)}
+							type="text"
+							className="bg-gray-300 w-full p-2 border-[2px] border-transparent focus:border-gray-200 rounded-[10px] pl-10"
+							placeholder="Search for drug name"
+						/>
 					</div>
 
 					<div className="flex gap-2 items-center justify-between">
