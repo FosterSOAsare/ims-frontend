@@ -16,8 +16,8 @@ const drugsApi = createApi({
       transformResponse: (response: any) => {
         let { rows, totalPages } = response.data
         let drugs = rows.map((row: any) => {
-          const { brandName, name, stock, categoryId, reorderPoint, status, batch, supplierId } = row
-          return { brandName, name, stock, category: categoryId?.name || '-', reorderPoint, status, batchNumber: batch.batchNumber, supplier: supplierId || '-' }
+          const { itemId, status, name, quantity, category, reorderPoint, supplierName } = row
+          return { status, name, stock: quantity, category, reorderPoint, supplier: supplierName, id: itemId }
         })
         return { drugs, totalPages }
       },
@@ -59,6 +59,7 @@ export const {
   useCreateADrugRequestMutation,
   useEditADrugRequestMutation,
   useDeleteADrugRequestMutation,
+  useLazyGetADrugRequestQuery
 } = drugsApi
 
 export default drugsApi

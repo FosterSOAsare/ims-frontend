@@ -31,7 +31,7 @@ const page = () => {
 
 	const [showFilters, setShowFilters] = useState<boolean>(false);
 	const [showDrugDetails, setShowDrugDetails] = useState<boolean>(false);
-	const [showAddOrEditDrug, setShowAddOrEditDrug] = useState<boolean>(true);
+	const [showAddOrEditDrug, setShowAddOrEditDrug] = useState<boolean>(false);
 
 	const query = useDebounce(search, 1000);
 
@@ -43,13 +43,16 @@ const page = () => {
 		setShowDrugDetails(true);
 	};
 
-	const editDrug = () => {
+	const editDrug = (index: number) => {
+		setActiveColumn(index);
 		setShowAddOrEditDrug(true);
 	};
 
 	// console.log(data);
 
-	const drugId = useMemo(() => (activeColumn !== null ? (drugs[activeColumn]?.id as string) : ""), [activeColumn]);
+	const drugId = useMemo(() => (activeColumn !== null ? (data?.drugs[activeColumn]?.id as string) : ""), [activeColumn]);
+
+	console.log(data?.drugs[activeColumn as number]);
 	return (
 		<div className="relative">
 			<h3 className="text-2xl mb-3 font-bold">Drugs</h3>
@@ -125,10 +128,9 @@ const page = () => {
 
 				{/* Table title */}
 				<div className="bg-gray-700 drugs-table gap-4 mt-6 items-center rounded-[10px] border-[1px] grid grid-cols-12 px-3">
-					<div className="col-span-4 text-gray-500 uppercase text-sm py-3">Drug Name</div>
-					<div className="col-span-3 text-gray-500 uppercase text-sm py-3">Batch #</div>
-					<div className="col-span-3 text-gray-500 uppercase text-sm py-3">Category</div>
-					<div className="col-span-3 text-gray-500 uppercase text-sm py-3">Stock</div>
+					<div className="col-span-5 text-gray-500 uppercase text-sm py-3">Drug Name</div>
+					<div className="col-span-4 text-gray-500 uppercase text-sm py-3">Category</div>
+					<div className="col-span-4 text-gray-500 uppercase text-sm py-3">Stock</div>
 					<div className="col-span-5 text-gray-500 uppercase text-sm py-3">Supplier</div>
 					<div className="col-span-3 text-gray-500 uppercase text-sm py-3">Status</div>
 					<div className="col-span-3 text-gray-500 uppercase text-xs py-3">Reorder Point</div>
@@ -141,13 +143,23 @@ const page = () => {
 								{/* Last two on the table will have isLast so the drop down shows at the top instead */}
 								{data?.drugs.map(
 									(
-										drug: { brandName: string; name: string; stock: string; category: string; reorderPoint: number; status: string; batchNumber: string; supplier: string },
+										drug: {
+											brandName: string;
+											name: string;
+											stock: string;
+											category: string;
+											reorderPoint: number;
+											status: string;
+											batchNumber: string;
+											supplier: string;
+											id: string;
+										},
 										index: number
 									) => (
 										<TableColumn
 											key={index}
 											{...drug}
-											editDrug={editDrug}
+											editDrug={() => editDrug(index)}
 											viewDrug={viewDrug}
 											isLast={index >= drugs.length - 2}
 											index={index}

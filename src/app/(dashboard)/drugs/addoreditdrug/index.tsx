@@ -5,6 +5,8 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
+import { useLazyGetADrugRequestQuery } from "@/apis/drugsApi";
+import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 
 export interface IDrugDetails {
 	name: string;
@@ -75,14 +77,61 @@ interface IAddOrEditDrug {
 const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId, setActiveColumn }: IAddOrEditDrug) => {
 	const [drugDetails, setDrugDetails] = useState<IDrugDetails>(initial);
 	const [step, setStep] = useState<number>(0);
+	const [getADrugRequest, { data: drug, isLoading, error }] = useLazyGetADrugRequestQuery();
 
 	// Fetch drug if it is an edit request
 
 	useEffect(() => {
 		if (drugId) {
 			// fetch drug and used the data
+			getADrugRequest({ drugId: drugId as string });
 		}
 	}, [drugId]);
+
+	useEffect(() => {
+		if (!drug) return;
+		const {
+			name,
+			brandName,
+			dosageForm,
+			strength,
+			code,
+			unitOfMeasurement,
+			manufacturer,
+			supplier,
+			storageReq,
+			batchNumber,
+			validity,
+			reorderPoint,
+			costPrice,
+			sellingPrice,
+			quantity,
+			categoryId,
+			fdaApproval,
+			ISO,
+		} = drug.data;
+		setDrugDetails((prev) => ({
+			...prev,
+			name,
+			brandName,
+			dosageForm,
+			strength,
+			code,
+			unitOfMeasurement,
+			manufacturer,
+			supplier,
+			storageReq,
+			batchNumber,
+			validity,
+			reorderPoint,
+			costPrice,
+			sellingPrice,
+			quantity,
+			categoryId,
+			fdaApproval,
+			iso: ISO,
+		}));
+	}, [drug]);
 
 	const setValue = (data: any) => {
 		setDrugDetails((prev) => ({ ...prev, ...data }));
@@ -93,6 +142,7 @@ const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId, setActiveColumn }: IAddOr
 		setActiveColumn(null);
 	};
 
+	useCreateErrorFromApiRequest(error);
 	const steps = [
 		<Step1 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,
 		<Step2 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,

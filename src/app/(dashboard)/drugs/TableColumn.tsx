@@ -1,9 +1,11 @@
+import { useDeleteADrugRequestMutation } from "@/apis/drugsApi";
+import Loading from "@/components/Loading";
+import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
 
 interface ITableColumn {
 	name: string;
-	batchNumber: string;
 	category: string;
 	stock: string;
 	supplier: string;
@@ -15,19 +17,22 @@ interface ITableColumn {
 	index: number;
 	viewDrug: () => void;
 	editDrug: () => void;
+	id: string;
 }
 
-const TableColumn = ({ name, batchNumber, category, stock, supplier, status, reorderPoint, isLast, activeColumn, setActiveColumn, index, viewDrug, editDrug }: ITableColumn) => {
+const TableColumn = ({ name, category, stock, supplier, status, reorderPoint, isLast, activeColumn, setActiveColumn, index, viewDrug, editDrug, id }: ITableColumn) => {
+	const [deleteADrugRequest, { isLoading: deleting, error: deleteError }] = useDeleteADrugRequestMutation();
+
+	useCreateErrorFromApiRequest(deleteError);
 	return (
 		<div className="bg-white drugs-table gap-2 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
-			<div className="col-span-4 text-primary py-3 text-left">{name}</div>
-			<div className="col-span-3 text-primary py-3 text-left">{batchNumber}</div>
-			<div className="col-span-3 text-gray-500 py-3 text-left">
+			<div className="col-span-5 text-primary py-3 text-left">{name}</div>
+			<div className="col-span-4 text-gray-500 py-3 text-left">
 				<div className="inline-block text-sm bg-gray-200 rounded-full px-3 py-1" title={category}>
 					{category.length > 10 ? category.substring(0, 10) + "..." : category}
 				</div>
 			</div>
-			<div className="col-span-3 text-primary py-3 text-left">{stock}</div>
+			<div className="col-span-4 text-primary py-3 text-left">{stock}</div>
 			<div className="col-span-5 text-primary py-3 flex items-center gap-1 text-left">
 				<Icon icon="solar:buildings-3-line-duotone" /> {supplier}
 			</div>
@@ -55,21 +60,24 @@ const TableColumn = ({ name, batchNumber, category, stock, supplier, status, reo
 					</button>
 					{activeColumn == index && (
 						<div className={`absolute ${isLast ? "bottom-[100%]" : "top-[100%]"}  right-0 h-auto w-[130px] bg-white selectedStock z-[3] rounded-[5px] card`}>
-							<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2" onClick={() => viewDrug()}>
+							<button disabled={deleting} className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2" onClick={() => viewDrug()}>
 								<Icon icon="hugeicons:view" className="text-lg" />
 								View details
 							</button>
-							<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+							<button disabled={deleting} className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
 								<Icon icon="solar:box-line-duotone" className="text-lg" />
 								Restock
 							</button>
-							<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2" onClick={() => editDrug()}>
+							<button disabled={deleting} className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2" onClick={() => editDrug()}>
 								<Icon icon="hugeicons:file-edit" className="text-lg" />
 								Edit
 							</button>
-							<button className="px-3 gap-[6px] hover:bg-red-500 hover:text-white text-red-500 flex items-center justify-start text-sm w-full py-2">
+							<button
+								onClick={() => deleteADrugRequest({ drugId: id })}
+								disabled={deleting}
+								className="px-3 gap-[6px] hover:bg-red-500 hover:text-white text-red-500 flex items-center justify-start text-sm w-full py-2">
 								<Icon icon="solar:trash-bin-minimalistic-line-duotone" className="text-lg" />
-								Delete
+								{activeColumn === index && deleting ? <Loading /> : "Delete"}
 							</button>
 						</div>
 					)}
