@@ -11,6 +11,8 @@ const useFormErrorCreator = (errors: FieldErrors<FieldValues>) => {
       toast.error(err, { autoClose: 1500 });
     }
   }, [errors]);
+
+  // console.log(errors)
 };
 
 export default useFormErrorCreator;

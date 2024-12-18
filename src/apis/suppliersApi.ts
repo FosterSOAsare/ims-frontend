@@ -14,6 +14,9 @@ const suppliersApi = createApi({
       query: ({ page, search }) => `?pageSize=20&page=${page}&search=${search || ''}`,
       providesTags: () => [{ type: 'Suppliers', }]
     }),
+    getAllSuppliersRequest: builder.query<any, void>({
+      query: () => ``,
+    }),
     getASupplierDetailsRequest: builder.query<any, { supplierId: string }>({
       query: ({ supplierId }) => `/${supplierId}`,
       providesTags: ({ supplierId }) => [{ type: 'Supplier', id: supplierId }]
@@ -50,7 +53,8 @@ export const {
   useLazyGetASupplierDetailsRequestQuery,
   useCreateASupplierRequestMutation,
   useUpdateASupplierRequestMutation,
-  useDeleteASupplierRequestMutation
+  useDeleteASupplierRequestMutation,
+  useGetAllSuppliersRequestQuery
 } = suppliersApi
 
 export default suppliersApi

@@ -31,7 +31,7 @@ const page = () => {
 
 	const [showFilters, setShowFilters] = useState<boolean>(false);
 	const [showDrugDetails, setShowDrugDetails] = useState<boolean>(false);
-	const [showAddOrEditDrug, setShowAddOrEditDrug] = useState<boolean>(false);
+	const [showAddOrEditDrug, setShowAddOrEditDrug] = useState<boolean>(true);
 
 	const query = useDebounce(search, 1000);
 
@@ -47,7 +47,7 @@ const page = () => {
 		setShowAddOrEditDrug(true);
 	};
 
-	console.log(data);
+	// console.log(data);
 
 	const drugId = useMemo(() => (activeColumn !== null ? (drugs[activeColumn]?.id as string) : ""), [activeColumn]);
 	return (

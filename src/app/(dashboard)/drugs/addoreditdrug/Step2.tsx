@@ -3,7 +3,6 @@ import Image from "next/image";
 
 import { IDrugDetails } from ".";
 
-import CustomSelect from "@/components/Select";
 import Input from "@/components/Input";
 
 import GhanaImage from "@/assets/images/ghana.svg";
@@ -11,32 +10,34 @@ import useSelectedValuesFromHookForm from "@/hooks/useSelectedValuesFromHookForm
 import { newDrugStep2Schema } from "@/libs/hookform";
 import { toast } from "react-toastify";
 
-const storageOptions = ["This week", "This month", "Past 3 months", "This year"];
-
 const Step2 = ({ drugDetails, setValues, step, setStep }: { drugDetails: IDrugDetails; setValues: (data: any) => void; step: number; setStep: Dispatch<SetStateAction<number>> }) => {
-	const [storage, setStorage] = useState(drugDetails.storage);
-	const { register, handleSubmit, reset } = useSelectedValuesFromHookForm(newDrugStep2Schema);
+	const { register, handleSubmit, reset, getValues } = useSelectedValuesFromHookForm(newDrugStep2Schema);
 
 	useEffect(() => {
-		const { batchNo, reorderLevel, expDate, quantity, costPrice, sellingPrice } = drugDetails;
-		reset({ batchNo, reorderLevel, expDate, quantity, costPrice, sellingPrice });
+		const { batchNumber, reorderPoint, validity, quantity, costPrice, sellingPrice, storageReq } = drugDetails;
+		reset({ batchNumber, reorderPoint, validity, quantity, costPrice, sellingPrice, storageReq });
 	}, []);
 
-	const step2Data = (data: any) => {
-		const { batchNo, reorderLevel, expDate, quantity, costPrice, sellingPrice } = data;
-		if (!storage) return toast.error("Please select a storage option", { autoClose: 1500 });
+	const goBack = () => {
+		const { batchNumber, reorderPoint, validity, quantity, costPrice, sellingPrice, storageReq } = getValues();
+		const allData = { batchNumber, reorderPoint, validity, quantity, costPrice, sellingPrice, storageReq };
+		setValues(allData);
+		setStep((prev) => --prev);
+	};
 
-		const allData = { batchNo, reorderLevel, expDate, quantity, costPrice, sellingPrice, storage };
+	const step2Data = (data: any) => {
+		const { batchNumber, reorderPoint, validity, quantity, costPrice, sellingPrice, storageReq } = data;
+		const allData = { batchNumber, reorderPoint, validity, quantity, costPrice, sellingPrice, storageReq };
 		setValues(allData);
 		setStep((prev) => ++prev);
 	};
 	return (
-		<form className="flex items-start flex-col h-full gap-2" onSubmit={handleSubmit(step2Data)}>
+		<form className="flex items-start flex-col h-full overflow-hidden gap-2" onSubmit={handleSubmit(step2Data)}>
 			<div className="px-4 h-[calc(100%-100px)] space-y-2 overflow-y-auto pb-12 w-full">
 				<h3 className="mb-3 text-lg font-bold">Price and other details</h3>
-				<Input name="batchNo" register={register} label="Batch Number" placeholder="eg: paracetamol" labelSx="text-sm" inputSx="text-sm" />
-				<Input name="expDate" register={register} type="date" label="Expiry Date" labelSx="text-sm" inputSx="text-sm" />
-				<Input name="reorderLevel" register={register} label="Reorder Level" placeholder="20,000" labelSx="text-sm" inputSx="text-sm" />
+				<Input name="batchNumber" register={register} label="Batch Number" placeholder="eg: paracetamol" labelSx="text-sm" inputSx="text-sm" />
+				<Input name="validity" register={register} type="date" label="Expiry Date" labelSx="text-sm" inputSx="text-sm" />
+				<Input name="reorderPoint" register={register} label="Reorder Level" placeholder="20,000" labelSx="text-sm" inputSx="text-sm" />
 				<div>
 					<label htmlFor="costPrice" className="text-sm">
 						Cost Price
@@ -63,10 +64,18 @@ const Step2 = ({ drugDetails, setValues, step, setStep }: { drugDetails: IDrugDe
 				</div>
 				<Input name="quantity" register={register} label="Quantity On hand" placeholder="20,000" labelSx="text-sm" inputSx="text-sm" />
 
-				<CustomSelect options={storageOptions} label="Storage Requirement" placeholder="Select option" value={storage} handleChange={(value) => setStorage(value)} />
+				{/* <CustomSelect options={storageOptions} label="Storage Requirement" placeholder="Select option" value={storage} handleChange={(value) => setStorage(value)} /> */}
+
+				<div className="w-full">
+					<label htmlFor={"storageReq"} className={` flex items-center justify-start gap-1`}>
+						Storage Requirements<span className="text-red-600">*</span>
+					</label>
+					<label htmlFor="notes" className="text-sm"></label>
+					<textarea {...register("storageReq")} className="w-full h-40 resize-none border-[1px] focus:outline-0 p-2 rounded-[10px] border-gray-200"></textarea>
+				</div>
 			</div>
 
-			<div className="w-full h-[90px] bg-white px-4 py-4 mt-auto gap-3">
+			<div className="w-full h-[100px] bg-white px-4  py-4 mt-auto gap-3">
 				<div className="w-full mb-3 flex items-center justify-between gap-3">
 					{[1, 2, 3].map((item) => (
 						<div key={item} className={`w-full ${step >= item - 1 ? "bg-sec" : "bg-gray-100"} rounded-full h-2`}></div>
@@ -74,7 +83,7 @@ const Step2 = ({ drugDetails, setValues, step, setStep }: { drugDetails: IDrugDe
 				</div>
 
 				<div className="flex items-center justify-center gap-2">
-					<button className="w-full hover:bg-gray-200 border-[1px] py-2 rounded-[10px]" onClick={() => setStep((prev) => --prev)}>
+					<button className="w-full hover:bg-gray-200 border-[1px] py-2 rounded-[10px]" type="button" onClick={() => goBack()}>
 						Go back
 					</button>
 

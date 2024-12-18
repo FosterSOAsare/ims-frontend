@@ -9,7 +9,7 @@ const drugsApi = createApi({
       return createAuthorizationHeader(headers)
     },
   }),
-  tagTypes: ['Drugs'],
+  tagTypes: ['Drugs', 'Drug'],
   endpoints: (builder) => ({
     getDrugsRequest: builder.query<any, { page: number; search: string }>({
       query: ({ page, search }) => `?pageSize=20&page=${page}&search=${search}`,
@@ -23,19 +23,23 @@ const drugsApi = createApi({
       },
       providesTags: () => [{ type: 'Drugs' }]
     }),
-    createADrugRequest: builder.mutation<any, { name: string }>({
-      query: ({ name }) => ({
+    getADrugRequest: builder.query<any, { drugId: string }>({
+      query: ({ drugId }) => `/${drugId}`,
+      providesTags: ({ drugId }) => [{ type: 'Drugs' }, { type: 'Drug', id: drugId }]
+    }),
+    createADrugRequest: builder.mutation<any, any>({
+      query: (data) => ({
         method: 'POST',
         url: '/',
-        body: { name }
+        body: data
       }),
       invalidatesTags: [{ type: 'Drugs' }]
     }),
-    editADrugRequest: builder.mutation<any, { name: string; drugId: string }>({
-      query: ({ name, drugId }) => ({
+    editADrugRequest: builder.mutation<any, { data: any; drugId: string }>({
+      query: ({ data, drugId }) => ({
         method: 'PATCH',
         url: `/${drugId}`,
-        body: { name }
+        body: data
       }),
       invalidatesTags: [{ type: 'Drugs' }]
     }),

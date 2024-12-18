@@ -7,39 +7,63 @@ import Step2 from "./Step2";
 import Step3 from "./Step3";
 
 export interface IDrugDetails {
+	name: string;
+	brandName: string;
 	dosageForm: string;
+	code: string;
 	strength: string;
 	unitOfMeasurement: string;
 	manufacturer: string;
 	supplier: string;
-	name: string;
-	brandName: string;
-	drugCode: string;
-	storage: string;
-	batchNo: string;
-	expDate: string;
-	reorderLevel: string;
+	storageReq: string;
+	batchNumber: string;
+	validity: string;
+	reorderPoint: string;
 	costPrice: string;
 	sellingPrice: string;
 	quantity: string;
+	categoryId: string;
+	fdaApproval: string;
+	iso: string;
 }
 
+// const initial: IDrugDetails = {
+// 	dosageForm: "",
+// 	strength: "",
+// 	code: "",
+// 	unitOfMeasurement: "",
+// 	name: "",
+// 	manufacturer: "",
+// 	brandName: "",
+// 	supplier: "",
+// 	storageReq: "",
+// 	batchNumber: "",
+// 	validity: "",
+// 	reorderPoint: "",
+// 	costPrice: "",
+// 	sellingPrice: "",
+// 	quantity: "",
+// };
+
 const initial: IDrugDetails = {
-	dosageForm: "",
-	strength: "",
-	unitOfMeasurement: "",
-	name: "",
-	manufacturer: "",
-	brandName: "",
-	drugCode: "",
+	name: "Paracetamol - Fu",
+	brandName: "Paracetamol",
+	dosageForm: "SOLIDS",
+	strength: "500",
+	code: "TYEREUE",
+	unitOfMeasurement: "gram",
+	manufacturer: "Test Manufacturer",
 	supplier: "",
-	storage: "",
-	batchNo: "",
-	expDate: "",
-	reorderLevel: "",
-	costPrice: "",
-	sellingPrice: "",
-	quantity: "",
+	storageReq: "Store in a cool dry place",
+	batchNumber: "BATCHTYE",
+	validity: "2024-12-17",
+	reorderPoint: "300",
+	costPrice: "20000",
+	sellingPrice: "25000",
+	quantity: "400",
+	categoryId: "",
+	fdaApproval: "FDA123",
+	iso: "ISO123",
 };
 
 interface IAddOrEditDrug {
@@ -50,7 +74,7 @@ interface IAddOrEditDrug {
 
 const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId, setActiveColumn }: IAddOrEditDrug) => {
 	const [drugDetails, setDrugDetails] = useState<IDrugDetails>(initial);
-	const [step, setStep] = useState<number>(2);
+	const [step, setStep] = useState<number>(0);
 
 	// Fetch drug if it is an edit request
 
@@ -64,10 +88,15 @@ const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId, setActiveColumn }: IAddOr
 		setDrugDetails((prev) => ({ ...prev, ...data }));
 	};
 
+	const closeModal = () => {
+		setShowAddOrEditDrug(false);
+		setActiveColumn(null);
+	};
+
 	const steps = [
 		<Step1 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,
 		<Step2 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,
-		<Step3 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,
+		<Step3 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} drugId={drugId as string} closeModal={() => closeModal()} />,
 	];
 	return (
 		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-end px-3 w-full fixed top-0 left-0 z-[5]">
