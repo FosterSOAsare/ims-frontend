@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
-import Step3 from "./Step3";
 import { useLazyGetADrugRequestQuery } from "@/apis/drugsApi";
 import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 import { PageLoading } from "@/components/Loading";
@@ -27,40 +26,39 @@ export interface IDrugDetails {
 	iso: string;
 }
 
-// const initial: IDrugDetails = {
-// 	dosageForm: "",
-// 	strength: "",
-// 	code: "",
-// 	unitOfMeasurement: "",
-// 	name: "",
-// 	manufacturer: "",
-// 	brandName: "",
-// 	supplier: "",
-// 	storageReq: "",
-// 	batchNumber: "",
-// 	validity: "",
-// 	reorderPoint: "",
-// 	costPrice: "",
-// 	sellingPrice: "",
-// 	quantity: "",
-// };
-
 const initial: IDrugDetails = {
-	name: "Paracetamol - Fu",
-	brandName: "Paracetamol",
-	dosageForm: "SOLIDS",
-	strength: "500",
-	code: "TYEREUE",
-	unitOfMeasurement: "gram",
-	manufacturer: "Test Manufacturer",
-	storageReq: "Store in a cool dry place",
-	reorderPoint: "300",
-	costPrice: "20000",
-	sellingPrice: "25000",
+	dosageForm: "",
+	strength: "",
+	code: "",
+	unitOfMeasurement: "",
+	name: "",
+	manufacturer: "",
+	brandName: "",
+	storageReq: "",
+	reorderPoint: "",
+	costPrice: "",
+	sellingPrice: "",
+	fdaApproval: "",
+	iso: "",
 	categoryId: "",
-	fdaApproval: "FDA123",
-	iso: "ISO123",
 };
+
+// const initial: IDrugDetails = {
+// 	name: "Paracetamol - Fu",
+// 	brandName: "Paracetamol",
+// 	dosageForm: "SOLIDS",
+// 	strength: "500",
+// 	code: "TYEREUE",
+// 	unitOfMeasurement: "gram",
+// 	manufacturer: "Test Manufacturer",
+// 	storageReq: "Store in a cool dry place",
+// 	reorderPoint: "300",
+// 	costPrice: "20000",
+// 	sellingPrice: "25000",
+// 	categoryId: "",
+// 	fdaApproval: "FDA123",
+// 	iso: "ISO123",
+// };
 
 interface IAddOrEditDrug {
 	setActiveColumn: React.Dispatch<React.SetStateAction<null | number>>;
@@ -123,7 +121,6 @@ const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId, setActiveColumn }: IAddOr
 	const steps = [
 		<Step1 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,
 		<Step2 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} drugId={drugId as string} closeModal={() => closeModal()} />,
-		<Step3 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} drugId={drugId as string} closeModal={() => closeModal()} />,
 	];
 	return (
 		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-end px-3 w-full fixed top-0 left-0 z-[5]">

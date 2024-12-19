@@ -2,7 +2,7 @@ import { useDeleteADrugRequestMutation } from "@/apis/drugsApi";
 import Loading from "@/components/Loading";
 import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React from "react";
+import React, { useEffect } from "react";
 
 interface ITableColumn {
 	name: string;
@@ -21,7 +21,12 @@ interface ITableColumn {
 }
 
 const TableColumn = ({ name, category, stock, supplier, status, reorderPoint, isLast, activeColumn, setActiveColumn, index, viewDrug, editDrug, id }: ITableColumn) => {
-	const [deleteADrugRequest, { isLoading: deleting, error: deleteError }] = useDeleteADrugRequestMutation();
+	const [deleteADrugRequest, { data: deleted, isLoading: deleting, error: deleteError }] = useDeleteADrugRequestMutation();
+
+	useEffect(() => {
+		if (!deleted) return;
+		setActiveColumn(null);
+	}, [deleted]);
 
 	useCreateErrorFromApiRequest(deleteError);
 	return (
