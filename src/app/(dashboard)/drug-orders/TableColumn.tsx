@@ -1,7 +1,8 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React from "react";
+import React, { useEffect } from "react";
 import { IDrugOrder } from "./page";
 import { formatDate } from "@/utils/date";
+import { useDeleteADrugOrderRequestMutation } from "@/apis/drugOrdersApi";
 
 interface ITableColumn extends IDrugOrder {
 	isLast: boolean;
@@ -28,6 +29,12 @@ const TableColumn = ({
 	viewStockAdjustment,
 	setShowAddOrEditDrugOrder,
 }: ITableColumn) => {
+	const [deleteADrugOrderRequest, { data: deleted, isLoading: deleting, error: deleteError }] = useDeleteADrugOrderRequestMutation();
+
+	useEffect(() => {
+		if (!deleted) return;
+		setSelectedDrugOrder(null);
+	}, [deleted]);
 	return (
 		<div className="bg-white drugs-table gap-4 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
 			<div className="col-span-4 text-primary py-3 text-left">{drugName.length > 17 ? drugName.substring(0, 17) + "..." : drugName}</div>
@@ -71,9 +78,10 @@ const TableColumn = ({
 					</button>
 					{selectedDrugOrder == index && (
 						<div className={`absolute ${isLast ? "bottom-[100%]" : "top-[100%]"}  right-0 h-auto w-[180px] bg-white selectedDrugOrder z-[3] rounded-[5px] card`}>
-							{(status.toLowerCase() === "requested" || status.toLowerCase() === "draft") && (
+							{["draft", "requested"].includes(status.toLowerCase()) && (
 								<>
 									<button
+										disabled={deleting}
 										className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
 										onClick={() => {
 											setShowAddOrEditDrugOrder(true);
@@ -83,14 +91,14 @@ const TableColumn = ({
 										Edit
 									</button>
 									{status.toLowerCase() === "requested" && (
-										<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+										<button disabled={deleting} className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
 											<Icon icon="hugeicons:view" className="text-lg" />
 											Mark As delivering
 										</button>
 									)}
 
 									{status.toLowerCase() === "draft" && (
-										<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+										<button disabled={deleting} className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
 											<Icon icon="hugeicons:view" className="text-lg" />
 											Mark As requested
 										</button>
@@ -98,7 +106,7 @@ const TableColumn = ({
 								</>
 							)}
 							{status.toLowerCase() === "delivering" && (
-								<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+								<button disabled={deleting} className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
 									<Icon icon="hugeicons:view" className="text-lg" />
 									Mark As received
 								</button>
@@ -107,10 +115,13 @@ const TableColumn = ({
 								<Icon icon="solar:printer-2-outline" className="text-lg" />
 								Print PDF
 							</button>
-							{["requested", "delivering"].includes(status.toLowerCase()) && (
-								<button className="px-3 gap-[6px] hover:bg-red-500 flex hover:text-white items-center justify-start text-sm text-red-500 w-full py-2">
+							{["draft", "requested"].includes(status.toLowerCase()) && (
+								<button
+									onClick={() => deleteADrugOrderRequest({ orderId: id })}
+									disabled={deleting}
+									className="px-3 gap-[6px] hover:bg-red-500 flex hover:text-white items-center justify-start text-sm text-red-500 w-full py-2">
 									<Icon icon="solar:trash-bin-trash-line-duotone" className="text-lg" />
-									Cancel order
+									{deleting && selectedDrugOrder === index ? "Deleting..." : "Delete order"}
 								</button>
 							)}
 						</div>

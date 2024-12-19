@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 
 import useSelectedValuesFromHookForm from "@/hooks/useSelectedValuesFromHookForm";
 import { drugOrderSchema } from "@/libs/hookform";
-import drugs from "@/data/drugs";
 
 import Input from "@/components/Input";
 import CustomSelect from "@/components/Select";
@@ -67,13 +66,13 @@ const AddOrEditDrugOrder = ({ setShowAddOrEditDrugOrder, orderId, setSelectedDru
 
 		const { item, quantity, supplier, additionalNotes, expectedDeliveryDate, paymentMethod, deliveryMethod, deliveryAddress } = drugOrder?.data;
 		console.log({ deliveryAddress, expectedDeliveryDate, quantity: "" + quantity });
-		reset({ deliveryAddress, expectedDeliveryDate, quantity: "" + quantity });
+		reset({ deliveryAddress, expectedDeliveryDate: new Date(expectedDeliveryDate).toISOString().split("T")[0], quantity: "" + quantity });
 		setOrderDetails({
 			supplier: supplier.name,
 			itemId: item.name,
 			quantity: "" + quantity,
 			additionalNotes,
-			expectedDeliveryDate,
+			expectedDeliveryDate: new Date(expectedDeliveryDate).toISOString().split("T")[0],
 			deliveryMethod,
 			deliveryAddress,
 			paymentMethod,

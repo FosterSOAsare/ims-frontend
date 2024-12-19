@@ -58,6 +58,13 @@ const drugOrdersApi = createApi({
       }),
       invalidatesTags: [{ type: 'ItemOrders' }]
     }),
+    deleteADrugOrderRequest: builder.mutation<any, { orderId: string }>({
+      query: ({ orderId }) => ({
+        method: 'DELETE',
+        url: `/${orderId}`,
+      }),
+      invalidatesTags: [{ type: 'ItemOrders' }]
+    }),
   })
 })
 
@@ -65,7 +72,8 @@ export const {
   useLazyGetDrugOrdersQuery,
   useCreateADrugOrderRequestMutation,
   useUpdateADrugOrderRequestMutation,
-  useLazyGetADrugOrderRequestQuery
+  useLazyGetADrugOrderRequestQuery,
+  useDeleteADrugOrderRequestMutation
 } = drugOrdersApi
 
 export default drugOrdersApi
