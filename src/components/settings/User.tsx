@@ -2,7 +2,7 @@ import { useChangeUserAccountStatusRequestMutation } from "@/apis/usersApi";
 import { IUser } from "@/app/(dashboard)/settings/UsersAndRoles";
 import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Loading from "../Loading";
 
 interface IUserCard extends IUser {
@@ -15,7 +15,19 @@ interface IUserCard extends IUser {
 	setShowAddOrEditUser: React.Dispatch<React.SetStateAction<boolean>>;
 }
 const User = ({ fullName, role, selectedUser, index, isLast, setShowAddOrEditUser, setSelectedUser, status, id }: IUserCard) => {
+	const [selectedStatus, setSelectedStatus] = useState<"activate" | "deactivate" | "">("");
+
 	const [changeUserAccountStatusRequest, { data, isLoading, error }] = useChangeUserAccountStatusRequestMutation();
+
+	const changeStatus = (status: "activate" | "deactivate") => {
+		setSelectedStatus(status);
+		changeUserAccountStatusRequest({ status, userId: id });
+	};
+
+	useEffect(() => {
+		if (!data) return;
+		setSelectedUser(null);
+	}, [data]);
 
 	useCreateErrorFromApiRequest(error);
 	return (
@@ -25,11 +37,11 @@ const User = ({ fullName, role, selectedUser, index, isLast, setShowAddOrEditUse
 			<div className={`"col-span-2 text-gray-500 text-sm py-2`}>
 				<div
 					className={`${
-						status.toLowerCase() === "deactivated" ? "text-red-500 bg-red-100" : status.toLowerCase() === "active" ? "bg-green-100 text-green-500" : "bg-[#FFFAEB] text-[#B54708]"
+						status.toLowerCase() === "inactive" ? "text-red-500 bg-red-100" : status.toLowerCase() === "active" ? "bg-green-100 text-green-500" : "bg-[#FFFAEB] text-[#B54708]"
 					} capitalize inline-flex rounded-full px-2 py-1 items-center gap-1 `}>
 					<span
 						className={`inline-block w-[6px] h-[6px] rounded-full ${
-							status.toLowerCase() === "deactivated" ? " bg-red-500" : status.toLowerCase() == "active" ? " bg-green-500" : " bg-[#B54708]"
+							status.toLowerCase() === "inactive" ? " bg-red-500" : status.toLowerCase() == "active" ? " bg-green-500" : " bg-[#B54708]"
 						}`}></span>
 					{status}
 				</div>
@@ -58,17 +70,17 @@ const User = ({ fullName, role, selectedUser, index, isLast, setShowAddOrEditUse
 							{status?.toLowerCase() === "active" && (
 								<button
 									disabled={isLoading}
-									onClick={() => changeUserAccountStatusRequest({ status: "deactivate", userId: id })}
+									onClick={() => changeStatus("deactivate")}
 									className="px-3 gap-[6px] hover:bg-red-500 flex hover:text-white items-center justify-start text-sm text-red-500 w-full py-2">
-									Deactivate User
+									{isLoading && selectedStatus === "deactivate" ? "Deactivating..." : "Deactivate User"}
 								</button>
 							)}
-							{status?.toLowerCase() === "deactivated" && (
+							{status?.toLowerCase() === "inactive" && (
 								<button
 									disabled={isLoading}
-									onClick={() => changeUserAccountStatusRequest({ status: "activate", userId: id })}
+									onClick={() => changeStatus("activate")}
 									className="px-3 gap-[6px] hover:bg-green-500 flex hover:text-white items-center justify-start text-sm text-green-500 w-full py-2">
-									{isLoading ? <Loading /> : "Re-activate User"}
+									{isLoading && selectedStatus === "activate" ? "Re-activating..." : "Re-activate User"}
 								</button>
 							)}
 						</div>

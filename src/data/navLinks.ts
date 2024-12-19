@@ -1,3 +1,5 @@
+import { permission } from "process";
+
 export const generalTabs = [
   {
     name: "Overview",
@@ -9,19 +11,22 @@ export const generalTabs = [
     icon: "solar:hospital-bold-duotone",
     subs: [
       {
-        name: "Drugs",
+        name: "Items",
         icon: "solar:jar-of-pills-bold-duotone",
-        link: '/drugs'
+        link: '/drugs',
+        permission: 'items'
       },
       {
         name: "Categories",
         icon: "solar:pills-bold-duotone",
-        link: '/categories'
+        link: '/categories',
+        permission: 'item_categories'
       },
       {
         name: "Stock Adjustment",
         icon: "solar:delivery-bold-duotone",
-        link: '/stock-adjustment'
+        link: '/stock-adjustment',
+        permission: 'stock_adjustment'
       },
     ],
   },
@@ -32,12 +37,12 @@ export const generalTabs = [
       {
         name: "Drug orders",
         icon: "solar:box-bold-duotone",
-        link: '/drug-orders'
+        link: '/drug-orders', permission: 'item_orders'
       },
       {
         name: "Suppliers",
         icon: "solar:buildings-3-bold-duotone",
-        link: '/suppliers'
+        link: '/suppliers', permission: 'suppliers'
       },
 
     ],
@@ -46,16 +51,19 @@ export const generalTabs = [
     name: "Sales",
     icon: "solar:bill-list-bold-duotone",
     link: "/sales",
+    permission: 'sales'
   },
   {
     name: "Department Requests",
     icon: "solar:box-bold-duotone",
     link: "/department-requests",
+    permission: 'department_requests'
   },
   {
     name: "Reports",
     icon: "solar:graph-up-bold-duotone",
     link: "/reports",
+    permission: 'reports'
   },
 ];
 

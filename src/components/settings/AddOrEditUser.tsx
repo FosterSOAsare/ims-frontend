@@ -75,7 +75,7 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 	const handleUserRoleChange = (value: string) => {
 		const selectedRole = roles?.data?.find((role: { role: string }) => role.role == value);
 		// 	// Set permissions to one associated with role
-		setUser((prev) => ({ ...prev, permissions: selectedRole.permissions }));
+		setUser((prev) => ({ ...prev, permissions: selectedRole.permissions, role: value }));
 	};
 
 	const addNewUser = (data: any) => {
@@ -94,14 +94,13 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 		createUserRequest({ fullName: name, email, permissions, departmentId, role, password: "XT(v2EiTqQZ" });
 	};
 
-	const updateUserRole = (e: React.FormEvent<HTMLFormElement>) => {
+	const updateUserRole = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();
 		// Get role ams permissions from user and filter permissions
 		let { role, permissions } = user;
 		if (!role) return toast.error("Please select the role of user", { autoClose: 1500 });
 		permissions = permissions.filter((p: string) => p.split(":")[1]);
 
-		console.log(JSON.stringify({ role, permissions }));
 		updateUserRoleRequest({ role, permissions, userId });
 	};
 
@@ -122,6 +121,7 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 		if (!created && !updated) return;
 		toast.success(`User ${created ? "created" : "roles updated"} successfully`, { autoClose: 1500 });
 		setShowAddOrEditUser(false);
+		setSelectedUser(null);
 	}, [created, updated]);
 
 	useCreateErrorFromApiRequest(rolesError);
@@ -146,8 +146,8 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 					</button>
 				</div>
 
-				{!gettingRoles && !gettingUserDetails && roles && !gettingDepartments && departments && userDetails && (
-					<form className="h-[calc(100%-60px)] flex items-start flex-col gap-2" onSubmit={(e) => (userId ? updateUserRole(e) : handleSubmit(addNewUser))}>
+				{!gettingRoles && !gettingUserDetails && roles && !gettingDepartments && departments && (
+					<form className="h-[calc(100%-60px)] flex items-start flex-col gap-2" onSubmit={handleSubmit(addNewUser)}>
 						<div className="px-4 space-y-3 overflow-y-auto h-[calc(100%-30px)] w-full">
 							<div className="w-full">
 								<CustomSelect
@@ -196,7 +196,7 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 														onChange={(e) => changePermission(value, e.target.value as "READ" | "READ_WRITE" | "READ_WRITE_DELETE")}
 														className="w-auto text-xs border-[1px] p-3 py-2 rounded-[8px]"
 														id="">
-														<option value="">Select permission</option>
+														<option value="">None</option>
 														{accessLevels.map((accessLevel, index) => (
 															<option value={accessLevel} className="text-xs" key={index}>
 																{accessLevel}
@@ -211,7 +211,11 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 							</div>
 						</div>
 						<div className="w-full flex items-center justify-between gap-4 h-auto white px-4 py-4 mt-auto">
-							<button disabled={creatingUser || updatingUserRole} className="w-full bg-sec py-2 rounded-[10px] hover:opacity-70 text-white" type="submit">
+							<button
+								disabled={creatingUser || updatingUserRole}
+								className="w-full bg-sec py-2 rounded-[10px] hover:opacity-70 text-white"
+								type={userId ? "button" : "submit"}
+								onClick={(e) => userId && updateUserRole(e)}>
 								{creatingUser || updatingUserRole ? <Loading /> : userId ? "Edit user" : "Add user"}
 							</button>
 						</div>

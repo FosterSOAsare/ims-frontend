@@ -14,6 +14,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 
 import ProfileImage from "@/assets/images/profile.svg";
 import AvatarImage from "@/assets/images/avatar.webp";
+import userHasPermission from "@/utils/userHasPermission";
 
 const layout = ({ children }: { children: ReactNode }) => {
 	const { data: user } = useFetchLoggedInUserRequestQuery();
@@ -51,53 +52,65 @@ const layout = ({ children }: { children: ReactNode }) => {
 							<div className="w-full">
 								<p className="text-sm">GENERAL</p>
 								<nav className="mt-2">
-									{generalTabs.map((tab, index) => (
-										<Fragment key={index}>
-											{!tab?.subs && (
-												<Link
-													className={`flex px-2 py-2 mb-1 font-medium rounded-[10px] items-center justify-start gap-2 ${
-														(tab.link !== "/" && pathname.startsWith(tab.link)) || tab.link === pathname ? "text-primary bg-blue-100" : "text-gray-500 hover:bg-gray-100"
-													} `}
-													href={tab.link}>
-													<span>
-														<Icon icon={tab.icon} className={`text-xl ${pathname.startsWith(tab.link) ? "text-sec" : "text-gray-400"}`} />
-													</span>
-													{tab.name}
-												</Link>
-											)}
-
-											{tab?.subs && (
-												<div className={`${openedTab === index && "pb-2"} w-full mb-1 px-2  overflow-hidden rounded-[10px]`}>
-													<button
-														className={`flex w-full items-center justify-start py-2 gap-2  text-gray-500`}
-														onClick={() => setOpenedTab((prev) => (prev === index ? null : index))}>
-														<span>
-															<Icon icon={tab.icon} className="text-xl text-gray-400" />
-														</span>
-														{tab.name}
-														<span className="block ml-auto text-xl p-1 rounded-full hover:bg-gray-100">
-															<Icon icon={`${openedTab === index ? "lucide:chevron-up" : "lucide:chevron-down"}`} />
-														</span>
-													</button>
-													<div className={`ml-4 ${openedTab === index ? "h-auto" : "h-0"} transition-all duration-150`}>
-														{tab.subs.map((sub, index) => (
+									{generalTabs.map((tab, index) => {
+										return (
+											<Fragment key={index}>
+												{!tab?.subs && tab.permission && (
+													<>
+														{userHasPermission(user?.data?.permissions, tab.permission, "READ") && (
 															<Link
-																className={`flex px-2 py-2 mb-1 rounded-[10px] items-center justify-start gap-2 ${
-																	pathname.startsWith(sub.link) ? "text-primary bg-blue-100" : "text-gray-500 hover:bg-gray-100"
-																}`}
-																href={sub.link}
-																key={index}>
+																className={`flex px-2 py-2 mb-1 font-medium rounded-[10px] items-center justify-start gap-2 ${
+																	(tab.link !== "/" && pathname.startsWith(tab.link)) || tab.link === pathname
+																		? "text-primary bg-blue-100"
+																		: "text-gray-500 hover:bg-gray-100"
+																} `}
+																href={tab.link}>
 																<span>
-																	<Icon icon={sub.icon} className={`text-xl ${pathname.startsWith(sub.link) ? "text-sec" : "text-gray-400"}`} />
+																	<Icon icon={tab.icon} className={`text-xl ${pathname.startsWith(tab.link) ? "text-sec" : "text-gray-400"}`} />
 																</span>
-																{sub.name}
+																{tab.name}
 															</Link>
-														))}
+														)}
+													</>
+												)}
+
+												{tab?.subs && (
+													<div className={`${openedTab === index && "pb-2"} w-full mb-1 px-2  overflow-hidden rounded-[10px]`}>
+														<button
+															className={`flex w-full items-center justify-start py-2 gap-2  text-gray-500`}
+															onClick={() => setOpenedTab((prev) => (prev === index ? null : index))}>
+															<span>
+																<Icon icon={tab.icon} className="text-xl text-gray-400" />
+															</span>
+															{tab.name}
+															<span className="block ml-auto text-xl p-1 rounded-full hover:bg-gray-100">
+																<Icon icon={`${openedTab === index ? "lucide:chevron-up" : "lucide:chevron-down"}`} />
+															</span>
+														</button>
+														<div className={`ml-4 ${openedTab === index ? "h-auto" : "h-0"} transition-all duration-150`}>
+															{tab.subs.map((sub, index) => (
+																<Fragment key={index}>
+																	{userHasPermission(user?.data?.permissions, sub.permission, "READ") && (
+																		<Link
+																			className={`flex px-2 py-2 mb-1 rounded-[10px] items-center justify-start gap-2 ${
+																				pathname.startsWith(sub.link) ? "text-primary bg-blue-100" : "text-gray-500 hover:bg-gray-100"
+																			}`}
+																			href={sub.link}
+																			key={index}>
+																			<span>
+																				<Icon icon={sub.icon} className={`text-xl ${pathname.startsWith(sub.link) ? "text-sec" : "text-gray-400"}`} />
+																			</span>
+																			{sub.name}
+																		</Link>
+																	)}
+																</Fragment>
+															))}
+														</div>
 													</div>
-												</div>
-											)}
-										</Fragment>
-									))}
+												)}
+											</Fragment>
+										);
+									})}
 								</nav>
 							</div>
 
