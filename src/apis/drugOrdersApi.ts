@@ -10,7 +10,7 @@ const drugOrdersApi = createApi({
       return createAuthorizationHeader(headers)
     },
   }),
-  tagTypes: ['ItemOrders', 'Supplier'],
+  tagTypes: ['ItemOrders', 'ItemOrder'],
   endpoints: (builder) => ({
     getDrugOrders: builder.query<any, { page: number, search?: string }>({
       query: ({ page, search }) => `?pageSize=20&page=${page}&search=${search || ''}`,
@@ -24,6 +24,19 @@ const drugOrdersApi = createApi({
         return { orders, totalPages }
       },
       providesTags: () => [{ type: 'ItemOrders', }]
+    }),
+    getADrugOrderRequest: builder.query<any, { orderId: string }>({
+      query: ({ orderId }) => `/${orderId}`,
+      // transformResponse: (response: any) => {
+      //   let { rows, totalPages } = response.data
+      //   const orders = rows?.map((row: any) => {
+      //     const { orderNumber, id, date, quantity, expectedDeliveryDate, status, item, supplier, } = row
+      //     return { orderNumber, id, date, quantity, expectedDeliveryDate, status, drugName: item?.name, supplierName: supplier?.name }
+      //   })
+
+      //   return { orders, totalPages }
+      // },
+      providesTags: ({ orderId }) => [{ type: 'ItemOrder', id: orderId }]
     }),
     createADrugOrderRequest: builder.mutation<any, {
       itemId: string; quantity: number; supplierId: string; additionalNotes: string; expectedDeliveryDate: Date; paymentMethod: string; deliveryMethod: string; deliveryAddress: string; status: string
@@ -39,7 +52,7 @@ const drugOrdersApi = createApi({
       orderId: string; itemId: string; quantity: number; supplierId: string; additionalNotes: string; expectedDeliveryDate: Date; paymentMethod: string; deliveryMethod: string; deliveryAddress: string; status: string
     }>({
       query: ({ itemId, quantity, supplierId, additionalNotes, expectedDeliveryDate, paymentMethod, deliveryMethod, deliveryAddress, orderId, status }) => ({
-        method: 'POST',
+        method: 'PATCH',
         url: `/${orderId}`,
         body: { itemId, quantity, supplierId, additionalNotes, expectedDeliveryDate, paymentMethod, deliveryMethod, deliveryAddress, status }
       }),
@@ -51,7 +64,8 @@ const drugOrdersApi = createApi({
 export const {
   useLazyGetDrugOrdersQuery,
   useCreateADrugOrderRequestMutation,
-  useUpdateADrugOrderRequestMutation
+  useUpdateADrugOrderRequestMutation,
+  useLazyGetADrugOrderRequestQuery
 } = drugOrdersApi
 
 export default drugOrdersApi

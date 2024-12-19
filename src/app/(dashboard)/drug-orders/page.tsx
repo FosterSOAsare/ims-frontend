@@ -111,7 +111,7 @@ const page = () => {
 	const [page, setPage] = useState(0);
 
 	const order = useMemo(() => {
-		return selectedDrugOrder !== null ? drugOrders[selectedDrugOrder] : ({} as IDrugOrder);
+		return selectedDrugOrder !== null ? data?.orders?.[selectedDrugOrder] : ({} as IDrugOrder);
 	}, [selectedDrugOrder]);
 
 	const query = useDebounce(search, 1000);
@@ -179,6 +179,7 @@ const page = () => {
 										{...drugOrder}
 										isLast={index >= drugOrders.length - 2}
 										index={index}
+										key={index}
 										selectedDrugOrder={selectedDrugOrder}
 										setSelectedDrugOrder={setSelectedDrugOrder}
 									/>

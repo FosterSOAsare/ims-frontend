@@ -48,7 +48,7 @@ export const stockAdjustmentSchema = z.object({
 export const drugOrderSchema = z.object({
   quantity: z.string().min(1, { message: "Please enter the current stock of the drug" }).regex(/^\d+(\.\d+)?$/, { message: 'Please enter a valid quantity. Numbers only' }),
   // orderNo: z.string().min(1, { message: "Please enter the order number of the drug" }).regex(/^\d+(\.\d+)?$/, { message: 'Please enter a valid quantity. Numbers only' }),
-  deliveryDate: z.string().min(1, { message: "Please add an expected delivery date to the order" }),
+  expectedDeliveryDate: z.string().min(2, { message: "Please add an expected delivery date to the order" }),
   deliveryAddress: z.string().min(1, { message: "Please add your address for delivery" }),
 });
 
