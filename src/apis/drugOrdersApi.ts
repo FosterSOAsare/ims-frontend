@@ -56,7 +56,7 @@ const drugOrdersApi = createApi({
         url: `/${orderId}`,
         body: { itemId, quantity, supplierId, additionalNotes, expectedDeliveryDate, paymentMethod, deliveryMethod, deliveryAddress, status }
       }),
-      invalidatesTags: [{ type: 'ItemOrders' }]
+      invalidatesTags: ({ orderId }) => [{ type: 'ItemOrders' }, , { type: 'ItemOrder', id: orderId }]
     }),
     deleteADrugOrderRequest: builder.mutation<any, { orderId: string }>({
       query: ({ orderId }) => ({
@@ -64,6 +64,14 @@ const drugOrdersApi = createApi({
         url: `/${orderId}`,
       }),
       invalidatesTags: [{ type: 'ItemOrders' }]
+    }),
+    changeADrugOrderStatusRequest: builder.mutation<any, { orderId: string; status: 'requested' | 'draft' | 'cancelled' | 'delivering' | 'received' }>({
+      query: ({ orderId, status }) => ({
+        method: 'PUT',
+        url: `/state/${orderId}`,
+        body: { status }
+      }),
+      invalidatesTags: ({ orderId }) => [{ type: 'ItemOrders' }, { type: 'ItemOrder', id: orderId }]
     }),
   })
 })
@@ -73,7 +81,8 @@ export const {
   useCreateADrugOrderRequestMutation,
   useUpdateADrugOrderRequestMutation,
   useLazyGetADrugOrderRequestQuery,
-  useDeleteADrugOrderRequestMutation
+  useDeleteADrugOrderRequestMutation,
+  useChangeADrugOrderStatusRequestMutation
 } = drugOrdersApi
 
 export default drugOrdersApi

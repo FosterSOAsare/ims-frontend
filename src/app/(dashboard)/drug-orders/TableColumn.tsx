@@ -1,8 +1,9 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { IDrugOrder } from "./page";
 import { formatDate } from "@/utils/date";
-import { useDeleteADrugOrderRequestMutation } from "@/apis/drugOrdersApi";
+import { useChangeADrugOrderStatusRequestMutation, useDeleteADrugOrderRequestMutation } from "@/apis/drugOrdersApi";
+import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 
 interface ITableColumn extends IDrugOrder {
 	isLast: boolean;
@@ -30,11 +31,22 @@ const TableColumn = ({
 	setShowAddOrEditDrugOrder,
 }: ITableColumn) => {
 	const [deleteADrugOrderRequest, { data: deleted, isLoading: deleting, error: deleteError }] = useDeleteADrugOrderRequestMutation();
+	const [changeOrderStatusRequest, { data: orderStatusChange, error: orderStatusError, isLoading: changingOrderStatus }] = useChangeADrugOrderStatusRequestMutation();
+
+	const [selectedStatus, setSelectedStatus] = useState<"requested" | "draft" | "cancelled" | "delivering" | "received" | "">("");
+
+	const handleStatusChange = (status: "requested" | "draft" | "cancelled" | "delivering" | "received") => {
+		setSelectedStatus(status);
+		changeOrderStatusRequest({ orderId: id, status });
+	};
 
 	useEffect(() => {
-		if (!deleted) return;
+		if (!deleted && !orderStatusChange) return;
 		setSelectedDrugOrder(null);
-	}, [deleted]);
+	}, [deleted, orderStatusChange]);
+
+	useCreateErrorFromApiRequest(orderStatusError);
+	useCreateErrorFromApiRequest(deleteError);
 	return (
 		<div className="bg-white drugs-table gap-4 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
 			<div className="col-span-4 text-primary py-3 text-left">{drugName.length > 17 ? drugName.substring(0, 17) + "..." : drugName}</div>
@@ -59,7 +71,7 @@ const TableColumn = ({
 							: "bg-[#FFFAEB] text-[#B54708]"
 					} inline-flex rounded-full px-2 py-1 items-center gap-1`}>
 					<span
-						className={`inline-block w-[6px] h-[6px] rounded-full ${
+						className={`inline-block w-[6px] h-[6px] capitalize rounded-full ${
 							status.toLowerCase() === "cancelled"
 								? " bg-red-500"
 								: status.toLowerCase() === "requested"
@@ -91,24 +103,33 @@ const TableColumn = ({
 										Edit
 									</button>
 									{status.toLowerCase() === "requested" && (
-										<button disabled={deleting} className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+										<button
+											disabled={deleting}
+											onClick={() => handleStatusChange("delivering")}
+											className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
 											<Icon icon="hugeicons:view" className="text-lg" />
-											Mark As delivering
+											{changingOrderStatus && selectedStatus === "delivering" ? "Marking..." : "Mark As delivering"}
 										</button>
 									)}
 
 									{status.toLowerCase() === "draft" && (
-										<button disabled={deleting} className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+										<button
+											disabled={deleting}
+											onClick={() => handleStatusChange("requested")}
+											className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
 											<Icon icon="hugeicons:view" className="text-lg" />
-											Mark As requested
+											{changingOrderStatus && selectedStatus === "requested" ? "Marking..." : "Mark As requested"}
 										</button>
 									)}
 								</>
 							)}
 							{status.toLowerCase() === "delivering" && (
-								<button disabled={deleting} className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+								<button
+									disabled={deleting}
+									onClick={() => handleStatusChange("received")}
+									className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
 									<Icon icon="hugeicons:view" className="text-lg" />
-									Mark As received
+									{changingOrderStatus && selectedStatus === "received" ? "Marking..." : "Mark As received"}
 								</button>
 							)}
 							<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2" onClick={() => viewStockAdjustment && viewStockAdjustment()}>
