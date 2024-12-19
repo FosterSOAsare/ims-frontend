@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
 import { IDrugOrder } from "./page";
+import { formatDate } from "@/utils/date";
 
 interface ITableColumn extends IDrugOrder {
 	isLast: boolean;
@@ -14,11 +15,11 @@ interface ITableColumn extends IDrugOrder {
 const TableColumn = ({
 	date,
 	id,
-	name,
+	drugName,
 	orderNumber,
-	supplier,
+	supplierName,
 	quantity,
-	delivery,
+	expectedDeliveryDate,
 	status,
 	isLast,
 	selectedDrugOrder,
@@ -29,16 +30,16 @@ const TableColumn = ({
 }: ITableColumn) => {
 	return (
 		<div className="bg-white drugs-table gap-4 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
-			<div className="col-span-4 text-primary py-3 text-left">{name.length > 17 ? name.substring(0, 17) + "..." : name}</div>
+			<div className="col-span-4 text-primary py-3 text-left">{drugName.length > 17 ? drugName.substring(0, 17) + "..." : drugName}</div>
 			<div className="col-span-3 text-primary py-3 text-left">{orderNumber}</div>
 
 			<div className="col-span-4 text-primary py-3 text-left flex items-center justify-start gap-1">
 				<Icon icon="solar:documents-linear" />
-				{supplier.length > 12 ? supplier.substring(0, 12) + "..." : supplier}
+				{supplierName.length > 12 ? supplierName.substring(0, 12) + "..." : supplierName}
 			</div>
-			<div className="col-span-3 text-primary py-3 text-left">{date}</div>
+			<div className="col-span-3 text-primary py-3 text-left">{formatDate(date)}</div>
 			<div className="col-span-3 text-primary py-3 text-left">{quantity}</div>
-			<div className="col-span-3">{delivery}</div>
+			<div className="col-span-3">{formatDate(expectedDeliveryDate)}</div>
 			<div className="col-span-3 text-sm text-gray-500 py-3 text-left">
 				<div
 					className={`${
@@ -70,7 +71,7 @@ const TableColumn = ({
 					</button>
 					{selectedDrugOrder == index && (
 						<div className={`absolute ${isLast ? "bottom-[100%]" : "top-[100%]"}  right-0 h-auto w-[180px] bg-white selectedDrugOrder z-[3] rounded-[5px] card`}>
-							{status.toLowerCase() === "requested" && (
+							{(status.toLowerCase() === "requested" || status.toLowerCase() === "draft") && (
 								<>
 									<button
 										className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
@@ -81,11 +82,26 @@ const TableColumn = ({
 										<Icon icon="hugeicons:file-edit" className="text-lg" />
 										Edit
 									</button>
-									<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
-										<Icon icon="hugeicons:view" className="text-lg" />
-										Mark As delivering
-									</button>
+									{status.toLowerCase() === "requested" && (
+										<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+											<Icon icon="hugeicons:view" className="text-lg" />
+											Mark As delivering
+										</button>
+									)}
+
+									{status.toLowerCase() === "draft" && (
+										<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+											<Icon icon="hugeicons:view" className="text-lg" />
+											Mark As requested
+										</button>
+									)}
 								</>
+							)}
+							{status.toLowerCase() === "delivering" && (
+								<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+									<Icon icon="hugeicons:view" className="text-lg" />
+									Mark As received
+								</button>
 							)}
 							<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2" onClick={() => viewStockAdjustment && viewStockAdjustment()}>
 								<Icon icon="solar:printer-2-outline" className="text-lg" />

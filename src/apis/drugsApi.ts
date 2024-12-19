@@ -23,6 +23,10 @@ const drugsApi = createApi({
       },
       providesTags: () => [{ type: 'Drugs' }]
     }),
+    getAllDrugsRequest: builder.query<any, void>({
+      query: () => `/no-paginate`,
+      providesTags: () => [{ type: 'Drugs' }]
+    }),
     getADrugRequest: builder.query<any, { drugId: string }>({
       query: ({ drugId }) => `/${drugId}`,
       providesTags: ({ drugId }) => [{ type: 'Drugs' }, { type: 'Drug', id: drugId }]
@@ -64,7 +68,8 @@ export const {
   useDeleteADrugRequestMutation,
   useLazyGetADrugRequestQuery,
   useGetADrugRequestQuery,
-  useGetDrugsAnalyticsRequestQuery
+  useGetDrugsAnalyticsRequestQuery,
+  useGetAllDrugsRequestQuery
 } = drugsApi
 
 export default drugsApi

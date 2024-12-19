@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { toast } from "react-toastify";
 
@@ -9,30 +9,33 @@ import drugs from "@/data/drugs";
 
 import Input from "@/components/Input";
 import CustomSelect from "@/components/Select";
+import { useGetAllSuppliersRequestQuery } from "@/apis/suppliersApi";
+import { useGetAllDrugsRequestQuery } from "@/apis/drugsApi";
+import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
+import { useCreateADrugOrderRequestMutation, useUpdateADrugOrderRequestMutation } from "@/apis/drugOrdersApi";
+import Loading from "@/components/Loading";
 
 export interface IOrderDetails {
-	drug: string;
+	itemId: string;
 	quantity: string;
 	supplier: string;
-	// orderNo: string;
+	notes: string;
 	deliveryDate: string;
 	paymentMethod: string;
 	deliveryMethod: string;
-	address: string;
+	deliveryAddress: string;
 }
 
 const initial: IOrderDetails = {
-	drug: "",
+	itemId: "",
 	quantity: "",
 	supplier: "",
-	// orderNo: "",
+	notes: "",
 	deliveryDate: "",
 	paymentMethod: "",
 	deliveryMethod: "",
-	address: "",
+	deliveryAddress: "",
 };
-
-// const drugs = []
 
 interface IAddOrEditStock {
 	setSelectedDrugOrder: React.Dispatch<React.SetStateAction<null | number>>;
@@ -41,29 +44,54 @@ interface IAddOrEditStock {
 }
 
 const AddOrEditDrugOrder = ({ setShowAddOrEditDrugOrder, orderId, setSelectedDrugOrder }: IAddOrEditStock) => {
+	const { data: suppliers, isLoading: gettingSuppliers, error: suppliersError } = useGetAllSuppliersRequestQuery();
+	const { data: drugs, isLoading: gettingDrugs, error: drugsError } = useGetAllDrugsRequestQuery();
+	const [createADrugOrderRequest, { data: created, isLoading: creating, error: createError }] = useCreateADrugOrderRequestMutation();
+	const [updateADrugOrderRequest, { data: updated, isLoading: updating, error: updateError }] = useUpdateADrugOrderRequestMutation();
+
 	const [orderDetails, setOrderDetails] = useState<IOrderDetails>(initial);
+	const [status, setStatus] = useState<string>("");
 
 	// Fetch order if it is an edit request
 
 	// Select fields will change the details directly while inputs will use a hookform for vaidation
-	const { register, handleSubmit } = useSelectedValuesFromHookForm(drugOrderSchema);
+	const { register, handleSubmit, getValues } = useSelectedValuesFromHookForm(drugOrderSchema);
 	const setValue = (name: string, value: string) => {
 		setOrderDetails((prev) => ({ ...prev, [name]: value }));
 	};
 
-	const addOrder = (data: any) => {
-		const { quantity, deliveryDate, address } = data;
+	const addOrder = (status: string) => {
+		setStatus(status);
+		const { quantity, deliveryDate, deliveryAddress } = getValues();
 
-		const { drug, supplier, paymentMethod, deliveryMethod } = orderDetails;
-		if (!drug) return toast.error("Please select the drug you want to order", { autoClose: 1500 });
+		let { itemId, supplier, paymentMethod, deliveryMethod, notes } = orderDetails;
+		if (!itemId) return toast.error("Please select the drug you want to order", { autoClose: 1500 });
 		if (!paymentMethod) return toast.error("Please select a payment method", { autoClose: 1500 });
 		if (!supplier) return toast.error("Please select the supplier of this drug", { autoClose: 1500 });
 		if (!deliveryMethod) return toast.error("Please select a delivery method for your order", { autoClose: 1500 });
 
-		const allData = { quantity, deliveryDate, address, drug, paymentMethod, deliveryMethod, supplier };
-		console.log(allData);
+		const allData = { quantity: +quantity, expectedDeliveryDate: deliveryDate, deliveryAddress, itemId, paymentMethod, deliveryMethod, additionalNotes: notes, status };
+
+		// Get supplierId and itemId using the names
+		const supplierId = suppliers?.data?.find(({ name }: { name: string }) => name === supplier)?.id || "";
+		console.log(drugs?.data?.find(({ name }: { name: string }) => name === itemId));
+		itemId = drugs?.data?.find(({ name }: { name: string }) => name === itemId)?.id || "";
+
+		orderId ? updateADrugOrderRequest({ ...allData, supplierId, itemId, orderId }) : createADrugOrderRequest({ ...allData, supplierId, itemId });
 	};
 
+	useEffect(() => {
+		if (!created && !updated) return;
+		toast.success(`Drug successfully ${created ? "created" : "updated"}...`, { autoClose: 1500 });
+		setStatus("");
+		setShowAddOrEditDrugOrder(false);
+		setSelectedDrugOrder(null);
+	}, [created, updated]);
+
+	useCreateErrorFromApiRequest(drugsError);
+	useCreateErrorFromApiRequest(suppliersError);
+	useCreateErrorFromApiRequest(createError);
+	useCreateErrorFromApiRequest(updateError);
 	return (
 		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-end px-3 w-full fixed top-0 left-0 z-[5]">
 			<div className="w-[28%] flex flex-col gap-4 h-[calc(100%-20px)]  bg-white rounded-[5px]">
@@ -80,54 +108,70 @@ const AddOrEditDrugOrder = ({ setShowAddOrEditDrugOrder, orderId, setSelectedDru
 					</button>
 				</div>
 
-				<form className="h-[calc(100%-60px)]" onSubmit={handleSubmit(addOrder)}>
-					<div className="flex items-start flex-col h-full gap-2" onSubmit={() => ""}>
-						<div className="px-4 overflow-y-auto space-y-3 pb-12 w-full">
-							<CustomSelect
-								options={drugs.map((drug) => drug.name)}
-								value={orderDetails.drug}
-								label="Drug"
-								placeholder="Select option"
-								handleChange={(value) => setValue("drug", value)}
-							/>
-							<Input name="quantity" register={register} label="Quantity" placeholder="0" labelSx="text-sm" inputSx="text-sm" />
-							<CustomSelect
-								options={["Ernest Chemist", "Ampem Darko Herbal", "taabea"]}
-								label="Supplier"
-								placeholder="Select option"
-								value={orderDetails.supplier}
-								handleChange={(value) => setValue("supplier", value)}
-							/>
-							{/* <Input name="orderNo" register={register} label="Order #" placeholder="4456677383" labelSx="text-sm" inputSx="text-sm" /> */}
-							<Input name="deliveryDate" register={register} type="date" label="Expected Delivery Date" placeholder="" labelSx="text-sm" inputSx="text-sm" />
-							<CustomSelect
-								options={["Cash", "Mobile Money", "Bank Transfer", "In Kind"]}
-								label="Payment Method"
-								placeholder="Select option"
-								value={orderDetails.paymentMethod}
-								handleChange={(value) => setValue("paymentMethod", value)}
-							/>
-							<CustomSelect
-								options={["Pick Up", "Door to door Delivery", "Delivery Service"]}
-								label="Delivery Method"
-								placeholder="Select option"
-								value={orderDetails.deliveryMethod}
-								handleChange={(value) => setValue("deliveryMethod", value)}
-							/>
+				{!gettingDrugs && !gettingSuppliers && drugs && suppliers && (
+					<form className="h-[calc(100%-60px)]">
+						<div className="flex items-start flex-col h-full gap-2" onSubmit={() => ""}>
+							<div className="px-4 overflow-y-auto space-y-3 pb-12 w-full">
+								<CustomSelect
+									options={drugs?.data?.map((drug: { name: string }) => drug.name)}
+									value={orderDetails.itemId}
+									label="Drug"
+									placeholder="Select option"
+									handleChange={(value) => setValue("itemId", value)}
+								/>
+								<Input name="quantity" register={register} label="Quantity" placeholder="0" labelSx="text-sm" inputSx="text-sm" />
+								<CustomSelect
+									options={suppliers?.data?.map((supplier: { name: string }) => supplier.name)}
+									label="Supplier"
+									placeholder="Select option"
+									value={orderDetails.supplier}
+									handleChange={(value) => setValue("supplier", value)}
+								/>
+								{/* <Input name="orderNo" register={register} label="Order #" placeholder="4456677383" labelSx="text-sm" inputSx="text-sm" /> */}
+								<Input name="deliveryDate" register={register} type="date" label="Expected Delivery Date" placeholder="" labelSx="text-sm" inputSx="text-sm" />
+								<CustomSelect
+									options={["Credit/Debit Card", "Bank Transfer", "Payment on Delivery", "Mobile Money"]}
+									label="Payment Method"
+									placeholder="Select option"
+									value={orderDetails.paymentMethod}
+									handleChange={(value) => setValue("paymentMethod", value)}
+								/>
+								<CustomSelect
+									options={["Standard Delivery", "Express Delivery", "Same-Day Delivery", "Next-Day Delivery", "Local Pickup", "Free Shipping", "Courier Delivery"]}
+									label="Delivery Method"
+									placeholder="Select option"
+									value={orderDetails.deliveryMethod}
+									handleChange={(value) => setValue("deliveryMethod", value)}
+								/>
 
-							<Input name="address" register={register} label="Delivery Address" placeholder="" labelSx="text-sm" inputSx="text-sm" />
-						</div>
+								<Input name="deliveryAddress" register={register} label="Delivery Address" placeholder="" labelSx="text-sm" inputSx="text-sm" />
 
-						<div className="w-full flex items-center justify-between gap-4 h-auto white px-4 py-4 mt-auto">
-							<button className="w-2/5 bg-gray-100 py-2 rounded-[10px] hover:bg-gray-200" type="button">
-								Save as draft
-							</button>
-							<button className="w-3/5 bg-sec py-2 rounded-[10px] hover:opacity-70 text-white" type="submit">
-								Save and send mail
-							</button>
+								<div className="w-full">
+									<label htmlFor="notes" className="text-sm">
+										Additional Notes
+									</label>
+									<textarea
+										value={orderDetails.notes}
+										onChange={(e) => setValue("notes", e.target.value)}
+										className="w-full h-24 resize-none border-[1px] focus:outline-0 p-2 rounded-[10px] border-gray-200"></textarea>
+								</div>
+							</div>
+
+							<div className="w-full flex items-center justify-between gap-4 h-auto white px-4 py-4 mt-auto">
+								<button disabled={creating || updating} className="w-2/5 bg-gray-100 py-2 rounded-[10px] hover:bg-gray-200" type="button" onClick={() => addOrder("draft")}>
+									{(creating || updating) && status === "draft" ? <Loading /> : "Save as draft"}
+								</button>
+								<button
+									disabled={true || creating || updating}
+									className="w-3/5 bg-sec py-2 rounded-[10px] hover:opacity-70 text-white"
+									type="button"
+									onClick={() => addOrder("requested")}>
+									{(creating || updating) && status === "requested" ? <Loading /> : "Save and send mail"}
+								</button>
+							</div>
 						</div>
-					</div>
-				</form>
+					</form>
+				)}
 			</div>
 		</div>
 	);

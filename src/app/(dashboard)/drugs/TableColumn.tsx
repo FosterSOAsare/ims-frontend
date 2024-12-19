@@ -82,7 +82,7 @@ const TableColumn = ({ name, category, stock, supplier, status, reorderPoint, is
 								disabled={deleting}
 								className="px-3 gap-[6px] hover:bg-red-500 hover:text-white text-red-500 flex items-center justify-start text-sm w-full py-2">
 								<Icon icon="solar:trash-bin-minimalistic-line-duotone" className="text-lg" />
-								{activeColumn === index && deleting ? <Loading /> : "Delete"}
+								{activeColumn === index && deleting ? "Deleting..." : "Delete"}
 							</button>
 						</div>
 					)}

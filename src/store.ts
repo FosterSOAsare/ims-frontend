@@ -5,6 +5,7 @@ import categoriesApi from "./apis/itemCategories";
 import usersApi from "./apis/usersApi";
 import suppliersApi from './apis/suppliersApi'
 import drugsApi from "./apis/drugsApi";
+import drugOrdersApi from "./apis/drugOrdersApi";
 
 const middlewares: Array<Middleware> = [
   authApi.middleware,
@@ -13,6 +14,7 @@ const middlewares: Array<Middleware> = [
   usersApi.middleware,
   suppliersApi.middleware,
   drugsApi.middleware,
+  drugOrdersApi.middleware,
 ]
 
 const makeStore = () => (
@@ -24,6 +26,7 @@ const makeStore = () => (
       [usersApi.reducerPath]: usersApi.reducer,
       [suppliersApi.reducerPath]: suppliersApi.reducer,
       [drugsApi.reducerPath]: drugsApi.reducer,
+      [drugOrdersApi.reducerPath]: drugOrdersApi.reducer,
     },
 
     middleware: (getDefaultMiddleware: any) => (

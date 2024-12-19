@@ -1,29 +1,96 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import TableColumn from "./TableColumn";
 import AddOrEditDrugOrder from "./AddOrEditDrugOrders";
 import Filters, { initialFilter } from "./Filters";
+import { useLazyGetDrugOrdersQuery } from "@/apis/drugOrdersApi";
+import useDebounce from "@/hooks/useDebounce";
+import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
+import NoData from "@/components/NoData";
 
 export interface IDrugOrder {
 	id: string;
-	name: string;
+	drugName: string;
 	orderNumber: string;
 	status: "Requested" | "Delivering" | "Received" | "Cancelled";
-	supplier: string;
+	supplierName: string;
 	date: string;
 	quantity: string;
-	delivery: string;
+	expectedDeliveryDate: string;
 }
 const drugOrders: IDrugOrder[] = [
-	{ id: "1", name: "Paracetamol (Tyrenol)", orderNumber: "23345788", supplier: "Earnest Chemist", date: "Jun 28, 24", quantity: "20,000pcs", delivery: "Aug 07, 24", status: "Requested" },
-	{ id: "2", name: "Paracetamol (Tyrenol)", orderNumber: "23345788", supplier: "Earnest Chemist", date: "Jun 28, 24", quantity: "20,000pcs", delivery: "Aug 07, 24", status: "Delivering" },
-	{ id: "3", name: "Paracetamol (Tyrenol)", orderNumber: "23345788", supplier: "Earnest Chemist", date: "Jun 28, 24", quantity: "20,000pcs", delivery: "Aug 07, 24", status: "Received" },
-	{ id: "4", name: "Paracetamol (Tyrenol)", orderNumber: "23345788", supplier: "Earnest Chemist", date: "Jun 28, 24", quantity: "20,000pcs", delivery: "Aug 07, 24", status: "Received" },
-	{ id: "5", name: "Paracetamol (Tyrenol)", orderNumber: "23345788", supplier: "Earnest Chemist", date: "Jun 28, 24", quantity: "20,000pcs", delivery: "Aug 07, 24", status: "Received" },
-	{ id: "6", name: "Paracetamol (Tyrenol)", orderNumber: "23345788", supplier: "Earnest Chemist", date: "Jun 28, 24", quantity: "20,000pcs", delivery: "Aug 07, 24", status: "Cancelled" },
-	{ id: "7", name: "Paracetamol (Tyrenol)", orderNumber: "23345788", supplier: "Earnest Chemist", date: "Jun 28, 24", quantity: "20,000pcs", delivery: "Aug 07, 24", status: "Received" },
+	{
+		id: "1",
+		drugName: "Paracetamol (Tyrenol)",
+		orderNumber: "23345788",
+		supplierName: "Earnest Chemist",
+		date: "Jun 28, 24",
+		quantity: "20,000pcs",
+		expectedDeliveryDate: "Aug 07, 24",
+		status: "Requested",
+	},
+	{
+		id: "2",
+		drugName: "Paracetamol (Tyrenol)",
+		orderNumber: "23345788",
+		supplierName: "Earnest Chemist",
+		date: "Jun 28, 24",
+		quantity: "20,000pcs",
+		expectedDeliveryDate: "Aug 07, 24",
+		status: "Delivering",
+	},
+	{
+		id: "3",
+		drugName: "Paracetamol (Tyrenol)",
+		orderNumber: "23345788",
+		supplierName: "Earnest Chemist",
+		date: "Jun 28, 24",
+		quantity: "20,000pcs",
+		expectedDeliveryDate: "Aug 07, 24",
+		status: "Received",
+	},
+	{
+		id: "4",
+		drugName: "Paracetamol (Tyrenol)",
+		orderNumber: "23345788",
+		supplierName: "Earnest Chemist",
+		date: "Jun 28, 24",
+		quantity: "20,000pcs",
+		expectedDeliveryDate: "Aug 07, 24",
+		status: "Received",
+	},
+	{
+		id: "5",
+		drugName: "Paracetamol (Tyrenol)",
+		orderNumber: "23345788",
+		supplierName: "Earnest Chemist",
+		date: "Jun 28, 24",
+		quantity: "20,000pcs",
+		expectedDeliveryDate: "Aug 07, 24",
+		status: "Received",
+	},
+	{
+		id: "6",
+		drugName: "Paracetamol (Tyrenol)",
+		orderNumber: "23345788",
+		supplierName: "Earnest Chemist",
+		date: "Jun 28, 24",
+		quantity: "20,000pcs",
+		expectedDeliveryDate: "Aug 07, 24",
+		status: "Cancelled",
+	},
+	{
+		id: "7",
+		drugName: "Paracetamol (Tyrenol)",
+		orderNumber: "23345788",
+		supplierName: "Earnest Chemist",
+		date: "Jun 28, 24",
+		quantity: "20,000pcs",
+		expectedDeliveryDate: "Aug 07, 24",
+		status: "Received",
+	},
 ];
 
 export interface IFilter {
@@ -33,14 +100,27 @@ export interface IFilter {
 }
 
 const page = () => {
+	const [getDrugOrdersRequest, { data, isLoading, error }] = useLazyGetDrugOrdersQuery();
+
 	const [selectedDrugOrder, setSelectedDrugOrder] = useState<null | number>(null);
 	const [showAddOrEditOrder, setShowAddOrEditDrugOrder] = useState<boolean>(false);
-	const [filters, setFilters] = useState<IFilter>(initialFilter);
 	const [showFilters, setShowFilters] = useState<boolean>(false);
+
+	const [filters, setFilters] = useState<IFilter>(initialFilter);
+	const [search, setSearch] = useState("");
+	const [page, setPage] = useState(0);
 
 	const order = useMemo(() => {
 		return selectedDrugOrder !== null ? drugOrders[selectedDrugOrder] : ({} as IDrugOrder);
 	}, [selectedDrugOrder]);
+
+	const query = useDebounce(search, 1000);
+
+	useEffect(() => {
+		getDrugOrdersRequest({ page: page + 1, search: query });
+	}, [query, page]);
+
+	useCreateErrorFromApiRequest(error);
 
 	return (
 		<div className="relative">
@@ -88,19 +168,27 @@ const page = () => {
 					<div className="col-span-1 text-gray-500 uppercase text-xs py-3"></div>
 				</div>
 
-				<div>
-					{/* Last two on the table will have isLast so the drop down shows at the top instead */}
-					{drugOrders.map((drugOrder, index) => (
-						<TableColumn
-							setShowAddOrEditDrugOrder={setShowAddOrEditDrugOrder}
-							{...drugOrder}
-							isLast={index >= drugOrders.length - 2}
-							index={index}
-							selectedDrugOrder={selectedDrugOrder}
-							setSelectedDrugOrder={setSelectedDrugOrder}
-						/>
-					))}
-				</div>
+				{!isLoading && (
+					<div>
+						{data?.orders?.length > 0 && (
+							<>
+								{/* Last two on the table will have isLast so the drop down shows at the top instead */}
+								{data?.orders?.map((drugOrder: IDrugOrder, index: number) => (
+									<TableColumn
+										setShowAddOrEditDrugOrder={setShowAddOrEditDrugOrder}
+										{...drugOrder}
+										isLast={index >= drugOrders.length - 2}
+										index={index}
+										selectedDrugOrder={selectedDrugOrder}
+										setSelectedDrugOrder={setSelectedDrugOrder}
+									/>
+								))}
+							</>
+						)}
+
+						{data?.orders?.length === 0 && <NoData />}
+					</div>
+				)}
 			</div>
 
 			{showAddOrEditOrder && <AddOrEditDrugOrder orderId={order?.id as string} setSelectedDrugOrder={setSelectedDrugOrder} setShowAddOrEditDrugOrder={setShowAddOrEditDrugOrder} />}

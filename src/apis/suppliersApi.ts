@@ -15,7 +15,7 @@ const suppliersApi = createApi({
       providesTags: () => [{ type: 'Suppliers', }]
     }),
     getAllSuppliersRequest: builder.query<any, void>({
-      query: () => ``,
+      query: () => `/no-paginate`,
     }),
     getASupplierDetailsRequest: builder.query<any, { supplierId: string }>({
       query: ({ supplierId }) => `/${supplierId}`,

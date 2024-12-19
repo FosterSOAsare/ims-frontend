@@ -15,6 +15,9 @@ const categoriesApi = createApi({
       query: () => `?pageSize=20`,
       providesTags: () => [{ type: 'Categories' }]
     }),
+    getAllItemCategories: builder.query<any, void>({
+      query: () => `/no-paginate`,
+    }),
     createAnItemCategoryRequest: builder.mutation<any, { name: string }>({
       query: ({ name }) => ({
         method: 'POST',
