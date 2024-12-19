@@ -9,6 +9,7 @@ import { newDrugStep1Schema } from "@/libs/hookform";
 import { toast } from "react-toastify";
 import { useGetItemCategoriesQuery } from "@/apis/itemCategories";
 import { PageLoading } from "@/components/Loading";
+import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 
 const measurementOptions = ["milligram", "gram", "microgram", "milliliter", "International Unit", "Unit", "tablet", "capsule", "teaspoon", "tablespoon", "drop", "puff", "patch"];
 const dosageFormOptions = ["Liquids", "Solids"];
@@ -33,13 +34,14 @@ const Step1 = ({ drugDetails, setValues, step, setStep }: { drugDetails: IDrugDe
 		const { name, brandName, code, manufacturer, strength } = data;
 		if (!dosage) return toast.error("Please select a dosage form", { autoClose: 1500 });
 		if (!category) return toast.error("Please select drug category", { autoClose: 1500 });
-		if (!strength) return toast.error("Please select strength of drug", { autoClose: 1500 });
 		if (!unitOfMeasurement) return toast.error("Please select a unit of measurement of drug", { autoClose: 1500 });
 		const allData = { dosageForm: dosage, strength, unitOfMeasurement, name, manufacturer, brandName, code, categoryId: category };
 
 		setValues(allData);
 		setStep((prev) => ++prev);
 	};
+
+	useCreateErrorFromApiRequest(error);
 
 	return (
 		<form className="flex items-start flex-col h-full gap-2" onSubmit={handleSubmit(step1Data)}>

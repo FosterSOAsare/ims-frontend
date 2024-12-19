@@ -27,12 +27,11 @@ const Step3 = ({ drugDetails, setValues, step, setStep, drugId, closeModal }: IS
 	const [createADrug, { data: created, isLoading: creating, error: createError }] = useCreateADrugRequestMutation();
 	const [updatedADrug, { data: updated, isLoading: updating, error: updateError }] = useEditADrugRequestMutation();
 
-	const [supplier, setStupplier] = useState(drugDetails.supplier);
 	const step3Data = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		if (!supplier) return toast.error("Please select a supplier", { autoClose: 1500 });
-		setValues({ supplier });
+		// if (!supplier) return toast.error("Please select a supplier", { autoClose: 1500 });
+		// setValues({ supplier });
 
 		// Get supplieir
 		const supplierId = suppliers?.data?.rows?.find((sup: { name: string }) => sup.name === supplier)?.id;
@@ -80,8 +79,9 @@ const Step3 = ({ drugDetails, setValues, step, setStep, drugId, closeModal }: IS
 		};
 
 		// Create or update drug
+		console.log(data);
 
-		drugId ? updatedADrug({ data, drugId }) : createADrug(data);
+		// drugId ? updatedADrug({ data, drugId }) : createADrug(data);
 	};
 
 	const goBack = () => {

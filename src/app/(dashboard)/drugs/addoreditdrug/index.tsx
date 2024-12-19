@@ -7,6 +7,8 @@ import Step2 from "./Step2";
 import Step3 from "./Step3";
 import { useLazyGetADrugRequestQuery } from "@/apis/drugsApi";
 import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
+import { PageLoading } from "@/components/Loading";
+import { useGetItemCategoriesQuery } from "@/apis/itemCategories";
 
 export interface IDrugDetails {
 	name: string;
@@ -16,14 +18,10 @@ export interface IDrugDetails {
 	strength: string;
 	unitOfMeasurement: string;
 	manufacturer: string;
-	supplier: string;
 	storageReq: string;
-	batchNumber: string;
-	validity: string;
 	reorderPoint: string;
 	costPrice: string;
 	sellingPrice: string;
-	quantity: string;
 	categoryId: string;
 	fdaApproval: string;
 	iso: string;
@@ -55,14 +53,10 @@ const initial: IDrugDetails = {
 	code: "TYEREUE",
 	unitOfMeasurement: "gram",
 	manufacturer: "Test Manufacturer",
-	supplier: "",
 	storageReq: "Store in a cool dry place",
-	batchNumber: "BATCHTYE",
-	validity: "2024-12-17",
 	reorderPoint: "300",
 	costPrice: "20000",
 	sellingPrice: "25000",
-	quantity: "400",
 	categoryId: "",
 	fdaApproval: "FDA123",
 	iso: "ISO123",
@@ -75,14 +69,18 @@ interface IAddOrEditDrug {
 }
 
 const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId, setActiveColumn }: IAddOrEditDrug) => {
+	const { data: categories, error: categoriesError, isLoading: gettingCategories } = useGetItemCategoriesQuery();
 	const [drugDetails, setDrugDetails] = useState<IDrugDetails>(initial);
+	const [pageReady, setPageReady] = useState(false);
 	const [step, setStep] = useState<number>(0);
 	const [getADrugRequest, { data: drug, isLoading, error }] = useLazyGetADrugRequestQuery();
 
 	// Fetch drug if it is an edit request
 
 	useEffect(() => {
+		if (!drugId) return setPageReady(true);
 		if (drugId) {
+			setPageReady(false);
 			// fetch drug and used the data
 			getADrugRequest({ drugId: drugId as string });
 		}
@@ -90,26 +88,7 @@ const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId, setActiveColumn }: IAddOr
 
 	useEffect(() => {
 		if (!drug) return;
-		const {
-			name,
-			brandName,
-			dosageForm,
-			strength,
-			code,
-			unitOfMeasurement,
-			manufacturer,
-			supplier,
-			storageReq,
-			batchNumber,
-			validity,
-			reorderPoint,
-			costPrice,
-			sellingPrice,
-			quantity,
-			categoryId,
-			fdaApproval,
-			ISO,
-		} = drug.data;
+		const { name, brandName, dosageForm, strength, code, unitOfMeasurement, manufacturer, storageReq, reorderPoint, costPrice, sellingPrice, categoryId, fdaApproval, ISO } = drug.data;
 		setDrugDetails((prev) => ({
 			...prev,
 			name,
@@ -119,18 +98,16 @@ const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId, setActiveColumn }: IAddOr
 			code,
 			unitOfMeasurement,
 			manufacturer,
-			supplier,
 			storageReq,
-			batchNumber,
-			validity,
-			reorderPoint,
-			costPrice,
-			sellingPrice,
-			quantity,
-			categoryId,
+			reorderPoint: "" + reorderPoint,
+			costPrice: "" + costPrice,
+			sellingPrice: "" + costPrice,
+			categoryId: categories?.data?.rows?.find((cat: { id: string }) => cat.id === categoryId)?.name || "",
 			fdaApproval,
 			iso: ISO,
 		}));
+
+		setPageReady(true);
 	}, [drug]);
 
 	const setValue = (data: any) => {
@@ -145,7 +122,7 @@ const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId, setActiveColumn }: IAddOr
 	useCreateErrorFromApiRequest(error);
 	const steps = [
 		<Step1 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,
-		<Step2 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} />,
+		<Step2 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} drugId={drugId as string} closeModal={() => closeModal()} />,
 		<Step3 key={0} setValues={setValue} drugDetails={drugDetails} step={step} setStep={setStep} drugId={drugId as string} closeModal={() => closeModal()} />,
 	];
 	return (
@@ -164,7 +141,10 @@ const AddOrEditDrug = ({ setShowAddOrEditDrug, drugId, setActiveColumn }: IAddOr
 					</button>
 				</div>
 
-				<div className="h-[calc(100%-50px)]">{steps[step]}</div>
+				<div className="h-[calc(100%-50px)]">
+					{pageReady && <>{steps[step]}</>}
+					{!pageReady && <PageLoading />}
+				</div>
 			</aside>
 		</div>
 	);

@@ -9,34 +9,75 @@ import GhanaImage from "@/assets/images/ghana.svg";
 import useSelectedValuesFromHookForm from "@/hooks/useSelectedValuesFromHookForm";
 import { newDrugStep2Schema } from "@/libs/hookform";
 import { toast } from "react-toastify";
+import { useGetItemCategoriesQuery } from "@/apis/itemCategories";
+import { useCreateADrugRequestMutation, useEditADrugRequestMutation } from "@/apis/drugsApi";
+import Loading from "@/components/Loading";
 
-const Step2 = ({ drugDetails, setValues, step, setStep }: { drugDetails: IDrugDetails; setValues: (data: any) => void; step: number; setStep: Dispatch<SetStateAction<number>> }) => {
+interface IStep2 {
+	drugDetails: IDrugDetails;
+	setValues: (data: any) => void;
+	step: number;
+	setStep: Dispatch<SetStateAction<number>>;
+	drugId: string;
+	closeModal: () => void;
+}
+
+const Step2 = ({ drugDetails, setValues, step, setStep, drugId, closeModal }: IStep2) => {
 	const { register, handleSubmit, reset, getValues } = useSelectedValuesFromHookForm(newDrugStep2Schema);
+	const { data: categories } = useGetItemCategoriesQuery();
+	const [createADrug, { data: created, isLoading: creating, error: createError }] = useCreateADrugRequestMutation();
+	const [updatedADrug, { data: updated, isLoading: updating, error: updateError }] = useEditADrugRequestMutation();
 
 	useEffect(() => {
-		const { batchNumber, reorderPoint, validity, quantity, costPrice, sellingPrice, storageReq } = drugDetails;
-		reset({ batchNumber, reorderPoint, validity, quantity, costPrice, sellingPrice, storageReq });
+		const { reorderPoint, costPrice, sellingPrice, storageReq } = drugDetails;
+		reset({ reorderPoint, costPrice, sellingPrice, storageReq });
 	}, []);
 
 	const goBack = () => {
-		const { batchNumber, reorderPoint, validity, quantity, costPrice, sellingPrice, storageReq } = getValues();
-		const allData = { batchNumber, reorderPoint, validity, quantity, costPrice, sellingPrice, storageReq };
+		const { reorderPoint, costPrice, sellingPrice, storageReq } = getValues();
+		const allData = { reorderPoint, costPrice, sellingPrice, storageReq };
 		setValues(allData);
 		setStep((prev) => --prev);
 	};
 
 	const step2Data = (data: any) => {
-		const { batchNumber, reorderPoint, validity, quantity, costPrice, sellingPrice, storageReq } = data;
-		const allData = { batchNumber, reorderPoint, validity, quantity, costPrice, sellingPrice, storageReq };
+		const { reorderPoint, costPrice, sellingPrice, storageReq } = data;
+		const allData = { reorderPoint, costPrice, sellingPrice, storageReq };
 		setValues(allData);
-		setStep((prev) => ++prev);
+		let { name, brandName, dosageForm, strength, code, unitOfMeasurement, manufacturer, fdaApproval, iso, categoryId } = drugDetails;
+
+		// Get category
+		categoryId = categories?.data?.rows?.find((cat: { name: string }) => cat.name === categoryId)?.id;
+		let drugData = {
+			name,
+			brandName,
+			dosageForm: dosageForm.toUpperCase(),
+			strength,
+			code,
+			unitOfMeasurement,
+			manufacturer,
+			storageReq,
+			reorderPoint: +reorderPoint,
+			costPrice: +costPrice,
+			sellingPrice: +sellingPrice,
+			categoryId,
+			fdaApproval,
+			ISO: iso,
+		};
+
+		// Create or update drug
+		drugId ? updatedADrug({ data: drugData, drugId }) : createADrug(drugData);
 	};
+
+	useEffect(() => {
+		if (!created && !updated) return;
+		toast.success(`Drug successfully ${created ? "created" : "updated"}...`, { autoClose: 1500 });
+		closeModal();
+	}, [created, updated]);
 	return (
 		<form className="flex items-start flex-col h-full overflow-hidden gap-2" onSubmit={handleSubmit(step2Data)}>
 			<div className="px-4 h-[calc(100%-100px)] space-y-2 overflow-y-auto pb-12 w-full">
 				<h3 className="mb-3 text-lg font-bold">Price and other details</h3>
-				<Input name="batchNumber" register={register} label="Batch Number" placeholder="eg: paracetamol" labelSx="text-sm" inputSx="text-sm" />
-				<Input name="validity" register={register} type="date" label="Expiry Date" labelSx="text-sm" inputSx="text-sm" />
 				<Input name="reorderPoint" register={register} label="Reorder Level" placeholder="20,000" labelSx="text-sm" inputSx="text-sm" />
 				<div>
 					<label htmlFor="costPrice" className="text-sm">
@@ -62,7 +103,7 @@ const Step2 = ({ drugDetails, setValues, step, setStep }: { drugDetails: IDrugDe
 						<input type="text" {...register("sellingPrice")} className="flex-1 focus:outline-0 p-2 text-sm" placeholder="Eg: 20,000" />
 					</div>
 				</div>
-				<Input name="quantity" register={register} label="Quantity On hand" placeholder="20,000" labelSx="text-sm" inputSx="text-sm" />
+				{/* <Input name="quantity" register={register} label="Quantity On hand" placeholder="20,000" labelSx="text-sm" inputSx="text-sm" /> */}
 
 				{/* <CustomSelect options={storageOptions} label="Storage Requirement" placeholder="Select option" value={storage} handleChange={(value) => setStorage(value)} /> */}
 
@@ -88,7 +129,7 @@ const Step2 = ({ drugDetails, setValues, step, setStep }: { drugDetails: IDrugDe
 					</button>
 
 					<button className="w-full bg-sec py-2 border-[1px] hover:opacity-70 rounded-[10px] text-white" type="submit">
-						Next
+						{updating || creating ? <Loading /> : drugId ? "Edit Drug" : "Add Drug"}
 					</button>
 				</div>
 			</div>

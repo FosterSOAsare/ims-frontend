@@ -27,6 +27,9 @@ const drugsApi = createApi({
       query: ({ drugId }) => `/${drugId}`,
       providesTags: ({ drugId }) => [{ type: 'Drugs' }, { type: 'Drug', id: drugId }]
     }),
+    getDrugsAnalyticsRequest: builder.query<any, void>({
+      query: () => `/analytics`,
+    }),
     createADrugRequest: builder.mutation<any, any>({
       query: (data) => ({
         method: 'POST',
@@ -59,7 +62,9 @@ export const {
   useCreateADrugRequestMutation,
   useEditADrugRequestMutation,
   useDeleteADrugRequestMutation,
-  useLazyGetADrugRequestQuery
+  useLazyGetADrugRequestQuery,
+  useGetADrugRequestQuery,
+  useGetDrugsAnalyticsRequestQuery
 } = drugsApi
 
 export default drugsApi

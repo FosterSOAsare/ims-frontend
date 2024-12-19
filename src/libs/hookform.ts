@@ -28,14 +28,11 @@ export const newDrugStep1Schema = z.object({
   manufacturer: z.string().min(1, { message: "Please enter the name of the maunfacturer" }).min(3, { message: 'Manufacturer name should not be less than 3 characters' }),
   fdaApproval: z.string().min(1, { message: "Please enter the fda approval number of drug" }).min(3, { message: 'FDA Approval number should not be less than 3 characters' }),
   iso: z.string().min(1, { message: "Please enter the iso of drug" }).min(3, { message: 'ISO should not be less than 3 characters' }),
-  strength: z.string().min(1, { message: "Please enter the strength of the drug" }).regex(/^[0-9]+$/, { message: 'Strength should be a number' }),
+  strength: z.string().min(1, { message: "Please enter the strength of the drug" }),
 });
 
 export const newDrugStep2Schema = z.object({
-  batchNumber: z.string().min(1, { message: "Please enter the batch number of the drug" }).min(3, { message: 'Batch number should not be less than 3 characters' }),
   reorderPoint: z.string().min(1, { message: "Please enter the reorder level of the drug" }),
-  validity: z.string().min(1, { message: "Please enter the expiry date of the drug" }),
-  quantity: z.string().min(1, { message: "Please enter the quantity at hand" }).regex(/^[0-9]{1,}$/, { message: 'Please enter a valid quantity. Numbers only' }),
   costPrice: z.string().min(1, { message: "Please enter the cost price of the drug" }).regex(/^\d+(\.\d+)?$/, { message: 'Please enter a valid cost price. Numbers only' }),
   sellingPrice: z.string().min(1, { message: "Please enter the selling price of the drug" }).regex(/^\d+(\.\d+)?$/, { message: 'Please enter a valid selling price. Numbers only' }),
   storageReq: z.string().min(1, { message: "Please enter the storage requirements of the drug" }),

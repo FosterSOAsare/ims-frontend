@@ -9,7 +9,7 @@ import Filters, { initialFilter } from "./Filters";
 import DrugDetails from "./DrugDetails";
 import AddOrEditDrug from "./addoreditdrug";
 import useDebounce from "@/hooks/useDebounce";
-import { useLazyGetDrugsRequestQuery } from "@/apis/drugsApi";
+import { useGetDrugsAnalyticsRequestQuery, useLazyGetDrugsRequestQuery } from "@/apis/drugsApi";
 import NoData from "@/components/NoData";
 import { PageLoading } from "@/components/Loading";
 
@@ -23,6 +23,7 @@ export interface IFilter {
 
 const page = () => {
 	const [activeColumn, setActiveColumn] = useState<null | number>(null);
+	const { data: drugAnalytics, isLoading: gettingAnalytics, error: analyticsError } = useGetDrugsAnalyticsRequestQuery();
 	const [getDrugsRequest, { data, isLoading, error }] = useLazyGetDrugsRequestQuery();
 
 	const [filters, setFilters] = useState<IFilter>(initialFilter);
@@ -50,50 +51,62 @@ const page = () => {
 
 	// console.log(data);
 
+	console.log(drugAnalytics);
+
 	const drugId = useMemo(() => (activeColumn !== null ? (data?.drugs[activeColumn]?.id as string) : ""), [activeColumn]);
 
 	console.log(data?.drugs[activeColumn as number]);
 	return (
 		<div className="relative">
 			<h3 className="text-2xl mb-3 font-bold">Drugs</h3>
-			<div className="bg-white gap-2 rounded-[10px] flex items-stretch p-4 card justify-start">
-				<div className="border-r-[1px] pr-12">
-					<h3 className="uppercase text-sm font-medium text-gray-400">Total Drugs</h3>
-					<div className="flex flex-col mt-2 gap-2 items-start justify-start">
-						<h3 className="text-3xl font-bold">4500</h3>
-						<div className={`${false ? "text-error-500 bg-error-50" : "bg-green-50 text-green-500"} gap-1 text-sm flex items-center justify-center px-1 py-[2px] -mt-2 rounded-[10px]`}>
-							<span className={`${false ? "bg-red-600" : "bg-green-600"}  rounded-full text-white`}>
-								<Icon icon={false ? "ph:arrow-down-right-bold" : "ph:arrow-up-right-bold"} />
-							</span>
-							6.25%
+			{gettingAnalytics && (
+				<div>
+					<PageLoading />
+				</div>
+			)}
+			{!gettingAnalytics && drugAnalytics && (
+				<div className="bg-white gap-2 rounded-[10px] flex items-stretch p-4 card justify-start">
+					<div className="border-r-[1px] pr-12">
+						<h3 className="uppercase text-sm font-medium text-gray-400">Total Drugs</h3>
+						<div className="flex flex-col mt-2 gap-2 items-start justify-start">
+							<h3 className="text-3xl font-bold">{drugAnalytics?.data?.totalItems}</h3>
+							<div
+								className={`${
+									drugAnalytics?.data?.itemIncrement < 0 ? "text-error-500 bg-error-50" : "bg-green-50 text-green-500"
+								} gap-1 text-sm flex items-center justify-center px-1 py-[2px] -mt-2 rounded-[10px]`}>
+								<span className={`${drugAnalytics?.data?.itemIncrement < 0 ? "bg-red-600" : "bg-green-600"}  rounded-full text-white`}>
+									<Icon icon={drugAnalytics?.data?.itemIncrement < 0 ? "ph:arrow-down-right-bold" : "ph:arrow-up-right-bold"} />
+								</span>
+								{Math.abs(drugAnalytics?.data?.itemIncrement)}%
+							</div>
 						</div>
 					</div>
-				</div>
-				<div className="w-2/5 pl-12">
-					<h3 className="uppercase text-sm font-medium mb-1 text-gray-400">Total in Stock</h3>
-					<h3 className="text-xl mb-1 font-bold">200,000</h3>
-					<div className="w-full gap-[3px] h-4 flex rounded-[10px] overflow-hidden">
-						<div className="h-full rounded-[5px] bg-[#0DCACA]" style={{ width: "70%" }}></div>
-						<div className="h-full rounded-[5px] bg-[#E36D6A]" style={{ width: "20%" }}></div>
-						<div className="h-full rounded-[5px] bg-[#E2E8F0]" style={{ width: "20%" }}></div>
-					</div>
+					<div className="w-2/5 pl-12">
+						<h3 className="uppercase text-sm font-medium mb-1 text-gray-400">Total in Stock</h3>
+						<h3 className="text-xl mb-1 font-bold">200,000</h3>
+						<div className="w-full gap-[3px] h-4 flex rounded-[10px] overflow-hidden">
+							<div className="h-full rounded-[5px] bg-[#0DCACA]" style={{ width: "70%" }}></div>
+							<div className="h-full rounded-[5px] bg-[#E36D6A]" style={{ width: "20%" }}></div>
+							<div className="h-full rounded-[5px] bg-[#E2E8F0]" style={{ width: "20%" }}></div>
+						</div>
 
-					<div className="flex mt-2 items-center justify-between">
-						<div className="flex items-center justify-start gap-1">
-							<span className="w-3 rounded-[5px] inline-block h-3 bg-[#0DCACA]"></span>
-							<p className="text-sm">High stock</p>
-						</div>
-						<div className="flex items-center justify-start gap-1">
-							<span className="w-3 rounded-[5px] inline-block h-3 bg-[#E36D6A]"></span>
-							<p className="text-sm">Low stock</p>
-						</div>
-						<div className="flex items-center justify-start gap-1">
-							<span className="w-3 rounded-[5px] inline-block h-3 bg-[#E2E8F0]"></span>
-							<p className="text-sm">Out of stock</p>
+						<div className="flex mt-2 items-center justify-between">
+							<div className="flex items-center justify-start gap-1">
+								<span className="w-3 rounded-[5px] inline-block h-3 bg-[#0DCACA]"></span>
+								<p className="text-sm">High stock</p>
+							</div>
+							<div className="flex items-center justify-start gap-1">
+								<span className="w-3 rounded-[5px] inline-block h-3 bg-[#E36D6A]"></span>
+								<p className="text-sm">Low stock</p>
+							</div>
+							<div className="flex items-center justify-start gap-1">
+								<span className="w-3 rounded-[5px] inline-block h-3 bg-[#E2E8F0]"></span>
+								<p className="text-sm">Out of stock</p>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			)}
 
 			{/* Drugs & Stock */}
 			<div className="w-full bg-white  mt-6 rounded-[10px] p-4 ">
