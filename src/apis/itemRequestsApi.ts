@@ -44,6 +44,13 @@ const itemRequestsApi = createApi({
       }),
       invalidatesTags: ({ requestId }) => [{ type: 'ItemRequests' }, { type: 'ItemRequest', id: requestId }]
     }),
+    deleteAnItemRequestRequest: builder.mutation<any, { requestId: string }>({
+      query: ({ requestId }) => ({
+        method: 'DELETE',
+        url: `/${requestId}`,
+      }),
+      invalidatesTags: [{ type: 'ItemRequests' }]
+    }),
   })
 })
 
@@ -51,7 +58,8 @@ export const {
   useLazyGetItemRequestsRequestQuery,
   useCreateAnItemRequestRequestMutation,
   useUpdateAnItemRequestRequestMutation,
-  useLazyGetAnItemRequestRequestQuery
+  useLazyGetAnItemRequestRequestQuery,
+  useDeleteAnItemRequestRequestMutation
 } = itemRequestsApi
 
 export default itemRequestsApi

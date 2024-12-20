@@ -1,7 +1,8 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React from "react";
+import React, { useEffect } from "react";
 import { IItemRequest } from "./page";
 import { formatDate } from "@/utils/date";
+import { useDeleteAnItemRequestRequestMutation } from "@/apis/itemRequestsApi";
 
 interface ITableColumn extends IItemRequest {
 	isLast: boolean;
@@ -11,7 +12,14 @@ interface ITableColumn extends IItemRequest {
 	setShowAddOrEditRequest: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const TableColumn = ({ requestNumber, itemName, quantity, dateRequested, status, isLast, activeColumn, setActiveColumn, setShowAddOrEditRequest, index }: ITableColumn) => {
+const TableColumn = ({ requestNumber, itemName, quantity, dateRequested, status, isLast, activeColumn, setActiveColumn, setShowAddOrEditRequest, index, id }: ITableColumn) => {
+	const [deleteADrugRequest, { data: deleted, isLoading: deleting, error: deleteError }] = useDeleteAnItemRequestRequestMutation();
+
+	useEffect(() => {
+		if (!deleted) return;
+		setActiveColumn(null);
+	}, [deleted]);
+
 	return (
 		<div className="bg-white drugs-table gap-2 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
 			<div className="col-span-5 text-primary py-3 text-left">{requestNumber}</div>
@@ -55,6 +63,7 @@ const TableColumn = ({ requestNumber, itemName, quantity, dateRequested, status,
 							{status.toLowerCase() === "pending" && (
 								<>
 									<button
+										disabled={deleting}
 										className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
 										onClick={() => {
 											setShowAddOrEditRequest(true);
@@ -63,29 +72,32 @@ const TableColumn = ({ requestNumber, itemName, quantity, dateRequested, status,
 										Edit
 									</button>
 
-									<button className="px-3 gap-[6px] hover:bg-red-500 hover:text-white text-red-500 flex items-center justify-start text-sm w-full py-2">
+									<button
+										onClick={() => deleteADrugRequest({ requestId: id })}
+										disabled={deleting}
+										className="px-3 gap-[6px] hover:bg-red-500 hover:text-white text-red-500 flex items-center justify-start text-sm w-full py-2">
 										<Icon icon="solar:trash-bin-minimalistic-line-duotone" className="text-lg" />
-										Cancel
+										{deleting && activeColumn === index ? "Deleting..." : "Cancel"}
 									</button>
 								</>
 							)}
 							{status.toLowerCase() === "accepted" && (
 								<>
-									<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+									<button disabled={deleting} className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
 										<Icon icon="ic:sharp-check" className="text-lg" />
 										Mark as delivered
 									</button>
 								</>
 							)}
 
-							{status.toLowerCase() === "cancelled" && (
+							{/* {status.toLowerCase() === "cancelled" && (
 								<>
-									<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+									<button disabled={deleting} className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
 										<Icon icon="hugeicons:file-edit" className="text-lg" />
 										Edit
 									</button>
 								</>
-							)}
+							)} */}
 						</div>
 					)}
 				</div>
