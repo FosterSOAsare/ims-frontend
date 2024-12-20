@@ -89,7 +89,33 @@ const authApi = createApi({
           headers: { 'Authorization': `Bearer ${token}` },
         }
       }
-    })
+    }),
+
+    changeUserGeneralDetailsRequest: builder.mutation<any, { fullName: string; phoneNumber: string }>({
+      query: ({ fullName, phoneNumber }) => ({
+        method: 'PATCH',
+        url: '/',
+        body: { fullName, phoneNumber }
+      }),
+      invalidatesTags: [{ type: 'USER' }]
+    }),
+
+    changeUserEmailRequest: builder.mutation<any, { email: string; }>({
+      query: ({ email }) => ({
+        method: 'POST',
+        url: '/change-email/send-mail',
+        body: { email }
+      }),
+      invalidatesTags: [{ type: 'USER' }]
+    }),
+    confirmChangeUserEmailCodeRequest: builder.mutation<any, { email: string; }>({
+      query: ({ email }) => ({
+        method: 'POST',
+        url: '/change-email/validate-otp',
+        body: { email }
+      }),
+      invalidatesTags: [{ type: 'USER' }]
+    }),
 
   })
 })
@@ -105,7 +131,8 @@ export const {
   useFetchLoggedInUserRequestQuery,
   useValidatePasswordResetCodeRequestMutation,
   useChangePasswordMutation,
-  useLazyRefreshAccessTokenRequestQuery
+  useLazyRefreshAccessTokenRequestQuery,
+  useChangeUserGeneralDetailsRequestMutation,
 } = authApi
 
 export default authApi

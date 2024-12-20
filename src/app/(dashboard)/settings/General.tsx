@@ -5,9 +5,11 @@ import AvatarImage from "@/assets/images/avatar.webp";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Input from "@/components/Input";
 import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
+import EditGeneralInfo from "@/components/settings/EditGeneralInfo";
 
 const General = () => {
 	const [showEditGeneral, setShowEditGeneral] = useState(false);
+	const [showEditEmail, setShowEditEmail] = useState(false);
 
 	const { data: user } = useFetchLoggedInUserRequestQuery();
 	return (
@@ -34,47 +36,70 @@ const General = () => {
 					</div>
 				</div>
 			</div>
-			{!showEditGeneral && (
-				<div className="w-full py-4">
-					<div className="flex items-center justify-between">
-						<h3 className="text-xl font-bold">Account</h3>
-						<button className="border-[1px] rounded-[8px] px-3 py-2 hover:bg-slate-100" onClick={() => setShowEditGeneral(true)}>
-							<Icon icon="hugeicons:edit-01" className="inline mr-2" />
-							Edit
-						</button>
-					</div>
-
-					<div className="mt-4">
-						<div className="w-full mb-4">
-							<p>Name</p>
-							<h3>{user?.data?.fullName} </h3>
-						</div>
+			{!showEditGeneral && !showEditEmail && (
+				<>
+					<div className="w-full py-4">
 						<div className="flex items-center justify-between">
-							<div className="w-full mb-4">
-								<p>Email</p>
-								<h3>{user?.data?.email} </h3>
+							<h3 className="text-xl font-bold">Account</h3>
+							<div className="flex items-center gap-3">
+								{/* <button className="border-[1px] bg-warning-50 rounded-[8px] px-3 py-2" onClick={() => setShowEditGeneral(true)}>
+								<Icon icon="hugeicons:edit-01" className="inline mr-2" />
+								Edit Email
+							</button> */}
+								<button className="border-[1px] rounded-[8px] px-3 py-2 hover:bg-slate-100" onClick={() => setShowEditGeneral(true)}>
+									<Icon icon="hugeicons:edit-01" className="inline mr-2" />
+									Edit Account Details
+								</button>
 							</div>
+						</div>
+
+						<div className="mt-4">
+							<div className="w-full mb-4">
+								<p>Name</p>
+								<h3>{user?.data?.fullName} </h3>
+							</div>
+
 							<div className="w-full mb-4">
 								<p>Phone number</p>
 								<h3>{user?.data?.phoneNumber || "-"} </h3>
 							</div>
 						</div>
 					</div>
-					<div className="bg-warning-50 mt-2 rounded-[5px] p-2 flex items-center justify-start gap-2">
-						<span className="w-8 h-8 ">
-							<Icon icon="ph:warning-octagon-fill" className="text-warning-500 text-2xl" />
-						</span>
-						<p className="text-primary font-light">Changing your email will require verification—an OTP will be sent to your new email for confirmation.</p>
+					<div className="w-full py-4">
+						<div className="flex items-center justify-between">
+							<h3 className="text-xl font-bold">Email</h3>
+							<div className="flex items-center gap-3">
+								<button className="border-[1px] bg-warning-50 rounded-[8px] px-3 py-2" onClick={() => setShowEditEmail(true)}>
+									<Icon icon="hugeicons:edit-01" className="inline mr-2" />
+									Edit Email
+								</button>
+							</div>
+						</div>
+
+						<div className="mt-4">
+							<div className="w-full mb-4">
+								<p>Email</p>
+								<h3>{user?.data?.email} </h3>
+							</div>
+						</div>
+						<div className="bg-warning-50 mt-2 rounded-[5px] p-2 flex items-center justify-start gap-2">
+							<span className="w-8 h-8 ">
+								<Icon icon="ph:warning-octagon-fill" className="text-warning-500 text-2xl" />
+							</span>
+							<p className="text-primary font-light">Changing your email will require verification—an OTP will be sent to your new email for confirmation.</p>
+						</div>
 					</div>
-				</div>
+				</>
 			)}
 
-			{showEditGeneral && (
+			{showEditGeneral && <EditGeneralInfo setShowEditGeneral={setShowEditGeneral} />}
+
+			{showEditEmail && (
 				<div className="w-full py-4">
 					<div className="flex items-center justify-between">
-						<h3 className="text-xl font-bold">Account</h3>
+						<h3 className="text-xl font-bold">Email</h3>
 						<div className="flex gap-2">
-							<button className="border-[1px] rounded-[8px] px-6 py-2 bg-[#FEF2F2] text-[#DC2626] hover:bg-[#DC2626] hover:text-white" onClick={() => setShowEditGeneral(false)}>
+							<button className="border-[1px] rounded-[8px] px-6 py-2 bg-[#FEF2F2] text-[#DC2626] hover:bg-[#DC2626] hover:text-white" onClick={() => setShowEditEmail(false)}>
 								Discard
 							</button>
 							<button className="border-[1px] rounded-[8px] px-6 py-2 hover:opacity-80 bg-sec text-white">Save</button>
@@ -82,16 +107,8 @@ const General = () => {
 					</div>
 
 					<div className="mt-4">
-						<div className="w-1/2 mb-4">
-							<Input name="name" inputSx="text-sm" label="Fullname" placeholder="Eg. iamderez" />
-						</div>
-						<div className="flex items-center gap-4 justify-between">
-							<div className="w-full mb-4">
-								<Input name="email" inputSx="text-sm" label="Email" placeholder="eg: michael@gmail.com" />
-							</div>
-							<div className="w-full mb-4">
-								<Input name="phone" inputSx="text-sm" label="Phone" placeholder="eg: 0555534689" />
-							</div>
+						<div className="w-full mb-4">
+							<Input name="email" inputSx="text-sm" label="Email" placeholder="eg: michael@gmail.com" />
 						</div>
 					</div>
 					<div className="bg-warning-50 mt-2 rounded-[5px] p-2 flex items-center justify-start gap-2">
