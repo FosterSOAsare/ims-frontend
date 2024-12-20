@@ -1,5 +1,5 @@
 "use client";
-import React, { use, useEffect, useState } from "react";
+import React, { use, useEffect, useMemo, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { toast } from "react-toastify";
 
@@ -116,6 +116,12 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 		});
 	};
 
+	const departmentOptions = useMemo(() => {
+		if (!departments) return ["Central"];
+		const dep = departments?.data?.rows?.map((dep: { name: string }) => dep.name);
+		return [...dep, "Central"];
+	}, [departments]);
+
 	// Creating user check
 	useEffect(() => {
 		if (!created && !updated) return;
@@ -146,7 +152,7 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 					</button>
 				</div>
 
-				{!gettingRoles && !gettingUserDetails && roles && !gettingDepartments && departments && (
+				{!gettingRoles && !gettingUserDetails && roles && !gettingDepartments && departments && pageLoaded && (
 					<form className="h-[calc(100%-60px)] flex items-start flex-col gap-2" onSubmit={handleSubmit(addNewUser)}>
 						<div className="px-4 space-y-3 overflow-y-auto h-[calc(100%-30px)] w-full">
 							<div className="w-full">
@@ -161,7 +167,7 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 									<>
 										<Input name="name" register={register} label="Name" placeholder="eg: Michael Mensah" labelSx="text-sm" inputSx="text-sm" />
 										<CustomSelect
-											options={departments?.data?.rows?.map((dep: { name: string }) => dep.name) || []}
+											options={departmentOptions}
 											value={user.department}
 											label="Department"
 											placeholder="Select option"

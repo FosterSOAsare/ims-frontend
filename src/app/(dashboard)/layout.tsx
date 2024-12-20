@@ -57,20 +57,26 @@ const layout = ({ children }: { children: ReactNode }) => {
 											<Fragment key={index}>
 												{!tab?.subs && tab.permission && (
 													<>
-														{userHasPermission(user?.data?.permissions, tab.permission, "READ") && (
-															<Link
-																className={`flex px-2 py-2 mb-1 font-medium rounded-[10px] items-center justify-start gap-2 ${
-																	(tab.link !== "/" && pathname.startsWith(tab.link)) || tab.link === pathname
-																		? "text-primary bg-blue-100"
-																		: "text-gray-500 hover:bg-gray-100"
-																} `}
-																href={tab.link}>
-																<span>
-																	<Icon icon={tab.icon} className={`text-xl ${pathname.startsWith(tab.link) ? "text-sec" : "text-gray-400"}`} />
-																</span>
-																{tab.name}
-															</Link>
-														)}
+														{/* // The link will have some items that are specific to just departments or facilities(central). */}
+														{/* // First check is to see if the user has the permission */}
+														{/* Second check is to see if the tab is for only departments , if yes check if user has a departmentId  */}
+														{/* Third check is to see if the tab is for only central hospital , if yes check if user doesn't have a departmentId . NB: User's in central does not have a departmentId */}
+														{userHasPermission(user?.data?.permissions, tab.permission, "READ") &&
+															((tab?.forDepartment && user?.data?.departmentId) || !tab?.forDepartment) &&
+															((tab?.forFacility && !user?.data?.departmentId) || !tab?.forFacility) && (
+																<Link
+																	className={`flex px-2 py-2 mb-1 font-medium rounded-[10px] items-center justify-start gap-2 ${
+																		(tab.link !== "/" && pathname.startsWith(tab.link)) || tab.link === pathname
+																			? "text-primary bg-blue-100"
+																			: "text-gray-500 hover:bg-gray-100"
+																	} `}
+																	href={tab.link}>
+																	<span>
+																		<Icon icon={tab.icon} className={`text-xl ${pathname.startsWith(tab.link) ? "text-sec" : "text-gray-400"}`} />
+																	</span>
+																	{tab.name}
+																</Link>
+															)}
 													</>
 												)}
 

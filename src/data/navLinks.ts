@@ -57,7 +57,15 @@ export const generalTabs = [
     name: "Department Requests",
     icon: "solar:box-bold-duotone",
     link: "/department-requests",
-    permission: 'department_requests'
+    permission: 'department_requests',
+    forFacility: true
+  },
+  {
+    name: "Stock Requests",
+    icon: "solar:box-bold-duotone",
+    link: "/item-requests",
+    permission: 'department_requests',
+    forDepartment: true
   },
   {
     name: "Reports",
