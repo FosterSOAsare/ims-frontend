@@ -2,9 +2,8 @@ import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
 
 import { PageLoading } from "@/components/Loading";
-import { useGetAnItemRequestRequestQuery } from "@/apis/itemRequestsApi";
 import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
-import Button from "@/components/Button";
+import { useGetADepartmentRequestRequestQuery } from "@/apis/departmentRequestsApi";
 
 export interface INewOrEditRequestDetails {
 	item: string;
@@ -16,11 +15,10 @@ interface IAddOrEditRequest {
 	setShowViewRequest: React.Dispatch<React.SetStateAction<boolean>>;
 	requestId: string;
 	setSelectedRequest: React.Dispatch<React.SetStateAction<number | null>>;
-	setShowAddOrEditRequest: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ViewRequestDetails = ({ setShowViewRequest, requestId, setSelectedRequest, setShowAddOrEditRequest }: IAddOrEditRequest) => {
-	const { data: request, isLoading: gettingRequest, error: requestError } = useGetAnItemRequestRequestQuery({ requestId });
+const ViewRequestDetails = ({ setShowViewRequest, requestId, setSelectedRequest }: IAddOrEditRequest) => {
+	const { data: request, isLoading: gettingRequest, error: requestError } = useGetADepartmentRequestRequestQuery({ requestId });
 	useCreateErrorFromApiRequest(requestError);
 
 	return (
@@ -84,16 +82,6 @@ const ViewRequestDetails = ({ setShowViewRequest, requestId, setSelectedRequest,
 										<p>{request?.data?.additionalNotes}</p>
 									</div>
 								</div>
-								{request?.data?.status?.toLowerCase() === "pending" && (
-									<Button
-										text="Edit Request"
-										sx="!mt-24"
-										handleClick={() => {
-											setShowViewRequest(false);
-											setShowAddOrEditRequest(true);
-										}}
-									/>
-								)}
 							</div>
 						</div>
 					</>

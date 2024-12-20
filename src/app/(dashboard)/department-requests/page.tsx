@@ -9,6 +9,7 @@ import AddOrEditRequest from "./AddOrEditRequest";
 import useDebounce from "@/hooks/useDebounce";
 import { useLazyGetDepartmentRequestsRequestQuery } from "@/apis/departmentRequestsApi";
 import { PageLoading } from "@/components/Loading";
+import ViewRequestDetails from "./ViewRequest";
 
 export interface IFilter {
 	status: string;
@@ -30,7 +31,8 @@ const page = () => {
 	const [getDepartmentRequest, { data, error, isLoading }] = useLazyGetDepartmentRequestsRequestQuery();
 	const [selectedRequest, setSelectedRequest] = useState<null | number>(null);
 	const [showFilters, setShowFilters] = useState<boolean>(false);
-	const [showAddOrEditRequest, setShowAddOrEditRequest] = useState<boolean>(true);
+	const [setShowAddOrEditRequest] = useState<boolean>(true);
+	const [showRequestDetails, setShowRequestDetails] = useState<boolean>(false);
 
 	const [filters, setFilters] = useState<IFilter>(initialFilter);
 	const [search, setSearch] = useState("");
@@ -82,7 +84,14 @@ const page = () => {
 							<>
 								{/* Last two on the table will have isLast so the drop down shows at the top instead */}
 								{data?.requests.map((request: any, index: number) => (
-									<TableColumn {...request} isLast={index >= data?.requests?.length - 2} index={index} activeColumn={selectedRequest} setActiveColumn={setSelectedRequest} />
+									<TableColumn
+										{...request}
+										isLast={index >= data?.requests?.length - 2}
+										index={index}
+										activeColumn={selectedRequest}
+										setActiveColumn={setSelectedRequest}
+										setShowViewRequest={setShowRequestDetails}
+									/>
 								))}
 							</>
 						)}
@@ -95,6 +104,7 @@ const page = () => {
 			</div>
 
 			{showFilters && <Filters setShowFilters={setShowFilters} filters={filters} setFilters={setFilters} />}
+			{showRequestDetails && <ViewRequestDetails setShowViewRequest={setShowRequestDetails} requestId={request?.id as string} setSelectedRequest={setSelectedRequest} />}
 		</div>
 	);
 };

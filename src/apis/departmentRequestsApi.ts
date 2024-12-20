@@ -50,6 +50,7 @@ const departmentRequestsApi = createApi({
 export const {
   useLazyGetDepartmentRequestsRequestQuery,
   useLazyGetADepartmentRequestRequestQuery,
+  useGetADepartmentRequestRequestQuery,
   useUpdateDepartmentRequestStatusRequestMutation
 } = departmentRequestsApi
 

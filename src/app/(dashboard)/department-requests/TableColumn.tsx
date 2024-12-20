@@ -9,10 +9,11 @@ interface ITableColumn extends IRequest {
 	isLast: boolean;
 	activeColumn: number | null;
 	setActiveColumn: React.Dispatch<React.SetStateAction<number | null>>;
+	setShowViewRequest: React.Dispatch<React.SetStateAction<boolean>>;
 	index: number;
 }
 
-const TableColumn = ({ departmentName, requestNumber, itemName, quantity, dateRequested, status, isLast, activeColumn, setActiveColumn, index, id }: ITableColumn) => {
+const TableColumn = ({ departmentName, requestNumber, itemName, quantity, dateRequested, status, isLast, activeColumn, setActiveColumn, index, id, setShowViewRequest }: ITableColumn) => {
 	const [selectedStatus, setSelectedStatus] = useState<"" | "Accepted" | "Pending" | "Delivered" | "Cancelled">("");
 	const [updateDepartmentRequestStatusRequest, { data, isLoading, error }] = useUpdateDepartmentRequestStatusRequestMutation();
 
@@ -62,13 +63,17 @@ const TableColumn = ({ departmentName, requestNumber, itemName, quantity, dateRe
 			<div className="col-span-1 text-primary py-3 text-left flex items-center justify-between">
 				<div className="relative">
 					<button className="rounded-full hover:bg-slate-200 p-1" onClick={() => setActiveColumn((prev: number | null) => (prev === index ? null : index))}>
-						{status.toLowerCase() !== "delivered" && <Icon icon="bi:three-dots" />}
+						<Icon icon="bi:three-dots" />
 					</button>
 					{activeColumn == index && (
 						<div
 							className={`absolute ${isLast ? "bottom-[100%]" : "top-[100%]"}  right-0 h-auto ${
 								status.toLowerCase() === "accepted" ? "w-[180px]" : "w-[130px]"
 							} bg-white selectedStock z-[3] rounded-[5px] card`}>
+							<button disabled={isLoading} className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2" onClick={() => setShowViewRequest(true)}>
+								<Icon icon="solar:eye-broken" className="text-lg" />
+								View
+							</button>
 							{status.toLowerCase() === "pending" && (
 								<>
 									<button

@@ -57,7 +57,7 @@ const TableColumn = ({ requestNumber, itemName, quantity, dateRequested, status,
 			<div className="col-span-1 text-primary py-3 text-left flex items-center justify-between">
 				<div className="relative">
 					<button className="rounded-full hover:bg-slate-200 p-1" onClick={() => setActiveColumn((prev: number | null) => (prev === index ? null : index))}>
-						{status.toLowerCase() !== "delivered" && <Icon icon="bi:three-dots" />}
+						<Icon icon="bi:three-dots" />
 					</button>
 					{activeColumn == index && (
 						<div
@@ -94,23 +94,6 @@ const TableColumn = ({ requestNumber, itemName, quantity, dateRequested, status,
 									</button>
 								</>
 							)}
-							{status.toLowerCase() === "accepted" && (
-								<>
-									<button disabled={deleting} className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
-										<Icon icon="ic:sharp-check" className="text-lg" />
-										Mark as delivered
-									</button>
-								</>
-							)}
-
-							{/* {status.toLowerCase() === "cancelled" && (
-								<>
-									<button disabled={deleting} className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
-										<Icon icon="hugeicons:file-edit" className="text-lg" />
-										Edit
-									</button>
-								</>
-							)} */}
 						</div>
 					)}
 				</div>
