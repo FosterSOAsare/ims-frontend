@@ -1,8 +1,10 @@
+import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
 import { useLazyGetUsersQuery } from "@/apis/usersApi";
 import { PageLoading } from "@/components/Loading";
 import NoData from "@/components/NoData";
 import AddOrEditUser from "@/components/settings/AddOrEditUser";
 import User from "@/components/settings/User";
+import userHasPermission from "@/utils/userHasPermission";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useEffect, useMemo, useState } from "react";
 // import AddOrEditUser from "./AddOrEditUser";
@@ -14,9 +16,18 @@ export interface IUser {
 	id: string;
 }
 
-const Users = () => {
+const Users = ({ setActiveTab }: { setActiveTab: React.Dispatch<React.SetStateAction<number>> }) => {
+	const { data: loggedInUser } = useFetchLoggedInUserRequestQuery();
 	const [selectedUser, setSelectedUser] = useState<null | number>(null);
 	const [showAddOrEditUser, setShowAddOrEditUser] = useState<boolean>(false);
+
+	// Redirect if user doesn't have permission to view
+	useEffect(() => {
+		if (!userHasPermission(loggedInUser?.data?.permissions, "users", "READ")) {
+			// Return to general
+			setActiveTab(0);
+		}
+	}, []);
 
 	const [page] = useState(0);
 

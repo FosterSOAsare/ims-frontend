@@ -6,6 +6,8 @@ import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest"
 import Loading, { PageLoading } from "@/components/Loading";
 import { formatDate } from "@/utils/date";
 import NoData from "@/components/NoData";
+import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
+import userHasPermission from "@/utils/userHasPermission";
 
 interface IDepartment {
 	name: string;
@@ -14,11 +16,22 @@ interface IDepartment {
 	id: string;
 }
 
-const Departments = () => {
+const Departments = ({ setActiveTab }: { setActiveTab: React.Dispatch<React.SetStateAction<number>> }) => {
+	const { data: user } = useFetchLoggedInUserRequestQuery();
+
 	const [selectedDepartment, setSelectedDepartment] = useState<null | number>(null);
 	const [showAddOrEditDepartment, setShowAddOrEditDepartment] = useState<boolean>(false);
+
 	const { data, isLoading, error } = useGetDepartmentsQuery();
 	const [deleteDepartmentRequest, { isLoading: deleting, error: deleteError }] = useDeleteADepartmentRequestMutation();
+
+	// Redirect if user doesn't have permission to view
+	useEffect(() => {
+		if (!userHasPermission(user?.data?.permissions, "departments", "READ")) {
+			// Return to general
+			setActiveTab(0);
+		}
+	}, []);
 
 	const department = useMemo(() => {
 		if (!data || selectedDepartment === null) return {} as IDepartment;
