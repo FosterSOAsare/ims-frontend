@@ -30,7 +30,7 @@ const Otp = ({ setStep, email }: { setStep: React.Dispatch<React.SetStateAction<
 				<div className="">
 					<h3 className="text-3xl  font-bold">Enter verification code</h3>
 					<p className="">
-						A verification code has been sent to <span className="text-black font-medium">iammensah..@gmail.com</span>{" "}
+						A verification code has been sent to <span className="text-black font-medium">{email}</span>{" "}
 					</p>
 					<div className="mt-4">
 						<label htmlFor="otp" className="flex items-center justify-between" onClick={() => inputRef?.current?.focus()}>

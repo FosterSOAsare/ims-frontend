@@ -3,9 +3,9 @@ import React, { useState } from "react";
 
 import AvatarImage from "@/assets/images/avatar.webp";
 import { Icon } from "@iconify/react/dist/iconify.js";
-import Input from "@/components/Input";
 import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
 import EditGeneralInfo from "@/components/settings/EditGeneralInfo";
+import EditUserEmail from "@/components/settings/EditUserEmail";
 
 const General = () => {
 	const [showEditGeneral, setShowEditGeneral] = useState(false);
@@ -94,31 +94,7 @@ const General = () => {
 
 			{showEditGeneral && <EditGeneralInfo setShowEditGeneral={setShowEditGeneral} />}
 
-			{showEditEmail && (
-				<div className="w-full py-4">
-					<div className="flex items-center justify-between">
-						<h3 className="text-xl font-bold">Email</h3>
-						<div className="flex gap-2">
-							<button className="border-[1px] rounded-[8px] px-6 py-2 bg-[#FEF2F2] text-[#DC2626] hover:bg-[#DC2626] hover:text-white" onClick={() => setShowEditEmail(false)}>
-								Discard
-							</button>
-							<button className="border-[1px] rounded-[8px] px-6 py-2 hover:opacity-80 bg-sec text-white">Save</button>
-						</div>
-					</div>
-
-					<div className="mt-4">
-						<div className="w-full mb-4">
-							<Input name="email" inputSx="text-sm" label="Email" placeholder="eg: michael@gmail.com" />
-						</div>
-					</div>
-					<div className="bg-warning-50 mt-2 rounded-[5px] p-2 flex items-center justify-start gap-2">
-						<span className="w-8 h-8 ">
-							<Icon icon="ph:warning-octagon-fill" className="text-warning-500 text-2xl" />
-						</span>
-						<p className="text-primary font-light">Changing your email will require verification—an OTP will be sent to your new email for confirmation.</p>
-					</div>
-				</div>
-			)}
+			{showEditEmail && <EditUserEmail setShowEditEmail={setShowEditEmail} />}
 		</div>
 	);
 };

@@ -108,11 +108,11 @@ const authApi = createApi({
       }),
       invalidatesTags: [{ type: 'USER' }]
     }),
-    confirmChangeUserEmailCodeRequest: builder.mutation<any, { email: string; }>({
-      query: ({ email }) => ({
+    confirmChangeUserEmailCodeRequest: builder.mutation<any, { email: string; code: number }>({
+      query: ({ email, code }) => ({
         method: 'POST',
         url: '/change-email/validate-otp',
-        body: { email }
+        body: { email, code }
       }),
       invalidatesTags: [{ type: 'USER' }]
     }),
@@ -133,6 +133,8 @@ export const {
   useChangePasswordMutation,
   useLazyRefreshAccessTokenRequestQuery,
   useChangeUserGeneralDetailsRequestMutation,
+  useChangeUserEmailRequestMutation,
+  useConfirmChangeUserEmailCodeRequestMutation
 } = authApi
 
 export default authApi
