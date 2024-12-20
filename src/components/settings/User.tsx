@@ -4,6 +4,8 @@ import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest"
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React, { useEffect, useState } from "react";
 import Loading from "../Loading";
+import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
+import userHasPermission from "@/utils/userHasPermission";
 
 interface IUserCard extends IUser {
 	isLast: boolean;
@@ -16,6 +18,7 @@ interface IUserCard extends IUser {
 }
 const User = ({ fullName, role, selectedUser, index, isLast, setShowAddOrEditUser, setSelectedUser, status, id }: IUserCard) => {
 	const [selectedStatus, setSelectedStatus] = useState<"activate" | "deactivate" | "">("");
+	const { data: user } = useFetchLoggedInUserRequestQuery();
 
 	const [changeUserAccountStatusRequest, { data, isLoading, error }] = useChangeUserAccountStatusRequestMutation();
 
@@ -49,43 +52,45 @@ const User = ({ fullName, role, selectedUser, index, isLast, setShowAddOrEditUse
 
 			{/* Actions */}
 			<div className="col-span-3 text-primary py-3 gap-2 text-left flex items-center justify-end">
-				<div className="relative">
-					{status !== "pending" && (
-						<button className="rounded-full hover:bg-slate-200 p-1" onClick={() => setSelectedUser((prev: number | null) => (prev === index ? null : index))}>
-							<Icon icon="bi:three-dots" />
-						</button>
-					)}
-					{selectedUser === index && (
-						<div className={`absolute ${isLast ? "bottom-[100%]" : "top-[100%]"}  right-0 h-auto w-[180px] bg-white selectedDrugOrder z-[3] rounded-[5px] card`}>
-							<>
-								<button
-									className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
-									onClick={() => {
-										setShowAddOrEditUser(true);
-										setSelectedUser(index);
-									}}>
-									Change Role
-								</button>
-							</>
-							{status?.toLowerCase() === "active" && (
-								<button
-									disabled={isLoading}
-									onClick={() => changeStatus("deactivate")}
-									className="px-3 gap-[6px] hover:bg-red-500 flex hover:text-white items-center justify-start text-sm text-red-500 w-full py-2">
-									{isLoading && selectedStatus === "deactivate" ? "Deactivating..." : "Deactivate User"}
-								</button>
-							)}
-							{status?.toLowerCase() === "inactive" && (
-								<button
-									disabled={isLoading}
-									onClick={() => changeStatus("activate")}
-									className="px-3 gap-[6px] hover:bg-green-500 flex hover:text-white items-center justify-start text-sm text-green-500 w-full py-2">
-									{isLoading && selectedStatus === "activate" ? "Re-activating..." : "Re-activate User"}
-								</button>
-							)}
-						</div>
-					)}
-				</div>
+				{userHasPermission(user?.data?.permissions, "users", "WRITE") && (
+					<div className="relative">
+						{status !== "pending" && (
+							<button className="rounded-full hover:bg-slate-200 p-1" onClick={() => setSelectedUser((prev: number | null) => (prev === index ? null : index))}>
+								<Icon icon="bi:three-dots" />
+							</button>
+						)}
+						{selectedUser === index && (
+							<div className={`absolute ${isLast ? "bottom-[100%]" : "top-[100%]"}  right-0 h-auto w-[180px] bg-white selectedDrugOrder z-[3] rounded-[5px] card`}>
+								<>
+									<button
+										className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
+										onClick={() => {
+											setShowAddOrEditUser(true);
+											setSelectedUser(index);
+										}}>
+										Change Role
+									</button>
+								</>
+								{status?.toLowerCase() === "active" && (
+									<button
+										disabled={isLoading}
+										onClick={() => changeStatus("deactivate")}
+										className="px-3 gap-[6px] hover:bg-red-500 flex hover:text-white items-center justify-start text-sm text-red-500 w-full py-2">
+										{isLoading && selectedStatus === "deactivate" ? "Deactivating..." : "Deactivate User"}
+									</button>
+								)}
+								{status?.toLowerCase() === "inactive" && (
+									<button
+										disabled={isLoading}
+										onClick={() => changeStatus("activate")}
+										className="px-3 gap-[6px] hover:bg-green-500 flex hover:text-white items-center justify-start text-sm text-green-500 w-full py-2">
+										{isLoading && selectedStatus === "activate" ? "Re-activating..." : "Re-activate User"}
+									</button>
+								)}
+							</div>
+						)}
+					</div>
+				)}
 			</div>
 		</div>
 	);

@@ -49,9 +49,11 @@ const Users = ({ setActiveTab }: { setActiveTab: React.Dispatch<React.SetStateAc
 					<p className="text-sm">Add, delete users and manage roles </p>
 				</div>
 
-				<button className="text-white bg-sec rounded-[6px] px-4 py-2 hover:opacity-70" onClick={() => setShowAddOrEditUser(true)}>
-					Add new user
-				</button>
+				{userHasPermission(loggedInUser?.data?.permissions, "departments", "WRITE") && (
+					<button className="text-white bg-sec rounded-[6px] px-4 py-2 hover:opacity-70" onClick={() => setShowAddOrEditUser(true)}>
+						Add new user
+					</button>
+				)}
 			</div>
 
 			<div className="py-4">

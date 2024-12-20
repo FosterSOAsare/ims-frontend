@@ -54,9 +54,11 @@ const Departments = ({ setActiveTab }: { setActiveTab: React.Dispatch<React.SetS
 					<p className="text-sm">Create or delete department in your facility</p>
 				</div>
 
-				<button className="text-white bg-sec rounded-[6px] px-4 py-2 hover:opacity-70" onClick={() => setShowAddOrEditDepartment(true)}>
-					Add department
-				</button>
+				{userHasPermission(user?.data?.permissions, "departments", "WRITE") && (
+					<button className="text-white bg-sec rounded-[6px] px-4 py-2 hover:opacity-70" onClick={() => setShowAddOrEditDepartment(true)}>
+						Add department
+					</button>
+				)}
 			</div>
 
 			<div className="py-4">
@@ -79,18 +81,22 @@ const Departments = ({ setActiveTab }: { setActiveTab: React.Dispatch<React.SetS
 
 										{/* Actions */}
 										<div className="col-span-2 text-primary py-3 gap-2 text-left flex items-center justify-end">
-											<button disabled={deleting} className="p-2 rounded-full hover:bg-gray-200" onClick={() => deleteDepartment(index)}>
-												{deleting && selectedDepartment === index ? <Loading sx="!w-5 !h-5 !border-sec" /> : <Icon icon="ph:trash" />}
-											</button>
-											<button
-												disabled={deleting}
-												className="p-2 rounded-full hover:bg-red-500 hover:text-white"
-												onClick={() => {
-													setSelectedDepartment(index);
-													setShowAddOrEditDepartment(true);
-												}}>
-												<Icon icon="lucide:edit-2" />
-											</button>
+											{userHasPermission(user?.data?.permissions, "departments", "DELETE") && (
+												<button disabled={deleting} className="p-2 rounded-full hover:bg-gray-200" onClick={() => deleteDepartment(index)}>
+													{deleting && selectedDepartment === index ? <Loading sx="!w-5 !h-5 !border-sec" /> : <Icon icon="ph:trash" />}
+												</button>
+											)}
+											{userHasPermission(user?.data?.permissions, "departments", "WRITE") && (
+												<button
+													disabled={deleting}
+													className="p-2 rounded-full hover:bg-red-500 hover:text-white"
+													onClick={() => {
+														setSelectedDepartment(index);
+														setShowAddOrEditDepartment(true);
+													}}>
+													<Icon icon="lucide:edit-2" />
+												</button>
+											)}
 										</div>
 									</div>
 								))}
