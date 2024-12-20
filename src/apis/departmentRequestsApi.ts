@@ -28,38 +28,29 @@ const departmentRequestsApi = createApi({
 
       providesTags: ({ requestId }) => [{ type: 'DepartmentRequest', id: requestId }]
     }),
-    createADepartmentRequestRequest: builder.mutation<any, { itemId: string; additionalNotes: string; quantity: number }>({
-      query: ({ itemId, quantity, additionalNotes }) => ({
-        method: 'POST',
-        url: '/',
-        body: { itemId, quantity, additionalNotes }
+    updateDepartmentRequestStatusRequest: builder.mutation<any, { requestId: string; status: 'Accepted' | 'Pending' | 'Delivered' | 'Cancelled' }>({
+      query: ({ requestId, status }) => ({
+        method: 'PUT',
+        url: `/${requestId}`,
+        body: { status: status.toUpperCase() }
       }),
       invalidatesTags: [{ type: 'DepartmentRequests' }]
     }),
-    updateADepartmentRequestRequest: builder.mutation<any, { requestId: string; itemId: string; additionalNotes: string; quantity: number }>({
-      query: ({ itemId, quantity, additionalNotes, requestId }) => ({
-        method: 'PATCH',
-        url: `/${requestId}`,
-        body: { itemId, quantity, additionalNotes }
-      }),
-      invalidatesTags: ({ requestId }) => [{ type: 'DepartmentRequests' }, { type: 'DepartmentRequest', id: requestId }]
-    }),
-    deleteADepartmentRequestRequest: builder.mutation<any, { requestId: string }>({
-      query: ({ requestId }) => ({
-        method: 'DELETE',
-        url: `/${requestId}`,
-      }),
-      invalidatesTags: [{ type: 'DepartmentRequests' }]
-    }),
+
+    // deleteADepartmentRequestRequest: builder.mutation<any, { requestId: string }>({
+    //   query: ({ requestId }) => ({
+    //     method: 'DELETE',
+    //     url: `/${requestId}`,
+    //   }),
+    //   invalidatesTags: [{ type: 'DepartmentRequests' }]
+    // }),
   })
 })
 
 export const {
   useLazyGetDepartmentRequestsRequestQuery,
-  useCreateADepartmentRequestRequestMutation,
-  useUpdateADepartmentRequestRequestMutation,
   useLazyGetADepartmentRequestRequestQuery,
-  useDeleteADepartmentRequestRequestMutation
+  useUpdateDepartmentRequestStatusRequestMutation
 } = departmentRequestsApi
 
 export default departmentRequestsApi

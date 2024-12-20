@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { IItemRequest } from "./page";
 import { formatDate } from "@/utils/date";
 import { useDeleteAnItemRequestRequestMutation } from "@/apis/itemRequestsApi";
+import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 
 interface ITableColumn extends IItemRequest {
 	isLast: boolean;
@@ -20,6 +21,8 @@ const TableColumn = ({ requestNumber, itemName, quantity, dateRequested, status,
 		if (!deleted) return;
 		setActiveColumn(null);
 	}, [deleted]);
+
+	useCreateErrorFromApiRequest(deleteError);
 
 	return (
 		<div className="bg-white drugs-table gap-2 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">

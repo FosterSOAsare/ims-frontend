@@ -21,10 +21,7 @@ interface IAddOrEditRequest {
 
 const ViewRequestDetails = ({ setShowViewRequest, requestId, setSelectedRequest, setShowAddOrEditRequest }: IAddOrEditRequest) => {
 	const { data: request, isLoading: gettingRequest, error: requestError } = useGetAnItemRequestRequestQuery({ requestId });
-
 	useCreateErrorFromApiRequest(requestError);
-
-	console.log(request);
 
 	return (
 		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-end px-3 w-full fixed top-0 left-0 z-[5]">
