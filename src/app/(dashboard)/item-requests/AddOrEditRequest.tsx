@@ -43,7 +43,9 @@ const AddOrEditRequest = ({ setShowAddOrEditRequest, requestId, setSelectedReque
 
 	useEffect(() => {
 		if (!request) return;
-		console.log(request);
+		const { item, quantity, additionalNotes } = request?.data;
+
+		setRequestDetails({ item: item.name, quantity, additionalNotes });
 	}, [request]);
 
 	const addOrEditRequest = (e: React.FormEvent<HTMLFormElement>) => {

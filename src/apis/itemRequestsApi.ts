@@ -38,7 +38,7 @@ const itemRequestsApi = createApi({
     }),
     updateAnItemRequestRequest: builder.mutation<any, { requestId: string; itemId: string; additionalNotes: string; quantity: number }>({
       query: ({ itemId, quantity, additionalNotes, requestId }) => ({
-        method: 'POST',
+        method: 'PATCH',
         url: `/${requestId}`,
         body: { itemId, quantity, additionalNotes }
       }),

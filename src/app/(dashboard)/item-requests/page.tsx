@@ -44,7 +44,7 @@ const page = () => {
 
 	useCreateErrorFromApiRequest(error);
 
-	const request = useMemo(() => (selectedRequest !== null ? suppliers[selectedRequest] : ({} as ISupplier)), [selectedRequest]);
+	const request = useMemo(() => (selectedRequest !== null ? data?.requests?.[selectedRequest] : ({} as IItemRequest)), [selectedRequest]);
 	return (
 		<div className="relative">
 			<h3 className="text-2xl mb-3 font-bold">Item requests</h3>
@@ -111,7 +111,7 @@ const page = () => {
 
 			{showFilters && <Filters setShowFilters={setShowFilters} filters={filters} setFilters={setFilters} />}
 
-			{showAddOrEditRequest && <AddOrEditRequest setShowAddOrEditRequest={setShowAddOrEditRequest} requestId={request.id as string} setSelectedRequest={setSelectedRequest} />}
+			{showAddOrEditRequest && <AddOrEditRequest setShowAddOrEditRequest={setShowAddOrEditRequest} requestId={request?.id as string} setSelectedRequest={setSelectedRequest} />}
 		</div>
 	);
 };
