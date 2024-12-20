@@ -1,11 +1,14 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import suppliers, { ISupplier } from "@/data/suppliers";
 import TableColumn from "./TableColumn";
 import Filters, { initialFilter } from "./Filters";
 import AddOrEditRequest from "./AddOrEditRequest";
+import useDebounce from "@/hooks/useDebounce";
+import { useLazyGetDepartmentRequestsRequestQuery } from "@/apis/departmentRequestsApi";
+import { PageLoading } from "@/components/Loading";
 
 export interface IFilter {
 	status: string;
@@ -13,33 +16,32 @@ export interface IFilter {
 	drug: string;
 }
 
-export interface IDepartment {
+export interface IRequest {
 	id: string;
-	department: string;
+	departmentName: string;
 	requestNumber: string;
-	drug: string;
+	itemName: string;
 	quantity: string;
 	dateRequested: string;
 	status: "Pending" | "Delivered" | "Cancelled" | "Accepted";
 }
 
-const requests: IDepartment[] = [
-	{ id: "1", department: "Trauma & Orthpaedics", requestNumber: "R-66g778", drug: "Paracetamol (Panadol)", quantity: "200pcs", dateRequested: "24 Jun, 24", status: "Pending" },
-	{ id: "2", department: "Surgical", requestNumber: "R-5567789", drug: "Paracetamol (Panadol)", quantity: "2,000pcs", dateRequested: "24 Jun, 24", status: "Pending" },
-	{ id: "3", department: "Surgical", requestNumber: "R-788949", drug: "Paracetamol (Panadol)", quantity: "200pcs", dateRequested: "24 Jun, 24", status: "Accepted" },
-	{ id: "4", department: "Medicine & Therapeu...", requestNumber: "R-5567", drug: "Paracetamol (Panadol)", quantity: "200pcs", dateRequested: "24 Jun, 24", status: "Accepted" },
-	{ id: "5", department: "Dental", requestNumber: "R-5567", drug: "Paracetamol (Panadol)", quantity: "200pcs", dateRequested: "24 Jun, 24", status: "Delivered" },
-	{ id: "6", department: "Dental", requestNumber: "R-5567", drug: "Paracetamol (Panadol)", quantity: "200pcs", dateRequested: "24 Jun, 24", status: "Delivered" },
-	{ id: "7", department: "Dental", requestNumber: "R-5567", drug: "Paracetamol (Panadol)", quantity: "200pcs", dateRequested: "24 Jun, 24", status: "Cancelled" },
-];
-
 const page = () => {
+	const [getDepartmentRequest, { data, error, isLoading }] = useLazyGetDepartmentRequestsRequestQuery();
 	const [selectedRequest, setSelectedRequest] = useState<null | number>(null);
 	const [showFilters, setShowFilters] = useState<boolean>(false);
-	const [filters, setFilters] = useState<IFilter>(initialFilter);
 	const [showAddOrEditRequest, setShowAddOrEditRequest] = useState<boolean>(true);
 
-	const request = useMemo(() => (selectedRequest !== null ? suppliers[selectedRequest] : ({} as ISupplier)), [selectedRequest]);
+	const [filters, setFilters] = useState<IFilter>(initialFilter);
+	const [search, setSearch] = useState("");
+	const [page, setPage] = useState(0);
+
+	const query = useDebounce(search, 1000);
+
+	useEffect(() => {
+		getDepartmentRequest({ page: page + 1, search: query });
+	}, [query, page]);
+	const request = useMemo(() => (selectedRequest !== null ? data?.requests?.[selectedRequest] : ({} as IRequest)), [selectedRequest]);
 	return (
 		<div className="relative">
 			<h3 className="text-2xl mb-3 font-bold">Department requests</h3>
@@ -60,13 +62,7 @@ const page = () => {
 						</button>
 					</div>
 
-					<div className="flex gap-2 items-center justify-between">
-						<button
-							className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
-							onClick={() => setShowAddOrEditRequest(true)}>
-							Create new request
-						</button>
-					</div>
+					<div className="flex gap-2 items-center justify-between"></div>
 				</div>
 
 				{/* Table title */}
@@ -80,24 +76,25 @@ const page = () => {
 					<div className="col-span-1 text-gray-500 uppercase text-xs py-3"></div>
 				</div>
 
-				<div>
-					{/* Last two on the table will have isLast so the drop down shows at the top instead */}
-					{requests.map((request, index) => (
-						<TableColumn
-							{...request}
-							isLast={index >= requests.length - 2}
-							index={index}
-							activeColumn={selectedRequest}
-							setActiveColumn={setSelectedRequest}
-							setShowAddOrEditRequest={setShowAddOrEditRequest}
-						/>
-					))}
-				</div>
+				{!isLoading && data && (
+					<div>
+						{data?.requests?.length > 0 && (
+							<>
+								{/* Last two on the table will have isLast so the drop down shows at the top instead */}
+								{data?.requests.map((request: any, index: number) => (
+									<TableColumn {...request} isLast={index >= data?.requests?.length - 2} index={index} activeColumn={selectedRequest} setActiveColumn={setSelectedRequest} />
+								))}
+							</>
+						)}
+
+						{data?.requests?.length === 0 && <PageLoading />}
+					</div>
+				)}
+
+				{isLoading && <PageLoading />}
 			</div>
 
 			{showFilters && <Filters setShowFilters={setShowFilters} filters={filters} setFilters={setFilters} />}
-
-			{showAddOrEditRequest && <AddOrEditRequest setShowAddOrEditRequest={setShowAddOrEditRequest} requestId={request.id as string} setSelectedRequest={setSelectedRequest} />}
 		</div>
 	);
 };

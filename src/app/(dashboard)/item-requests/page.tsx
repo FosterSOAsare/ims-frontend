@@ -11,6 +11,7 @@ import useDebounce from "@/hooks/useDebounce";
 import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 import NoData from "@/components/NoData";
 import { PageLoading } from "@/components/Loading";
+import ViewRequestDetails from "./ViewRequest";
 
 export interface IFilter {
 	status: string;
@@ -31,6 +32,7 @@ const page = () => {
 	const [selectedRequest, setSelectedRequest] = useState<null | number>(null);
 	const [showFilters, setShowFilters] = useState<boolean>(false);
 	const [showAddOrEditRequest, setShowAddOrEditRequest] = useState<boolean>(false);
+	const [showRequestDetails, setShowRequestDetails] = useState<boolean>(false);
 
 	const [filters, setFilters] = useState<IFilter>(initialFilter);
 	const [search, setSearch] = useState("");
@@ -97,6 +99,7 @@ const page = () => {
 										activeColumn={selectedRequest}
 										setActiveColumn={setSelectedRequest}
 										setShowAddOrEditRequest={setShowAddOrEditRequest}
+										setShowRequestDetails={setShowRequestDetails}
 									/>
 								))}
 							</>
@@ -112,6 +115,14 @@ const page = () => {
 			{showFilters && <Filters setShowFilters={setShowFilters} filters={filters} setFilters={setFilters} />}
 
 			{showAddOrEditRequest && <AddOrEditRequest setShowAddOrEditRequest={setShowAddOrEditRequest} requestId={request?.id as string} setSelectedRequest={setSelectedRequest} />}
+			{showRequestDetails && (
+				<ViewRequestDetails
+					setShowViewRequest={setShowRequestDetails}
+					requestId={request?.id as string}
+					setSelectedRequest={setSelectedRequest}
+					setShowAddOrEditRequest={setShowAddOrEditRequest}
+				/>
+			)}
 		</div>
 	);
 };

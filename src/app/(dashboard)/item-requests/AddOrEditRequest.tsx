@@ -79,7 +79,7 @@ const AddOrEditRequest = ({ setShowAddOrEditRequest, requestId, setSelectedReque
 	useCreateErrorFromApiRequest(error);
 	useCreateErrorFromApiRequest(requestError);
 	return (
-		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-end px-3 w-full fixed top-0 left-0 z-[5]">
+		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-end px-3 w-full fixed top-0 left-0 z-[10]">
 			<div className="w-[28%] flex flex-col gap-4 h-[calc(100%-20px)]  bg-white rounded-[5px]">
 				<div className="flex items-center justify-between w-full px-4 pt-4">
 					<h3 className="text-lg font-bold">{requestId ? "Edit a " : "New"} department item request </h3>

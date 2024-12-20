@@ -10,9 +10,10 @@ interface ITableColumn extends IItemRequest {
 	setActiveColumn: React.Dispatch<React.SetStateAction<number | null>>;
 	index: number;
 	setShowAddOrEditRequest: React.Dispatch<React.SetStateAction<boolean>>;
+	setShowRequestDetails: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const TableColumn = ({ requestNumber, itemName, quantity, dateRequested, status, isLast, activeColumn, setActiveColumn, setShowAddOrEditRequest, index, id }: ITableColumn) => {
+const TableColumn = ({ requestNumber, itemName, quantity, dateRequested, status, isLast, activeColumn, setActiveColumn, setShowAddOrEditRequest, index, id, setShowRequestDetails }: ITableColumn) => {
 	const [deleteADrugRequest, { data: deleted, isLoading: deleting, error: deleteError }] = useDeleteAnItemRequestRequestMutation();
 
 	useEffect(() => {
@@ -60,6 +61,15 @@ const TableColumn = ({ requestNumber, itemName, quantity, dateRequested, status,
 							className={`absolute ${isLast ? "bottom-[100%]" : "top-[100%]"}  right-0 h-auto ${
 								status.toLowerCase() === "accepted" ? "w-[180px]" : "w-[130px]"
 							} bg-white selectedStock z-[3] rounded-[5px] card`}>
+							<button
+								disabled={deleting}
+								className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
+								onClick={() => {
+									setShowRequestDetails(true);
+								}}>
+								<Icon icon="solar:eye-broken" className="text-lg" />
+								View
+							</button>
 							{status.toLowerCase() === "pending" && (
 								<>
 									<button

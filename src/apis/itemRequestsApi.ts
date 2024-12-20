@@ -59,6 +59,7 @@ export const {
   useCreateAnItemRequestRequestMutation,
   useUpdateAnItemRequestRequestMutation,
   useLazyGetAnItemRequestRequestQuery,
+  useGetAnItemRequestRequestQuery,
   useDeleteAnItemRequestRequestMutation
 } = itemRequestsApi
 

@@ -1,23 +1,23 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
-import { IDepartment } from "./page";
+import { IRequest } from "./page";
+import { formatDate } from "@/utils/date";
 
-interface ITableColumn extends IDepartment {
+interface ITableColumn extends IRequest {
 	isLast: boolean;
 	activeColumn: number | null;
 	setActiveColumn: React.Dispatch<React.SetStateAction<number | null>>;
 	index: number;
-	setShowAddOrEditRequest: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const TableColumn = ({ department, requestNumber, drug, quantity, dateRequested, status, isLast, activeColumn, setActiveColumn, setShowAddOrEditRequest, index }: ITableColumn) => {
+const TableColumn = ({ departmentName, requestNumber, itemName, quantity, dateRequested, status, isLast, activeColumn, setActiveColumn, index }: ITableColumn) => {
 	return (
 		<div className="bg-white drugs-table gap-2 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
-			<div className="col-span-5 text-primary py-3 text-left">{department}</div>
+			<div className="col-span-5 text-primary py-3 text-left">{departmentName}</div>
 			<div className="col-span-3 text-primary py-3 text-left">{requestNumber}</div>
-			<div className="col-span-5 text-primary py-3 text-left">{drug}</div>
+			<div className="col-span-5 text-primary py-3 text-left">{itemName}</div>
 			<div className="col-span-3 text-primary py-3 text-left">{quantity}</div>
-			<div className="col-span-4 text-primary py-3 flex items-center gap-1 text-left">{dateRequested}</div>
+			<div className="col-span-4 text-primary py-3 flex items-center gap-1 text-left">{formatDate(dateRequested)}</div>
 			<div className="col-span-3 text-sm text-gray-500 py-3 text-left">
 				<div
 					className={`${
@@ -54,14 +54,6 @@ const TableColumn = ({ department, requestNumber, drug, quantity, dateRequested,
 							} bg-white selectedStock z-[3] rounded-[5px] card`}>
 							{status.toLowerCase() === "pending" && (
 								<>
-									<button
-										className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
-										onClick={() => {
-											setShowAddOrEditRequest(true);
-										}}>
-										<Icon icon="hugeicons:file-edit" className="text-lg" />
-										Edit
-									</button>
 									<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
 										<Icon icon="ic:sharp-check" className="text-lg" />
 										Accept
@@ -77,18 +69,6 @@ const TableColumn = ({ department, requestNumber, drug, quantity, dateRequested,
 									<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
 										<Icon icon="ic:sharp-check" className="text-lg" />
 										Mark as delivered
-									</button>
-									<button className="px-3 gap-[6px] hover:bg-red-500 hover:text-white text-red-500 flex items-center justify-start text-sm w-full py-2">
-										<Icon icon="solar:trash-bin-minimalistic-line-duotone" className="text-lg" />
-										Cancel
-									</button>
-								</>
-							)}
-							{status.toLowerCase() === "cancelled" && (
-								<>
-									<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
-										<Icon icon="hugeicons:file-edit" className="text-lg" />
-										Edit
 									</button>
 								</>
 							)}
