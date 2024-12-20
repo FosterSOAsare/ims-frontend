@@ -1,25 +1,24 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import Input from "@/components/Input";
 import CustomSelect from "@/components/Select";
-import drugs from "@/data/drugs";
 import padNumber from "@/utils/padNumber";
 import { toast } from "react-toastify";
+import { useGetAllDrugsRequestQuery } from "@/apis/drugsApi";
+import Loading, { PageLoading } from "@/components/Loading";
+import { useCreateAnItemRequestRequestMutation, useLazyGetAnItemRequestRequestQuery, useUpdateAnItemRequestRequestMutation } from "@/apis/itemRequestsApi";
+import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 
 export interface INewOrEditRequestDetails {
 	item: string;
 	quantity: string;
-	department: string;
-	status: "pending" | "delivered" | "accepted" | "cancelled" | "";
-	notes: string;
+	additionalNotes: string;
 }
 const initial: INewOrEditRequestDetails = {
 	item: "",
 	quantity: "",
-	department: "",
-	status: "",
-	notes: "",
+	additionalNotes: "",
 };
 
 interface IAddOrEditRequest {
@@ -31,22 +30,52 @@ interface IAddOrEditRequest {
 const AddOrEditRequest = ({ setShowAddOrEditRequest, requestId, setSelectedRequest }: IAddOrEditRequest) => {
 	const [requestDetails, setRequestDetails] = useState<INewOrEditRequestDetails>(initial);
 
+	const { data: drugs, error, isLoading } = useGetAllDrugsRequestQuery();
+	const [createItemRequest, { data: created, isLoading: creating, error: createError }] = useCreateAnItemRequestRequestMutation();
+	const [updateItemRequest, { data: updated, isLoading: updating, error: updateError }] = useUpdateAnItemRequestRequestMutation();
+	const [getRequestDetails, { data: request, isLoading: gettingRequest, error: requestError }] = useLazyGetAnItemRequestRequestQuery();
+
+	// Get request details if it is an edit request
+	useEffect(() => {
+		if (!requestId) return;
+		getRequestDetails({ requestId });
+	}, [requestId]);
+
+	useEffect(() => {
+		if (!request) return;
+		console.log(request);
+	}, [request]);
+
 	const addOrEditRequest = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const { item, quantity, department, notes } = requestDetails;
+		const { item, quantity, additionalNotes } = requestDetails;
 		if (!item) return toast.error("Please select a drug", { autoClose: 1500 });
 		if (!quantity) return toast.error("Please enter the quantity of drugs needed", { autoClose: 1500 });
-		if (!department) return toast.error("Please select the department to receive the request", { autoClose: 1500 });
+		if (!additionalNotes) return toast.error("Please add some additional notes to the requests", { autoClose: 1500 });
 
+		// Get item id
+		const itemId = drugs?.data?.find(({ name }: { name: string }) => name === item)?.id || "";
 		// Notes is optional
-		toast.success("New request successfully added...", { autoClose: 1500 });
+		const data = { quantity: +quantity, additionalNotes, itemId };
+		requestId ? updateItemRequest({ requestId, ...data }) : createItemRequest(data);
 	};
-
-	console.log(requestDetails);
 
 	const setValue = (name: string, value: string) => {
 		setRequestDetails((prev) => ({ ...prev, [name]: value }));
 	};
+
+	useEffect(() => {
+		if (!created && !updated) return;
+		toast.success(`Item request successfully ${created ? "created" : "updated"}...`, { autoClose: 1500 });
+
+		setShowAddOrEditRequest(false);
+		setSelectedRequest(null);
+	}, [created, updated]);
+
+	useCreateErrorFromApiRequest(createError);
+	useCreateErrorFromApiRequest(updateError);
+	useCreateErrorFromApiRequest(error);
+	useCreateErrorFromApiRequest(requestError);
 	return (
 		<div className="h-screen bg-black bg-opacity-50 flex items-center justify-end px-3 w-full fixed top-0 left-0 z-[5]">
 			<div className="w-[28%] flex flex-col gap-4 h-[calc(100%-20px)]  bg-white rounded-[5px]">
@@ -63,50 +92,49 @@ const AddOrEditRequest = ({ setShowAddOrEditRequest, requestId, setSelectedReque
 					</button>
 				</div>
 
-				<form className="flex items-start flex-col h-full gap-2" onSubmit={addOrEditRequest}>
-					<div className="px-4 h-[calc(100%-70px)]  overflow-y-auto space-y-3 pb-12 w-full">
-						<CustomSelect options={drugs.map((d) => d.name)} value={requestDetails.item} label="Item" placeholder="Select item" handleChange={(value) => setValue("item", value)} />
-						<Input
-							name="quantity"
-							value={requestDetails.quantity}
-							setValue={(value) => setValue("quantity", value)}
-							label="Quantity"
-							placeholder="100"
-							labelSx="text-sm"
-							inputSx="text-sm"
-						/>
-						<CustomSelect
-							options={Array.from({ length: 10 }, (_i, i) => `department ${padNumber(i + 1)}`)}
-							value={requestDetails.department}
-							label="Department"
-							placeholder="Select department"
-							handleChange={(value) => setValue("department", value)}
-						/>
-						<CustomSelect
-							options={["pending", "delivered", "accepted", "cancelled"]}
-							value={requestDetails.status}
-							label="Status"
-							placeholder="Select status"
-							handleChange={(value) => setValue("status", value as "pending" | "delivered" | "accepted" | "cancelled")}
-						/>
+				{!isLoading && drugs && (
+					<>
+						{((requestId && !gettingRequest && requestDetails?.item) || !requestId) && (
+							<form className="flex items-start flex-col h-full gap-2" onSubmit={addOrEditRequest}>
+								<div className="px-4 h-[calc(100%-70px)]  overflow-y-auto space-y-3 pb-12 w-full">
+									<CustomSelect
+										options={drugs?.data.map((d: { name: string }) => d.name)}
+										value={requestDetails.item}
+										label="Item"
+										placeholder="Select item"
+										handleChange={(value) => setValue("item", value)}
+									/>
+									<Input
+										name="quantity"
+										value={requestDetails.quantity}
+										setValue={(value) => setValue("quantity", value)}
+										label="Quantity"
+										placeholder="100"
+										labelSx="text-sm"
+										inputSx="text-sm"
+									/>
+									<div className="w-full">
+										<label htmlFor="notes" className="text-sm">
+											Additional Notes
+										</label>
+										<textarea
+											value={requestDetails.additionalNotes}
+											onChange={(e) => setValue("additionalNotes", e.target.value)}
+											className="w-full h-24 resize-none border-[1px] focus:outline-0 p-2 rounded-[10px] border-gray-200"></textarea>
+									</div>
+								</div>
 
-						<div className="w-full">
-							<label htmlFor="notes" className="text-sm">
-								Additional Notes
-							</label>
-							<textarea
-								value={requestDetails.notes}
-								onChange={(e) => setValue("notes", e.target.value)}
-								className="w-full h-24 resize-none border-[1px] focus:outline-0 p-2 rounded-[10px] border-gray-200"></textarea>
-						</div>
-					</div>
+								<div className="w-full h-auto bg-white px-4 mt-auto gap-3">
+									<button disabled={creating || updating} className="w-full bg-sec py-2 rounded-[10px] text-white" type="submit">
+										{creating || updating ? <Loading /> : requestId ? "Update request" : "Save request"}
+									</button>
+								</div>
+							</form>
+						)}
+					</>
+				)}
 
-					<div className="w-full h-auto bg-white px-4 mt-auto gap-3">
-						<button className="w-full bg-sec py-2 rounded-[10px] text-white" type="submit">
-							Save request
-						</button>
-					</div>
-				</form>
+				{isLoading && <PageLoading />}
 			</div>
 		</div>
 	);

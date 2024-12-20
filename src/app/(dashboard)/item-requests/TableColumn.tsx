@@ -1,8 +1,9 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import React from "react";
-import { IDepartment } from "./page";
+import { IItemRequest } from "./page";
+import { formatDate } from "@/utils/date";
 
-interface ITableColumn extends IDepartment {
+interface ITableColumn extends IItemRequest {
 	isLast: boolean;
 	activeColumn: number | null;
 	setActiveColumn: React.Dispatch<React.SetStateAction<number | null>>;
@@ -10,15 +11,14 @@ interface ITableColumn extends IDepartment {
 	setShowAddOrEditRequest: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const TableColumn = ({ department, requestNumber, drug, quantity, dateRequested, status, isLast, activeColumn, setActiveColumn, setShowAddOrEditRequest, index }: ITableColumn) => {
+const TableColumn = ({ requestNumber, itemName, quantity, dateRequested, status, isLast, activeColumn, setActiveColumn, setShowAddOrEditRequest, index }: ITableColumn) => {
 	return (
 		<div className="bg-white drugs-table gap-2 border-gray-200 items-center mt-6 rounded-[10px] px-3 border-[1px] grid grid-cols-12">
-			<div className="col-span-5 text-primary py-3 text-left">{department}</div>
-			<div className="col-span-3 text-primary py-3 text-left">{requestNumber}</div>
-			<div className="col-span-5 text-primary py-3 text-left">{drug}</div>
-			<div className="col-span-3 text-primary py-3 text-left">{quantity}</div>
-			<div className="col-span-4 text-primary py-3 flex items-center gap-1 text-left">{dateRequested}</div>
-			<div className="col-span-3 text-sm text-gray-500 py-3 text-left">
+			<div className="col-span-5 text-primary py-3 text-left">{requestNumber}</div>
+			<div className="col-span-5 text-primary py-3 text-left">{itemName}</div>
+			<div className="col-span-4 text-primary py-3 text-left">{quantity}</div>
+			<div className="col-span-5 text-primary py-3 flex items-center gap-1 text-left">{formatDate(dateRequested)}</div>
+			<div className="col-span-4 text-sm text-gray-500 py-3 text-left">
 				<div
 					className={`${
 						status.toLowerCase() === "cancelled"
@@ -30,7 +30,7 @@ const TableColumn = ({ department, requestNumber, drug, quantity, dateRequested,
 							: "bg-[#FFFAEB] text-[#B54708]"
 					} inline-flex rounded-full px-2 py-1 items-center gap-1`}>
 					<span
-						className={`inline-block w-[6px] h-[6px] rounded-full ${
+						className={`inline-block w-[6px]  h-[6px] rounded-full ${
 							status.toLowerCase() === "cancelled"
 								? " bg-red-500"
 								: status.toLowerCase() === "accepted"

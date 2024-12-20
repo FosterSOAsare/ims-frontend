@@ -17,25 +17,14 @@ export interface IFilter {
 	drug: string;
 }
 
-export interface IDepartment {
+export interface IItemRequest {
 	id: string;
-	department: string;
 	requestNumber: string;
-	drug: string;
+	itemName: string;
 	quantity: string;
 	dateRequested: string;
 	status: "Pending" | "Delivered" | "Cancelled" | "Accepted";
 }
-
-const requests: IDepartment[] = [
-	{ id: "1", department: "Trauma & Orthpaedics", requestNumber: "R-66g778", drug: "Paracetamol (Panadol)", quantity: "200pcs", dateRequested: "24 Jun, 24", status: "Pending" },
-	{ id: "2", department: "Surgical", requestNumber: "R-5567789", drug: "Paracetamol (Panadol)", quantity: "2,000pcs", dateRequested: "24 Jun, 24", status: "Pending" },
-	{ id: "3", department: "Surgical", requestNumber: "R-788949", drug: "Paracetamol (Panadol)", quantity: "200pcs", dateRequested: "24 Jun, 24", status: "Accepted" },
-	{ id: "4", department: "Medicine & Therapeu...", requestNumber: "R-5567", drug: "Paracetamol (Panadol)", quantity: "200pcs", dateRequested: "24 Jun, 24", status: "Accepted" },
-	{ id: "5", department: "Dental", requestNumber: "R-5567", drug: "Paracetamol (Panadol)", quantity: "200pcs", dateRequested: "24 Jun, 24", status: "Delivered" },
-	{ id: "6", department: "Dental", requestNumber: "R-5567", drug: "Paracetamol (Panadol)", quantity: "200pcs", dateRequested: "24 Jun, 24", status: "Delivered" },
-	{ id: "7", department: "Dental", requestNumber: "R-5567", drug: "Paracetamol (Panadol)", quantity: "200pcs", dateRequested: "24 Jun, 24", status: "Cancelled" },
-];
 
 const page = () => {
 	const [getStockRequests, { data, error, isLoading }] = useLazyGetItemRequestsRequestQuery();
@@ -87,24 +76,23 @@ const page = () => {
 
 				{/* Table title */}
 				<div className="bg-gray-700 drugs-table gap-4 mt-6 items-center rounded-[10px] border-[1px] grid grid-cols-12 px-3">
-					<div className="col-span-5 text-gray-500 uppercase text-sm py-3">Department Name</div>
-					<div className="col-span-3 text-gray-500 uppercase text-sm py-3">Request #</div>
+					<div className="col-span-5 text-gray-500 uppercase text-sm py-3">Request #</div>
 					<div className="col-span-5 text-gray-500 uppercase text-sm py-3">Drug</div>
-					<div className="col-span-3 text-gray-500 uppercase text-sm py-3">Quantity</div>
-					<div className="col-span-4 text-gray-500 uppercase text-sm py-3">Date Requested</div>
-					<div className="col-span-3 text-gray-500 uppercase text-sm py-3">Status</div>
+					<div className="col-span-4 text-gray-500 uppercase text-sm py-3">Quantity</div>
+					<div className="col-span-5 text-gray-500 uppercase text-sm py-3">Date Requested</div>
+					<div className="col-span-4 text-gray-500 uppercase text-sm py-3">Status</div>
 					<div className="col-span-1 text-gray-500 uppercase text-xs py-3"></div>
 				</div>
 
 				{!isLoading && data && (
 					<div>
-						{data?.data?.rows?.length > 0 && (
+						{data?.requests?.length > 0 && (
 							<>
 								{/* Last two on the table will have isLast so the drop down shows at the top instead */}
-								{requests.map((request, index) => (
+								{data?.requests.map((request: any, index: number) => (
 									<TableColumn
 										{...request}
-										isLast={index >= requests.length - 2}
+										isLast={index >= data?.requests.length - 2}
 										index={index}
 										activeColumn={selectedRequest}
 										setActiveColumn={setSelectedRequest}
@@ -114,7 +102,7 @@ const page = () => {
 							</>
 						)}
 
-						{data?.data?.rows?.length === 0 && <NoData />}
+						{data?.requests?.length === 0 && <NoData />}
 					</div>
 				)}
 
