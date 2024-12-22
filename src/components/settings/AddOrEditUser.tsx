@@ -65,7 +65,7 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 
 	// Wait for user detals and set role and permissions accordingly
 	useEffect(() => {
-		if (!userDetails?.data) return;
+		if (!userDetails?.data) return setPageLoaded(true);
 		// // Set user role and permissions
 		setUser((prev) => ({ ...prev, role: userDetails?.data?.role || "", permissions: userDetails?.data?.permissions || [] }));
 		setPageLoaded(true);
@@ -121,6 +121,8 @@ const AddOrEditUser = ({ setShowAddOrEditUser, userId, setSelectedUser }: IAddOr
 		const dep = departments?.data?.rows?.map((dep: { name: string }) => dep.name);
 		return [...dep, "Central"];
 	}, [departments]);
+
+	console.log(pageLoaded);
 
 	// Creating user check
 	useEffect(() => {

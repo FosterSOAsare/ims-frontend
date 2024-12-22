@@ -30,6 +30,7 @@ const AddOrEditDepartment = ({ setShowAddOrEditDepartment, departmentId, departm
 		if (!created && !updated) return;
 		toast.success(`Department ${created ? "created" : "updated"} successfully`, { autoClose: 1500 });
 
+		setSelectedDepartment(null);
 		setShowAddOrEditDepartment(false);
 	}, [created, updated]);
 
