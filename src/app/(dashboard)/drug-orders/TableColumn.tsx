@@ -4,6 +4,8 @@ import { IDrugOrder } from "./page";
 import { formatDate } from "@/utils/date";
 import { useChangeADrugOrderStatusRequestMutation, useDeleteADrugOrderRequestMutation } from "@/apis/drugOrdersApi";
 import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
+import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
+import userHasPermission from "@/utils/userHasPermission";
 
 interface ITableColumn extends IDrugOrder {
 	isLast: boolean;
@@ -30,6 +32,7 @@ const TableColumn = ({
 	viewStockAdjustment,
 	setShowAddOrEditDrugOrder,
 }: ITableColumn) => {
+	const { data: user } = useFetchLoggedInUserRequestQuery();
 	const [deleteADrugOrderRequest, { data: deleted, isLoading: deleting, error: deleteError }] = useDeleteADrugOrderRequestMutation();
 	const [changeOrderStatusRequest, { data: orderStatusChange, error: orderStatusError, isLoading: changingOrderStatus }] = useChangeADrugOrderStatusRequestMutation();
 
@@ -84,70 +87,76 @@ const TableColumn = ({
 				</div>
 			</div>
 			<div className="col-span-1 text-primary py-3 text-left flex items-center justify-between">
-				<div className="relative">
-					<button className="rounded-full hover:bg-slate-200 p-1" onClick={() => setSelectedDrugOrder((prev: number | null) => (prev === index ? null : index))}>
-						<Icon icon="bi:three-dots" />
-					</button>
-					{selectedDrugOrder == index && (
-						<div className={`absolute ${isLast ? "bottom-[100%]" : "top-[100%]"}  right-0 h-auto w-[180px] bg-white selectedDrugOrder z-[3] rounded-[5px] card`}>
-							{["draft", "requested"].includes(status.toLowerCase()) && (
-								<>
+				{userHasPermission(user?.data?.permissions, "item_orders", "WRITE") && (
+					<div className="relative">
+						<button className="rounded-full hover:bg-slate-200 p-1" onClick={() => setSelectedDrugOrder((prev: number | null) => (prev === index ? null : index))}>
+							<Icon icon="bi:three-dots" />
+						</button>
+						{selectedDrugOrder == index && (
+							<div className={`absolute ${isLast ? "bottom-[100%]" : "top-[100%]"}  right-0 h-auto w-[180px] bg-white selectedDrugOrder z-[3] rounded-[5px] card`}>
+								{["draft", "requested"].includes(status.toLowerCase()) && (
+									<>
+										<button
+											disabled={deleting}
+											className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
+											onClick={() => {
+												setShowAddOrEditDrugOrder(true);
+												setSelectedDrugOrder(index);
+											}}>
+											<Icon icon="hugeicons:file-edit" className="text-lg" />
+											Edit
+										</button>
+										{status.toLowerCase() === "requested" && (
+											<button
+												disabled={deleting}
+												onClick={() => handleStatusChange("delivering")}
+												className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+												<Icon icon="hugeicons:view" className="text-lg" />
+												{changingOrderStatus && selectedStatus === "delivering" ? "Marking..." : "Mark As delivering"}
+											</button>
+										)}
+
+										{status.toLowerCase() === "draft" && (
+											<button
+												disabled={deleting}
+												onClick={() => handleStatusChange("requested")}
+												className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+												<Icon icon="hugeicons:view" className="text-lg" />
+												{changingOrderStatus && selectedStatus === "requested" ? "Marking..." : "Mark As requested"}
+											</button>
+										)}
+									</>
+								)}
+								{status.toLowerCase() === "delivering" && (
 									<button
 										disabled={deleting}
-										className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
-										onClick={() => {
-											setShowAddOrEditDrugOrder(true);
-											setSelectedDrugOrder(index);
-										}}>
-										<Icon icon="hugeicons:file-edit" className="text-lg" />
-										Edit
+										onClick={() => handleStatusChange("received")}
+										className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
+										<Icon icon="hugeicons:view" className="text-lg" />
+										{changingOrderStatus && selectedStatus === "received" ? "Marking..." : "Mark As received"}
 									</button>
-									{status.toLowerCase() === "requested" && (
-										<button
-											disabled={deleting}
-											onClick={() => handleStatusChange("delivering")}
-											className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
-											<Icon icon="hugeicons:view" className="text-lg" />
-											{changingOrderStatus && selectedStatus === "delivering" ? "Marking..." : "Mark As delivering"}
-										</button>
-									)}
-
-									{status.toLowerCase() === "draft" && (
-										<button
-											disabled={deleting}
-											onClick={() => handleStatusChange("requested")}
-											className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
-											<Icon icon="hugeicons:view" className="text-lg" />
-											{changingOrderStatus && selectedStatus === "requested" ? "Marking..." : "Mark As requested"}
-										</button>
-									)}
-								</>
-							)}
-							{status.toLowerCase() === "delivering" && (
-								<button
-									disabled={deleting}
-									onClick={() => handleStatusChange("received")}
-									className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2">
-									<Icon icon="hugeicons:view" className="text-lg" />
-									{changingOrderStatus && selectedStatus === "received" ? "Marking..." : "Mark As received"}
+								)}
+								<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2" onClick={() => viewStockAdjustment && viewStockAdjustment()}>
+									<Icon icon="solar:printer-2-outline" className="text-lg" />
+									Print PDF
 								</button>
-							)}
-							<button className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2" onClick={() => viewStockAdjustment && viewStockAdjustment()}>
-								<Icon icon="solar:printer-2-outline" className="text-lg" />
-								Print PDF
-							</button>
-							{["draft", "requested"].includes(status.toLowerCase()) && (
-								<button
-									onClick={() => deleteADrugOrderRequest({ orderId: id })}
-									disabled={deleting}
-									className="px-3 gap-[6px] hover:bg-red-500 flex hover:text-white items-center justify-start text-sm text-red-500 w-full py-2">
-									<Icon icon="solar:trash-bin-trash-line-duotone" className="text-lg" />
-									{deleting && selectedDrugOrder === index ? "Deleting..." : "Delete order"}
-								</button>
-							)}
-						</div>
-					)}
-				</div>
+								{userHasPermission(user?.data?.permissions, "item_orders", "DELETE") && (
+									<>
+										{["draft", "requested"].includes(status.toLowerCase()) && (
+											<button
+												onClick={() => deleteADrugOrderRequest({ orderId: id })}
+												disabled={deleting}
+												className="px-3 gap-[6px] hover:bg-red-500 flex hover:text-white items-center justify-start text-sm text-red-500 w-full py-2">
+												<Icon icon="solar:trash-bin-trash-line-duotone" className="text-lg" />
+												{deleting && selectedDrugOrder === index ? "Deleting..." : "Delete order"}
+											</button>
+										)}
+									</>
+								)}
+							</div>
+						)}
+					</div>
+				)}
 			</div>
 		</div>
 	);

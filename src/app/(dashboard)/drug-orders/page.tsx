@@ -9,6 +9,8 @@ import { useLazyGetDrugOrdersQuery } from "@/apis/drugOrdersApi";
 import useDebounce from "@/hooks/useDebounce";
 import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 import NoData from "@/components/NoData";
+import userHasPermission from "@/utils/userHasPermission";
+import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
 
 export interface IDrugOrder {
 	id: string;
@@ -20,78 +22,6 @@ export interface IDrugOrder {
 	quantity: string;
 	expectedDeliveryDate: string;
 }
-const drugOrders: IDrugOrder[] = [
-	{
-		id: "1",
-		drugName: "Paracetamol (Tyrenol)",
-		orderNumber: "23345788",
-		supplierName: "Earnest Chemist",
-		date: "Jun 28, 24",
-		quantity: "20,000pcs",
-		expectedDeliveryDate: "Aug 07, 24",
-		status: "Requested",
-	},
-	{
-		id: "2",
-		drugName: "Paracetamol (Tyrenol)",
-		orderNumber: "23345788",
-		supplierName: "Earnest Chemist",
-		date: "Jun 28, 24",
-		quantity: "20,000pcs",
-		expectedDeliveryDate: "Aug 07, 24",
-		status: "Delivering",
-	},
-	{
-		id: "3",
-		drugName: "Paracetamol (Tyrenol)",
-		orderNumber: "23345788",
-		supplierName: "Earnest Chemist",
-		date: "Jun 28, 24",
-		quantity: "20,000pcs",
-		expectedDeliveryDate: "Aug 07, 24",
-		status: "Received",
-	},
-	{
-		id: "4",
-		drugName: "Paracetamol (Tyrenol)",
-		orderNumber: "23345788",
-		supplierName: "Earnest Chemist",
-		date: "Jun 28, 24",
-		quantity: "20,000pcs",
-		expectedDeliveryDate: "Aug 07, 24",
-		status: "Received",
-	},
-	{
-		id: "5",
-		drugName: "Paracetamol (Tyrenol)",
-		orderNumber: "23345788",
-		supplierName: "Earnest Chemist",
-		date: "Jun 28, 24",
-		quantity: "20,000pcs",
-		expectedDeliveryDate: "Aug 07, 24",
-		status: "Received",
-	},
-	{
-		id: "6",
-		drugName: "Paracetamol (Tyrenol)",
-		orderNumber: "23345788",
-		supplierName: "Earnest Chemist",
-		date: "Jun 28, 24",
-		quantity: "20,000pcs",
-		expectedDeliveryDate: "Aug 07, 24",
-		status: "Cancelled",
-	},
-	{
-		id: "7",
-		drugName: "Paracetamol (Tyrenol)",
-		orderNumber: "23345788",
-		supplierName: "Earnest Chemist",
-		date: "Jun 28, 24",
-		quantity: "20,000pcs",
-		expectedDeliveryDate: "Aug 07, 24",
-		status: "Received",
-	},
-];
 
 export interface IFilter {
 	supplier: string;
@@ -100,6 +30,7 @@ export interface IFilter {
 }
 
 const page = () => {
+	const { data: user } = useFetchLoggedInUserRequestQuery();
 	const [getDrugOrdersRequest, { data, isLoading, error }] = useLazyGetDrugOrdersQuery();
 
 	const [selectedDrugOrder, setSelectedDrugOrder] = useState<null | number>(null);
@@ -134,7 +65,13 @@ const page = () => {
 							<span className="absolute left-3 top-0 bottom-0 flex items-center justify-center">
 								<Icon icon="iconoir:search" className="text-xl text-gray-400" />
 							</span>
-							<input type="text" className="bg-gray-300 w-full p-2 border-[2px] border-transparent focus:border-gray-200 rounded-[10px] pl-10" placeholder="Search category" />
+							<input
+								type="text"
+								value={search}
+								onChange={(e) => setSearch(e.target.value)}
+								className="bg-gray-300 w-full p-2 border-[2px] border-transparent focus:border-gray-200 rounded-[10px] pl-10"
+								placeholder="Search category"
+							/>
 						</div>
 						<button className="px-3 flex items-center justify-center gap-2 py-3 hover:bg-gray-200 rounded-[12px] border-[1px]" onClick={() => setShowFilters(true)}>
 							<Icon icon="lets-icons:filter" className="text-2xl" />
@@ -147,12 +84,14 @@ const page = () => {
 							<Icon icon="solar:document-line-duotone" className="text-2xl text-black" />
 							Generate report
 						</button>
-						<button
-							className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
-							onClick={() => setShowAddOrEditDrugOrder(true)}>
-							<Icon icon="ph:plus-bold" className="text-2xl" />
-							New
-						</button>
+						{userHasPermission(user?.data?.permissions, "item_orders", "WRITE") && (
+							<button
+								className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
+								onClick={() => setShowAddOrEditDrugOrder(true)}>
+								<Icon icon="ph:plus-bold" className="text-2xl" />
+								New
+							</button>
+						)}
 					</div>
 				</div>
 
@@ -177,7 +116,7 @@ const page = () => {
 									<TableColumn
 										setShowAddOrEditDrugOrder={setShowAddOrEditDrugOrder}
 										{...drugOrder}
-										isLast={index >= drugOrders.length - 2}
+										isLast={index >= data?.orders.length - 2}
 										index={index}
 										key={index}
 										selectedDrugOrder={selectedDrugOrder}
