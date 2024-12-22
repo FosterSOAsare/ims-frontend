@@ -8,6 +8,9 @@ import { formatDate } from "@/utils/date";
 
 import NoData from "@/components/NoData";
 import Loading, { PageLoading } from "@/components/Loading";
+import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
+import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
+import userHasPermission from "@/utils/userHasPermission";
 
 interface ICategory {
 	id: string;
@@ -18,6 +21,7 @@ interface ICategory {
 }
 
 const page = () => {
+	const { data: user } = useFetchLoggedInUserRequestQuery();
 	const [selectedCategory, setSelectedCategory] = useState<null | number>(null);
 	const [showAddOrEditCategory, setShowAddOrEditCategory] = useState<boolean>(false);
 	const { data, isLoading, error } = useGetItemCategoriesQuery();
@@ -34,6 +38,8 @@ const page = () => {
 		deleteACategoryRequest({ categoryId: d.id });
 	};
 
+	useCreateErrorFromApiRequest(error);
+
 	return (
 		<div className="relative">
 			<h3 className="text-2xl mb-3 font-bold">Categories</h3>
@@ -49,12 +55,14 @@ const page = () => {
 					</div>
 
 					<div className="flex gap-2 items-center justify-between">
-						<button
-							className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
-							onClick={() => setShowAddOrEditCategory(true)}>
-							<Icon icon="solar:pills-bold-duotone" className="text-2xl" />
-							Add new category
-						</button>
+						{userHasPermission(user?.data?.permissions, "item_categories", "WRITE") && (
+							<button
+								className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
+								onClick={() => setShowAddOrEditCategory(true)}>
+								<Icon icon="solar:pills-bold-duotone" className="text-2xl" />
+								Add new category
+							</button>
+						)}
 					</div>
 				</div>
 
@@ -90,17 +98,21 @@ const page = () => {
 
 											{/* Actions */}
 											<div className="col-span-4 text-primary py-3 gap-2 text-left flex items-center justify-end">
-												<button className="p-2 rounded-full hover:bg-gray-200" onClick={() => deleteCategory(index)}>
-													{deleting && selectedCategory === index ? <Loading sx="!w-5 !h-5 !border-sec" /> : <Icon icon="ph:trash" />}
-												</button>
-												<button
-													className="p-2 rounded-full hover:bg-red-500 hover:text-white"
-													onClick={() => {
-														setSelectedCategory(index);
-														setShowAddOrEditCategory(true);
-													}}>
-													<Icon icon="lucide:edit-2" />
-												</button>
+												{userHasPermission(user?.data?.permissions, "item_categories", "DELETE") && (
+													<button className="p-2 rounded-full hover:bg-gray-200" onClick={() => deleteCategory(index)}>
+														{deleting && selectedCategory === index ? <Loading sx="!w-5 !h-5 !border-sec" /> : <Icon icon="ph:trash" />}
+													</button>
+												)}
+												{userHasPermission(user?.data?.permissions, "item_categories", "WRITE") && (
+													<button
+														className="p-2 rounded-full hover:bg-red-500 hover:text-white"
+														onClick={() => {
+															setSelectedCategory(index);
+															setShowAddOrEditCategory(true);
+														}}>
+														<Icon icon="lucide:edit-2" />
+													</button>
+												)}
 											</div>
 										</div>
 									))}
