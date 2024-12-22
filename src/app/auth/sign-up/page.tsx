@@ -50,25 +50,20 @@ const page = () => {
 					<div className="h-[calc(100%-120px)] overflow-y-auto pb-12">
 						<h3 className="text-3xl  font-bold">Get Started</h3>
 						<p className="">Provide this information from your healthcare facility to get started.</p>
-						<div className="space-y-4">
-							<Input register={register} label="Full name" name="name" placeholder="Eg. iamderez" />
-							<Input register={register} label="Email" name="email" placeholder="Eg. iammensahmichael@gmail.com" />
-							<Input register={register} label="Phone" name="phone" placeholder="0555534689" />
+						<div className="">
+							<div className="space-y-4">
+								<Input register={register} label="Full name" name="name" placeholder="Eg. iamderez" />
+								<Input register={register} label="Email" name="email" placeholder="Eg. iammensahmichael@gmail.com" />
 
-							<CustomSelect label="Facility" options={facilitiesOptions} value={facility} handleChange={(selected) => setFacility(selected)} />
-							<div className="w-full">
-								<CustomSelect label="Department" options={departmentOptions} value={department} handleChange={(selected) => setDepartment(selected)} />
-
-								<div className="bg-warning-50 mt-2 rounded-[5px] p-2 flex items-center justify-start gap-2">
-									<span className="w-8 h-8 ">
-										<Icon icon="ph:warning-octagon-fill" className="text-warning-500 text-2xl" />
-									</span>
-									<p className="text-sm">Please ensure that your listed department is the correct one you are currently in</p>
-								</div>
+								<Input label="Your Password" register={register} type="password" name="password" placeholder="Enter password" />
 							</div>
 
-							<CustomSelect label="Role" options={roleOptions} value={role} handleChange={(selected) => setRole(selected)} />
-							<Input label="Password" register={register} type="password" name="password" placeholder="Enter password" />
+							<h3 className="mt-8 font-bold">Facility Information</h3>
+							<div className="space-y-4">
+								<Input register={register} label="Facility Name" name="facilityName" placeholder="" />
+
+								<Input register={register} type="password" label="Enter default password for all staff members" name="facilityPassword" placeholder="" />
+							</div>
 						</div>
 					</div>
 
