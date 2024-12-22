@@ -52,7 +52,7 @@ const page = () => {
 		setShowAddOrEditDrug(true);
 	};
 
-	const drugId = useMemo(() => (activeColumn !== null ? (data?.drugs[activeColumn]?.id as string) : ""), [activeColumn]);
+	const drugId = useMemo(() => (activeColumn !== null ? (data?.drugs[activeColumn]?.id as string) : ""), [activeColumn, data?.drugs]);
 
 	return (
 		<div className="relative">

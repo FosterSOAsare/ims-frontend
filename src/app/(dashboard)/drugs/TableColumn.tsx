@@ -1,6 +1,5 @@
 import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
 import { useDeleteADrugRequestMutation } from "@/apis/drugsApi";
-import Loading from "@/components/Loading";
 import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
 import userHasPermission from "@/utils/userHasPermission";
 import { Icon } from "@iconify/react/dist/iconify.js";
