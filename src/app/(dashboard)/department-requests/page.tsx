@@ -2,10 +2,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
-import suppliers, { ISupplier } from "@/data/suppliers";
 import TableColumn from "./TableColumn";
 import Filters, { initialFilter } from "./Filters";
-import AddOrEditRequest from "./AddOrEditRequest";
 import useDebounce from "@/hooks/useDebounce";
 import { useLazyGetDepartmentRequestsRequestQuery } from "@/apis/departmentRequestsApi";
 import { PageLoading } from "@/components/Loading";
@@ -56,7 +54,13 @@ const page = () => {
 							<span className="absolute left-3 top-0 bottom-0 flex items-center justify-center">
 								<Icon icon="iconoir:search" className="text-xl text-gray-400" />
 							</span>
-							<input type="text" className="bg-gray-300 w-full p-2 border-[2px] border-transparent focus:border-gray-200 rounded-[10px] pl-10" placeholder="Search request" />
+							<input
+								type="text"
+								value={search}
+								onChange={(e) => setSearch(e.target.value)}
+								className="bg-gray-300 w-full p-2 border-[2px] border-transparent focus:border-gray-200 rounded-[10px] pl-10"
+								placeholder="Search request"
+							/>
 						</div>
 						<button className="px-3 flex items-center justify-center gap-2 py-3 hover:bg-gray-200 rounded-[12px] border-[1px]" onClick={() => setShowFilters(true)}>
 							<Icon icon="lets-icons:filter" className="text-2xl" />

@@ -12,6 +12,8 @@ import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest"
 import NoData from "@/components/NoData";
 import { PageLoading } from "@/components/Loading";
 import ViewRequestDetails from "./ViewRequest";
+import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
+import userHasPermission from "@/utils/userHasPermission";
 
 export interface IFilter {
 	status: string;
@@ -28,6 +30,7 @@ export interface IItemRequest {
 }
 
 const page = () => {
+	const { data: user } = useFetchLoggedInUserRequestQuery();
 	const [getStockRequests, { data, error, isLoading }] = useLazyGetItemRequestsRequestQuery();
 	const [selectedRequest, setSelectedRequest] = useState<null | number>(null);
 	const [showFilters, setShowFilters] = useState<boolean>(false);
@@ -68,11 +71,13 @@ const page = () => {
 					</div>
 
 					<div className="flex gap-2 items-center justify-between">
-						<button
-							className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
-							onClick={() => setShowAddOrEditRequest(true)}>
-							Create new request
-						</button>
+						{userHasPermission(user?.data?.permissions, "department_requests", "WRITE") && (
+							<button
+								className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
+								onClick={() => setShowAddOrEditRequest(true)}>
+								Create new request
+							</button>
+						)}
 					</div>
 				</div>
 

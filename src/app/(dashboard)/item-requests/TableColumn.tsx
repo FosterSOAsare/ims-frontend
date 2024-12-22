@@ -4,6 +4,8 @@ import { IItemRequest } from "./page";
 import { formatDate } from "@/utils/date";
 import { useDeleteAnItemRequestRequestMutation } from "@/apis/itemRequestsApi";
 import useCreateErrorFromApiRequest from "@/hooks/useCreateErrorFromApiReaquest";
+import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
+import userHasPermission from "@/utils/userHasPermission";
 
 interface ITableColumn extends IItemRequest {
 	isLast: boolean;
@@ -16,6 +18,7 @@ interface ITableColumn extends IItemRequest {
 
 const TableColumn = ({ requestNumber, itemName, quantity, dateRequested, status, isLast, activeColumn, setActiveColumn, setShowAddOrEditRequest, index, id, setShowRequestDetails }: ITableColumn) => {
 	const [deleteADrugRequest, { data: deleted, isLoading: deleting, error: deleteError }] = useDeleteAnItemRequestRequestMutation();
+	const { data: user } = useFetchLoggedInUserRequestQuery();
 
 	useEffect(() => {
 		if (!deleted) return;
@@ -54,50 +57,54 @@ const TableColumn = ({ requestNumber, itemName, quantity, dateRequested, status,
 					{status}
 				</div>
 			</div>
-			<div className="col-span-1 text-primary py-3 text-left flex items-center justify-between">
-				<div className="relative">
-					<button className="rounded-full hover:bg-slate-200 p-1" onClick={() => setActiveColumn((prev: number | null) => (prev === index ? null : index))}>
-						<Icon icon="bi:three-dots" />
-					</button>
-					{activeColumn == index && (
-						<div
-							className={`absolute ${isLast ? "bottom-[100%]" : "top-[100%]"}  right-0 h-auto ${
-								status.toLowerCase() === "accepted" ? "w-[180px]" : "w-[130px]"
-							} bg-white selectedStock z-[3] rounded-[5px] card`}>
-							<button
-								disabled={deleting}
-								className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
-								onClick={() => {
-									setShowRequestDetails(true);
-								}}>
-								<Icon icon="solar:eye-broken" className="text-lg" />
-								View
-							</button>
-							{status.toLowerCase() === "pending" && (
-								<>
-									<button
-										disabled={deleting}
-										className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
-										onClick={() => {
-											setShowAddOrEditRequest(true);
-										}}>
-										<Icon icon="hugeicons:file-edit" className="text-lg" />
-										Edit
-									</button>
+			{userHasPermission(user?.data?.permissions, "department_requests", "WRITE") && (
+				<div className="col-span-1 text-primary py-3 text-left flex items-center justify-between">
+					<div className="relative">
+						<button className="rounded-full hover:bg-slate-200 p-1" onClick={() => setActiveColumn((prev: number | null) => (prev === index ? null : index))}>
+							<Icon icon="bi:three-dots" />
+						</button>
+						{activeColumn == index && (
+							<div
+								className={`absolute ${isLast ? "bottom-[100%]" : "top-[100%]"}  right-0 h-auto ${
+									status.toLowerCase() === "accepted" ? "w-[180px]" : "w-[130px]"
+								} bg-white selectedStock z-[3] rounded-[5px] card`}>
+								<button
+									disabled={deleting}
+									className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
+									onClick={() => {
+										setShowRequestDetails(true);
+									}}>
+									<Icon icon="solar:eye-broken" className="text-lg" />
+									View
+								</button>
+								{status.toLowerCase() === "pending" && (
+									<>
+										<button
+											disabled={deleting}
+											className="px-3 gap-[6px] hover:bg-gray-100 flex items-center justify-start text-sm w-full py-2"
+											onClick={() => {
+												setShowAddOrEditRequest(true);
+											}}>
+											<Icon icon="hugeicons:file-edit" className="text-lg" />
+											Edit
+										</button>
 
-									<button
-										onClick={() => deleteADrugRequest({ requestId: id })}
-										disabled={deleting}
-										className="px-3 gap-[6px] hover:bg-red-500 hover:text-white text-red-500 flex items-center justify-start text-sm w-full py-2">
-										<Icon icon="solar:trash-bin-minimalistic-line-duotone" className="text-lg" />
-										{deleting && activeColumn === index ? "Deleting..." : "Cancel"}
-									</button>
-								</>
-							)}
-						</div>
-					)}
+										{userHasPermission(user?.data?.permissions, "department_requests", "DELETE") && (
+											<button
+												onClick={() => deleteADrugRequest({ requestId: id })}
+												disabled={deleting}
+												className="px-3 gap-[6px] hover:bg-red-500 hover:text-white text-red-500 flex items-center justify-start text-sm w-full py-2">
+												<Icon icon="solar:trash-bin-minimalistic-line-duotone" className="text-lg" />
+												{deleting && activeColumn === index ? "Deleting..." : "Cancel"}
+											</button>
+										)}
+									</>
+								)}
+							</div>
+						)}
+					</div>
 				</div>
-			</div>
+			)}
 		</div>
 	);
 };
