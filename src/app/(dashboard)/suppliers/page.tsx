@@ -13,12 +13,15 @@ import Filters, { initialFilter } from "./Filters";
 import AddOrEditSupplier from "./addoreditsupplier";
 import Loading, { PageLoading } from "@/components/Loading";
 import NoData from "@/components/NoData";
+import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
+import userHasPermission from "@/utils/userHasPermission";
 
 export interface IFilter {
 	status: string;
 }
 
 const page = () => {
+	const { data: user } = useFetchLoggedInUserRequestQuery();
 	const [getSuppliersRequest, { data: suppliers, isLoading: gettingSuppliers, error: suppliersError }] = useLazyGetSuppliersRequestQuery();
 	const [deleteASupplierRequest, { isLoading: deleting, error: deleteError }] = useDeleteASupplierRequestMutation();
 
@@ -70,12 +73,14 @@ const page = () => {
 					</div>
 
 					<div className="flex gap-2 items-center justify-between">
-						<button
-							className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
-							onClick={() => setShowAddOrEditSupplier(true)}>
-							<Icon icon="solar:buildings-3-bold-duotone" className="text-2xl" />
-							Add new supplier
-						</button>
+						{userHasPermission(user?.data?.permissions, "suppliers", "WRITE") && (
+							<button
+								className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
+								onClick={() => setShowAddOrEditSupplier(true)}>
+								<Icon icon="solar:buildings-3-bold-duotone" className="text-2xl" />
+								Add new supplier
+							</button>
+						)}
 					</div>
 				</div>
 
@@ -123,25 +128,29 @@ const page = () => {
 												}}>
 												<Icon icon="mdi:eye-outline" />
 											</button>
-											<button
-												onClick={() => {
-													setSelectedSupplier(index);
-													deleteASupplierRequest({ supplierId: id });
-												}}
-												disabled={deleting}
-												className="p-2 rounded-full hover:bg-gray-200">
-												{deleting && selectedSupplier === index ? <Loading sx="!border-[red] !w-4 !h-4" /> : <Icon icon="ph:trash" />}
-											</button>
+											{userHasPermission(user?.data?.permissions, "suppliers", "WRITE") && (
+												<button
+													onClick={() => {
+														setSelectedSupplier(index);
+														deleteASupplierRequest({ supplierId: id });
+													}}
+													disabled={deleting}
+													className="p-2 rounded-full hover:bg-gray-200">
+													{deleting && selectedSupplier === index ? <Loading sx="!border-[red] !w-4 !h-4" /> : <Icon icon="ph:trash" />}
+												</button>
+											)}
 
-											<button
-												disabled={deleting}
-												className="p-2 rounded-full hover:bg-red-500 hover:text-white"
-												onClick={() => {
-													setSelectedSupplier(index);
-													setShowAddOrEditSupplier(true);
-												}}>
-												<Icon icon="lucide:edit-2" />
-											</button>
+											{userHasPermission(user?.data?.permissions, "suppliers", "DELETE") && (
+												<button
+													disabled={deleting}
+													className="p-2 rounded-full hover:bg-red-500 hover:text-white"
+													onClick={() => {
+														setSelectedSupplier(index);
+														setShowAddOrEditSupplier(true);
+													}}>
+													<Icon icon="lucide:edit-2" />
+												</button>
+											)}
 										</div>
 									</div>
 								))}
