@@ -16,8 +16,8 @@ const drugsApi = createApi({
       transformResponse: (response: any) => {
         let { rows, totalPages } = response.data
         let drugs = rows.map((row: any) => {
-          const { itemId, status, name, quantity, category, reorderPoint, supplierName } = row
-          return { status, name, stock: quantity, category, reorderPoint, supplier: supplierName, id: itemId }
+          const { itemId, status, name, totalStock, category, reorderPoint, supplier } = row
+          return { status, name, stock: totalStock, category: category?.name, reorderPoint, supplier: supplier?.name, id: itemId }
         })
         return { drugs, totalPages }
       },

@@ -12,6 +12,8 @@ import useDebounce from "@/hooks/useDebounce";
 import { useGetDrugsAnalyticsRequestQuery, useLazyGetDrugsRequestQuery } from "@/apis/drugsApi";
 import NoData from "@/components/NoData";
 import { PageLoading } from "@/components/Loading";
+import userHasPermission from "@/utils/userHasPermission";
+import { useFetchLoggedInUserRequestQuery } from "@/apis/authApi";
 
 export interface IFilter {
 	sort: string;
@@ -22,6 +24,7 @@ export interface IFilter {
 }
 
 const page = () => {
+	const { data: user } = useFetchLoggedInUserRequestQuery();
 	const [activeColumn, setActiveColumn] = useState<null | number>(null);
 	const { data: drugAnalytics, isLoading: gettingAnalytics, error: analyticsError } = useGetDrugsAnalyticsRequestQuery();
 	const [getDrugsRequest, { data, isLoading, error }] = useLazyGetDrugsRequestQuery();
@@ -49,13 +52,8 @@ const page = () => {
 		setShowAddOrEditDrug(true);
 	};
 
-	// console.log(data);
-
-	console.log(drugAnalytics);
-
 	const drugId = useMemo(() => (activeColumn !== null ? (data?.drugs[activeColumn]?.id as string) : ""), [activeColumn]);
 
-	console.log(data?.drugs[activeColumn as number]);
 	return (
 		<div className="relative">
 			<h3 className="text-2xl mb-3 font-bold">Drugs</h3>
@@ -132,10 +130,14 @@ const page = () => {
 							<Icon icon="lets-icons:filter" className="text-2xl" />
 							Filters
 						</button>
-						<button className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]" onClick={() => setShowAddOrEditDrug(true)}>
-							<Icon icon="solar:jar-of-pills-bold-duotone" className="text-2xl" />
-							Add new drug
-						</button>
+						{userHasPermission(user?.data?.permissions, "items", "WRITE") && (
+							<button
+								className="px-3 flex items-center justify-center gap-2 py-3 hover:opacity-60 bg-sec text-white rounded-[12px] border-[1px]"
+								onClick={() => setShowAddOrEditDrug(true)}>
+								<Icon icon="solar:jar-of-pills-bold-duotone" className="text-2xl" />
+								Add new drug
+							</button>
+						)}
 					</div>
 				</div>
 
